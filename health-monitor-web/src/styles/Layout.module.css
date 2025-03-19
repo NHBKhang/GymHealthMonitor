@@ -1,0 +1,13 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.mainContent {
+    flex: 1;
+    padding: 40px;
+    width: auto;
+    margin: auto;
+}
