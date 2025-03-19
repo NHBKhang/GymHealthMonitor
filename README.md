@@ -24,13 +24,14 @@ Gym Health Monitor là một hệ thống quản lý phòng gym và theo dõi s�
 
 2. **Cấu hình MySQL**:
    - Tạo database: `gym_health_db`
-   - Cấu hình `application.properties`:
+   ```sh
+      CREATE SCHEMA gym_health_db DEFAULT CHARACTER SET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+   ```
+   - Cấu hình `persistence.xml`:
      ```properties
-     spring.datasource.url=jdbc:mysql://localhost:3306/gym_health_db
-     spring.datasource.username=root
-     spring.datasource.password=your_password
-     spring.jpa.hibernate.ddl-auto=update
-     spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/gym_health_db?useSSL=false"/>
+      <property name="jakarta.persistence.jdbc.user" value="root"/>
+      <property name="jakarta.persistence.jdbc.password" value="password"/>
      ```
 
 3. **Chạy ứng dụng Backend**:
