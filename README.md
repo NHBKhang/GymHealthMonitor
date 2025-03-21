@@ -33,6 +33,12 @@ Gym Health Monitor là một hệ thống quản lý phòng gym và theo dõi s�
       <property name="jakarta.persistence.jdbc.user" value="root"/>
       <property name="jakarta.persistence.jdbc.password" value="password"/>
      ```
+     - Cấu hình `HibernateUtils.java`:
+     ```properties
+      props.put(Environment.JAKARTA_JDBC_URL, "jdbc:mysql://localhost/gym_health_db");
+      props.put(Environment.JAKARTA_JDBC_USER, "root");
+      props.put(Environment.JAKARTA_JDBC_PASSWORD, "password");
+     ```
 
 3. **Chạy ứng dụng Backend**:
    ```sh
