@@ -1,3 +1,4 @@
+/* Header Styles */
 .header {
     background: linear-gradient(to right, #ff5733, #ff8c42);
     color: white;
@@ -29,6 +30,7 @@
     margin-bottom: 0;
 }
 
+/* Navigation */
 .nav ul {
     list-style: none;
     display: flex;
@@ -68,13 +70,13 @@
     left: -250px;
     width: 250px;
     height: 100vh;
-    background: #222;
+    background: rgb(25, 25, 25);
     color: white;
     padding: 20px;
     display: flex;
     flex-direction: column;
     transition: left 0.3s ease-in-out;
-    z-index: 100;
+    z-index: 200;
 }
 
 .drawer.open {
@@ -90,12 +92,43 @@
     padding: 15px 0;
 }
 
+.drawer>ul>li {
+    border-bottom: 1px solid whitesmoke;
+}
+
+.drawer>ul>li>a:hover {
+    color: rgb(100, 200, 255);
+    text-decoration: underline;
+}
+
 .drawer a {
     color: white;
     text-decoration: none;
     font-size: 18px;
 }
 
+.drawer strong {
+    font-size: 16px;
+}
+
+/* Drawer Group Menu */
+.groupMenu {
+    padding-left: 15px;
+}
+
+.groupMenu li {
+    list-style: none;
+    margin: 0;
+    margin-left: 15px;
+    padding: 5px;
+}
+
+.groupMenu li>a:hover {
+    color: rgb(100, 200, 255);
+    text-decoration: underline;
+}
+
+/* Close Button */
 .closeButton {
     background: none;
     border: none;
@@ -112,7 +145,70 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 150;
+}
+
+/* Dropdown Menu */
+.dropdown {
+    position: relative;
+}
+
+.dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    width: 180px;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    pointer-events: none;
+    z-index: -100;
+    display: flex;
+    flex-direction: column;
+    gap: 0 !important;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown:hover .dropdownMenu,
+.dropdown a:hover .dropdownMenu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    z-index: 100;
+}
+
+.dropdownMenu li {
+    border-bottom: 1px solid #eee;
+    width: 100%;
+}
+
+.dropdownMenu li:last-child {
+    border-bottom: none;
+}
+
+.dropdownMenu li a {
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+    color: black;
+    display: block;
+    transition: background 0.3s;
+}
+
+.dropdownMenu li a:hover {
+    background: #f0f0f0;
 }
 
 /* Responsive: Ẩn nav trên mobile, hiển thị menu button */
