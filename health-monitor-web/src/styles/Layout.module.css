@@ -1,13 +1,60 @@
 .layout {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    background: #f8f9fa;
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
 }
 
 .mainContent {
-    flex: 1;
-    padding: 40px;
-    width: auto;
-    margin: auto;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.contentSection {
+    flex: 7;
+    margin: 0 10px 10px;
+}
+
+.sidebar {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 1165px) {
+    .contentSection {
+        flex: 7.5 !important;
+    }
+
+    .sidebar {
+        flex: 2.5 !important;
+    }
+}
+
+@media (max-width: 1000px) {
+    .contentSection {
+        flex: 6.75;
+    }
+
+    .sidebar {
+        flex: 3.25;
+    }
+}
+
+
+@media (max-width: 900px) {
+    .contentSection {
+        flex: 10;
+    }
+
+    .sidebar {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
 }
