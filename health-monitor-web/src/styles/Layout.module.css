@@ -16,6 +16,7 @@
 
 .contentSection {
     flex: 7;
+    margin: 0 10px 10px;
 }
 
 .sidebar {
