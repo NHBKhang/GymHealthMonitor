@@ -1,11 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Trang chủ</title>
+    <head>
+        <title>Trang chủ | Gym Health Monitor</title>
+        <link rel="icon" th:href="@{/images/logo.png}" />
+
+        <!-- Bootstrap -->
+    <th:block th:replace="base :: bootstrap"></th:block>
+
+    <!-- Import CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-    <h1>Spring MVC với Thymeleaf</h1>
-    <p th:text="${message}"></p>
+    <!-- Header -->
+    <div th:replace="base :: header"></div>
+
+    <!-- Nội dung chính -->
+    <main class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">🏋️ Thành viên</h5>
+                        <p class="card-text">Quản lý danh sách hội viên, gói tập.</p>
+                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">📅 Lịch tập</h5>
+                        <p class="card-text">Quản lý lịch tập, huấn luyện viên.</p>
+                        <a href="#" class="btn btn-success">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 Theo dõi sức khỏe</h5>
+                        <p class="card-text">Xem chỉ số BMI, cân nặng, tiến độ tập luyện.</p>
+                        <a href="#" class="btn btn-warning text-white">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">📈 Báo cáo doanh thu</h5>
+                        <p class="card-text">Xem báo cáo doanh thu và phân tích.</p>
+                        <a href="#" class="btn btn-info">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="base :: footer"></div>
 </body>
 </html>

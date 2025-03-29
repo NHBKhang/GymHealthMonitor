@@ -1,0 +1,66 @@
+/* Định dạng chung */
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Main chiếm hết phần còn lại của trang */
+main {
+    flex: 1;
+}
+
+/* Footer */
+.footer {
+    background-color: #343a40;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.footer h1 {
+    font-size: 18px;
+}
+
+.footer p {
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-body {
+    text-align: center;
+}
+
+.header-container {
+    margin: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    width: 100%
+}
+
+.text-white {
+    color: white;
+}
