@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Quản lý Thành viên | Gym Health Monitor</title>
+        <link rel="icon" th:href="@{/images/logo.png}" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <th:block th:replace="base :: bootstrap"></th:block>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div th:replace="base :: header"></div>
+
+    <main class="container mt-4">
+        <h2 class="text-center w-100 mb-3">📋 Danh sách Thành viên</h2>
+
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <div>
+                <a th:href="@{/users/add}" class="btn btn-success me-1">➕ Thêm</a>
+
+                <!-- Xóa nhiều thành viên -->
+                <button type="submit" id="deleteButton" class="btn btn-danger" 
+                        onclick="return confirm('Bạn có chắc chắn muốn xóa các thành viên đã chọn?');" disabled>
+                    🗑️ Xóa
+                </button>
+            </div>
+
+            <!-- Thanh tìm kiếm -->
+            <form th:action="@{/users}" method="get" class="mb-3 d-flex">
+                <input type="text" name="kw" th:value="${kw}" class="form-control me-2 w-auto" placeholder="🔍 Tìm kiếm...">
+                <button type="submit" class="btn btn-primary w-auto">Tìm kiếm</button>
+            </form>
+        </div>
+
+        <form th:action="@{/users/delete}" method="post">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                            <th>Tên tài khoản</th>
+                            <th>Họ</th>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td>
+                                <input type="checkbox" name="selectedUsers" value="${user.id}">
+                            </td>
+                            <td>
+                                <a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.username}"></a>
+                            </td>
+                            <td th:text="${user.firstName}"></td>
+                            <td th:text="${user.lastName}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.phone}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(users)}">
+                            <td colspan="6">Không có thành viên nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" th:if="${totalPages > 1}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/users(page=1, keyword=${keyword})}">⏮️ Đầu</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/users(page=${currentPage - 1}, keyword=${keyword})}">⬅️ Trước</a>
+                </li>
+
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" 
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/users(page=${i}, keyword=${keyword})}" th:text="${i}"></a>
+                </li>
+
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/users(page=${currentPage + 1}, keyword=${keyword})}">Tiếp ➡️</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/users(page=${totalPages}, keyword=${keyword})}">Cuối ⏭️</a>
+                </li>
+            </ul>
+        </nav>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script>
+        // Toggle select/unselect all checkboxes
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById("selectAll");
+            const checkboxes = document.querySelectorAll("input[name='selectedUsers']");
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            checkSelectedUsers();
+        }
+
+        // Enable or disable delete button based on selected checkboxes
+        function checkSelectedUsers() {
+            const selectedUsers = document.querySelectorAll("input[name='selectedUsers']:checked");
+            const deleteButton = document.getElementById("deleteButton");
+
+            // Enable delete button if at least one checkbox is selected
+            if (selectedUsers.length > 0) {
+                deleteButton.disabled = false;
+            } else {
+                deleteButton.disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>

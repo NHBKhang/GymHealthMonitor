@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${user.id != null} ? 'Chỉnh Sửa Thành Viên | Gym Health Monitor' : ('Thêm Thành Viên | Gym Health Monitor')"></title>
+        <link rel="icon" th:href="@{/images/logo.png}" />
+    <th:block th:replace="base :: bootstrap"></th:block>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div th:replace="base :: header"></div>
+
+    <main class="container mt-4">
+        <h2 class="text-center mb-4">
+            <span th:text="${user.id != null} ? '✏️ Chỉnh Sửa Thành Viên' : '➕ Thêm Thành Viên'"></span>
+        </h2>
+
+        <form th:action="@{/users/save}" method="post" th:object="${user}" class="p-4 border rounded shadow-sm bg-light">
+            <input type="hidden" th:if="${user.id != null}" th:field="*{id}">
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="username" class="form-label">Tên tài khoản</label>
+                    <input type="text" id="username" th:field="*{username}" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="password" class="form-label">Mật khẩu</label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control" 
+                           placeholder="*****" required>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="firstName" class="form-label">Họ</label>
+                    <input type="text" id="firstName" th:field="*{firstName}" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="lastName" class="form-label">Tên</label>
+                    <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" th:field="*{email}" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label">Số điện thoại</label>
+                <input type="text" id="phone" th:field="*{phone}" class="form-control">
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="role" class="form-label">Vai trò</label>
+                    <select id="role" th:field="*{role}" class="form-select">
+                        <option value="ADMIN">Quản trị viên</option>
+                        <option value="MEMBER">Thành viên</option>
+                        <option value="TRAINER">Huấn luyện viên</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Trạng thái</label>
+                    <select id="status" th:field="*{status}" class="form-select">
+                        <option value="ACTIVE">Hoạt động</option>
+                        <option value="INACTIVE">Không hoạt động</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success px-4 me-1">
+                    <span th:text="${user.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
+                </button>
+                <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="DELETE"/>
+                    <button type="submit" class="btn btn-danger px-4 me-1" onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?');">🗑️ Xóa</button>
+                </form>
+                <a th:href="@{/users}" class="btn btn-secondary px-4">❌ Hủy</a>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+</body>
+</html>
