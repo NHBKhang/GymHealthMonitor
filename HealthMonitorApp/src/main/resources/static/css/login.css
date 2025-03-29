@@ -1,0 +1,29 @@
+body {
+    background: linear-gradient(135deg, #3e5db1, #5a347e);
+}
+
+.login-container {
+    width: 100%;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+h3 {
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+}
+
+.input-group-text {
+    background: #eee;
+}
+
+.btn-outline-secondary {
+    border-color: #ccc;
+}
+
+.btn-outline-secondary:hover {
+    background: #ddd;
+}
