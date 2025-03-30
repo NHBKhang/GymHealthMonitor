@@ -54,12 +54,14 @@ main {
     text-align: center;
 }
 
-.header-container {
-    margin: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-content: center;
-    width: 100%
+.container-fluid>div.d-flex {
+    width: auto;
+}
+
+@media (max-width: 991.98px) {
+    .container-fluid>div.d-flex {
+        width: 100%
+    }
 }
 
 .text-white {

@@ -6,6 +6,7 @@
         <!-- Bootstrap -->
     <th:block th:fragment="bootstrap">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     </th:block>
 
@@ -17,70 +18,71 @@
 <body>
     <header th:fragment="header">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="header-container">
-                <a class="navbar-brand" th:href="@{/}">
-                    <img th:src="@{/images/logo.png}" width="30" height="30" alt="logo" class="me-2"/>
-                    Gym Management
-                </a>
-                <div>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+                        <img th:src="@{/images/logo.png}" width="35" height="35" alt="logo" class="me-2"/>
+                        <span>Gym Management</span>
+                    </a>
+                    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/}">🏠 Trang chủ</a>
-                            </li>
+                </div>
 
-                            <!-- Dropdown Quản lý Thành viên -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="memberDropdown" role="button" data-bs-toggle="dropdown">
-                                    🏋️ Thành viên
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" th:href="@{/users}">Danh sách Thành viên</a></li>
-                                    <li><a class="dropdown-item" th:href="@{/progress}">Tiến độ tập luyện</a></li>
-                                </ul>
-                            </li>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/}">🏠 Trang chủ</a>
+                        </li>
 
-                            <!-- Dropdown Gói tập -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="packageDropdown" role="button" data-bs-toggle="dropdown">
-                                    🎟️ Gói tập
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" th:href="@{/packages}">Danh sách Gói tập</a></li>
-                                    <li><a class="dropdown-item" th:href="@{/subscriptions}">Đăng ký gói tập</a></li>
-                                </ul>
-                            </li>
+                        <!-- Dropdown Quản lý Thành viên -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="memberDropdown" role="button" data-bs-toggle="dropdown">
+                                🏋️ Thành viên
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/users}">Danh sách Thành viên</a></li>
+                                <li><a class="dropdown-item" th:href="@{/progress}">Tiến độ tập luyện</a></li>
+                            </ul>
+                        </li>
 
-                            <!-- Dropdown Lịch tập -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="scheduleDropdown" role="button" data-bs-toggle="dropdown">
-                                    📅 Lịch tập
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" th:href="@{/schedule}">Xem lịch tập</a></li>
-                                </ul>
-                            </li>
+                        <!-- Dropdown Gói tập -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="packageDropdown" role="button" data-bs-toggle="dropdown">
+                                🎟️ Gói tập
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/packages}">Danh sách Gói tập</a></li>
+                                <li><a class="dropdown-item" th:href="@{/subscriptions}">Đăng ký gói tập</a></li>
+                            </ul>
+                        </li>
 
-                            <!-- Dropdown Báo cáo & Phản hồi -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="reportDropdown" role="button" data-bs-toggle="dropdown">
-                                    📊 Báo cáo
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" th:href="@{/reports}">Xem Báo cáo</a></li>
-                                    <li><a class="dropdown-item" th:href="@{/feedback}">Phản hồi khách hàng</a></li>
-                                    <li><a class="dropdown-item" th:href="@{/notifications}">Thông báo</a></li>
-                                </ul>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/settings}">⚙️ Cài đặt</a>
-                            </li>
-                        </ul>
-                    </div>
+                        <!-- Dropdown Lịch tập -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="scheduleDropdown" role="button" data-bs-toggle="dropdown">
+                                📅 Lịch tập
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/schedule}">Xem lịch tập</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Dropdown Báo cáo & Phản hồi -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="reportDropdown" role="button" data-bs-toggle="dropdown">
+                                📊 Báo cáo
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/reports}">Xem Báo cáo</a></li>
+                                <li><a class="dropdown-item" th:href="@{/feedback}">Phản hồi khách hàng</a></li>
+                                <li><a class="dropdown-item" th:href="@{/notifications}">Thông báo</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/settings}">⚙️ Cài đặt</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>

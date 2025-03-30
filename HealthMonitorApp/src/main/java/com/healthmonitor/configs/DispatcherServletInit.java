@@ -5,33 +5,35 @@ import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherServletInitializer {
+
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {
+        return new Class[]{
             ThymeleafConfig.class,
-            HibernateConfigs.class
+            HibernateConfigs.class,
+            CloudinaryConfigs.class
         };
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {
+        return new Class[]{
             WebAppContextConfigs.class
         };
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[] {"/"};
+        return new String[]{"/"};
     }
-    
+
     @Override
-     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
-          String location = "/tmp";
-         long maxFileSize = 5242880; // 5MB
-         long maxRequestSize = 20971520; // 20MB
-         int fileSizeThreshold = 0;
-         
-         registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
-     }
+    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+        String location = "D:/tmp";
+        long maxFileSize = 5242880; // 5MB
+        long maxRequestSize = 20971520; // 20MB
+        int fileSizeThreshold = 0;
+
+        registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
+    }
 }
