@@ -22,18 +22,18 @@ public class Member implements Serializable {
     private Integer id;
 
     @Basic(optional = false)
-    @Column(name = "height")
+    @Column(name = "height", nullable = true)
     private Float height;
 
     @Basic(optional = false)
-    @Column(name = "weight")
+    @Column(name = "weight", nullable = true)
     private Float weight;
 
     @Basic(optional = false)
-    @Column(name = "fitness_goal")
+    @Column(name = "fitness_goal", nullable = true)
     private String fitnessGoal;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
     private User user;
 
@@ -42,6 +42,10 @@ public class Member implements Serializable {
 
     public Member(Integer id) {
         this.id = id;
+    }
+
+    public Member(User user) {
+        this.user = user;
     }
 
     public Member(Integer id, Float height, Float weight, String fitnessGoal) {
@@ -89,5 +93,8 @@ public class Member implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+        if (user != null && user.getMember() == null) {
+            user.setMember(this);
+        }
     }
 }

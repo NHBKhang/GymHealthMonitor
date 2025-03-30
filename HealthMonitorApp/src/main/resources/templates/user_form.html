@@ -19,13 +19,16 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="username" class="form-label">Tên tài khoản</label>
+                    <label for="username" class="form-label">Tên tài khoản <span class="text-danger">*</span></label>
                     <input type="text" id="username" th:field="*{username}" class="form-control" required>
+                    <p class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
                 </div>
+
                 <div class="col-md-6">
-                    <label for="password" class="form-label">Mật khẩu</label>
-                    <input type="password" id="password" th:field="*{password}" class="form-control" 
-                           placeholder="*****" required>
+                    <label for="password" class="form-label">Mật khẩu <span class="text-danger" th:if="${user.id == null}">*</span></label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control"
+                           placeholder="*****" th:attr="required=${user.id == null ? 'required' : null}">
+                    <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
                 </div>
             </div>
 
@@ -41,13 +44,15 @@
             </div>
 
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                 <input type="email" id="email" th:field="*{email}" class="form-control" required>
+                <p class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
             </div>
 
             <div class="mb-3">
                 <label for="phone" class="form-label">Số điện thoại</label>
                 <input type="text" id="phone" th:field="*{phone}" class="form-control">
+                <p class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
             </div>
 
             <div class="row mb-3">
@@ -68,6 +73,40 @@
                 </div>
             </div>
 
+            <!-- Các trường chỉ hiển thị khi vai trò là MEMBER -->
+            <div id="memberContainer">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="height" class="form-label">Chiều cao</label>
+                        <input type="number" step="1" min="1" max="300" id="height" 
+                               th:field="*{member.height}" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="weight" class="form-label">Cân nặng</label>
+                        <input type="number" step="1" min="1" max="1000" id="weight" 
+                               th:field="*{member.weight}" class="form-control">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fitnessGoal" class="form-label">Mục tiêu tập luyện</label>
+                    <textarea id="fitnessGoal" th:field="*{member.fitnessGoal}" class="form-control" rows="3"></textarea>
+                </div>
+
+                <input type="hidden" id="memberUser" th:if="${user.id != null}" th:field="*{member.user.id}" th:value="${user.id}">
+            </div>
+
+            <!-- Các trường chỉ hiển thị khi vai trò là TRAINER -->
+            <div id="trainerContainer">
+                <div class="mb-3">
+                    <label for="major" class="form-label">Chuyên môn</label>
+                    <input id="major" th:field="*{trainer.major}" class="form-control" />
+                </div>
+
+                <input type="hidden" id="trainerUser" th:if="${user.id != null}" th:field="*{trainer.user.id}" th:value="${user.id}">
+            </div>
+
             <div class="text-center">
                 <button type="submit" class="btn btn-success px-4 me-1">
                     <span th:text="${user.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
@@ -82,5 +121,26 @@
     </main>
 
     <div th:replace="base :: footer"></div>
+
+    <script>
+        function toggleFields() {
+            const role = document.getElementById("role").value;
+            const memberContainer = document.getElementById("memberContainer");
+            const trainerContainer = document.getElementById("trainerContainer");
+            if (role === "MEMBER") {
+                memberContainer.style.display = "block";
+                trainerContainer.style.display = "none";
+            } else if (role === "TRAINER") {
+                trainerContainer.style.display = "block";
+                memberContainer.style.display = "none";
+            } else {
+                memberContainer.style.display = "none";
+                trainerContainer.style.display = "none";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", toggleFields);
+        document.getElementById("role").addEventListener("change", toggleFields);
+    </script>
 </body>
 </html>

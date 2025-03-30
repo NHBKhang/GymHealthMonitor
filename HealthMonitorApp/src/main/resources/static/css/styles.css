@@ -31,12 +31,13 @@ main {
 }
 
 .footer h1 {
-    font-size: 18px;
+    font-size: 16px;
+    margin-bottom: 0;
 }
 
 .footer p {
     margin-bottom: 0;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /* Card Styles */
@@ -64,3 +65,19 @@ main {
 .text-white {
     color: white;
 }
+
+.pagination .page-item.disabled .page-link {
+    pointer-events: none;
+    color: #999;
+    background-color: #f1f1f1;
+    border-color: #ddd;
+    cursor: not-allowed;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+

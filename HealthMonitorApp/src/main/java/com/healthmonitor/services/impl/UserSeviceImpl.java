@@ -1,5 +1,7 @@
 package com.healthmonitor.services.impl;
 
+import com.healthmonitor.pojo.Member;
+import com.healthmonitor.pojo.Trainer;
 import com.healthmonitor.pojo.User;
 import com.healthmonitor.repositories.UserRepository;
 import com.healthmonitor.services.UserService;
@@ -13,7 +15,7 @@ public class UserSeviceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-    
+
     @Override
     public List<User> getUsers(Map<String, String> params) {
         return this.userRepository.getUsers(params);
@@ -25,6 +27,16 @@ public class UserSeviceImpl implements UserService {
     }
 
     @Override
+    public Member getMemberByUserId(int id) {
+        return this.userRepository.getMemberByUserId(id);
+    }
+
+    @Override
+    public Trainer getTrainerByUserId(int id) {
+        return this.userRepository.getTrainerByUserId(id);
+    }
+
+    @Override
     public User createOrUpdateUser(User user) {
         return this.userRepository.createOrUpdateUser(user);
     }
@@ -32,5 +44,10 @@ public class UserSeviceImpl implements UserService {
     @Override
     public void deleteUser(int id) {
         this.userRepository.deleteUser(id);
+    }
+
+    @Override
+    public long countUsers(Map<String, String> params) {
+        return this.userRepository.countUsers(params);
     }
 }

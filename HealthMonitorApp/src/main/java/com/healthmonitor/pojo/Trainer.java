@@ -19,7 +19,7 @@ public class Trainer implements Serializable {
     private Integer id;
 
     @Basic(optional = false)
-    @Column(name = "major")
+    @Column(name = "major", nullable = false)
     private String major;
 
     @OneToOne
@@ -31,6 +31,10 @@ public class Trainer implements Serializable {
 
     public Trainer(Integer id) {
         this.id = id;
+    }
+
+    public Trainer(User user) {
+        this.user = user;
     }
 
     public Trainer(Integer id, String major) {
