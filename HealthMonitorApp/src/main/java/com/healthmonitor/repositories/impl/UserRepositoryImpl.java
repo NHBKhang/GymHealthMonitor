@@ -122,6 +122,10 @@ public class UserRepositoryImpl implements UserRepository {
             User existingUser = s.get(User.class, user.getId());
             BeanUtils.copyProperties(user, existingUser, "id", "member", "trainer");
 
+            if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+                user.setPassword(existingUser.getPassword());
+            }
+
             if (user.getRole() == Role.MEMBER) {
                 if (existingUser.getMember() == null) {
                     existingUser.setMember(new Member(existingUser));
@@ -156,10 +160,6 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    public static final int getPageSize() {
-        return UserRepositoryImpl.PAGE_SIZE;
-    }
-
     @Override
     public long countUsers(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
@@ -189,5 +189,9 @@ public class UserRepositoryImpl implements UserRepository {
         }
 
         return s.createQuery(q).getSingleResult();
+    }
+
+    public static final int getPageSize() {
+        return UserRepositoryImpl.PAGE_SIZE;
     }
 }

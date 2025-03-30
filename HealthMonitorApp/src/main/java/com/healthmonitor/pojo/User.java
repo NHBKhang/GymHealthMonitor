@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "users")
@@ -61,7 +62,7 @@ public class User implements Serializable {
     private String lastName;
 
     @Basic(optional = false)
-    @Column(name = "email")
+    @Column(name = "email", nullable = true)
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ")
     private String email;
@@ -73,6 +74,9 @@ public class User implements Serializable {
 
     @Column(name = "avatar", nullable = true)
     private String avatar;
+
+    @Transient
+    private MultipartFile file;
 
     @Basic(optional = false)
     @Column(name = "status")
@@ -218,5 +222,13 @@ public class User implements Serializable {
 
     public void setTrainer(Trainer trainer) {
         this.trainer = trainer;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 }
