@@ -1,6 +1,9 @@
 package com.healthmonitor.pojo;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -32,14 +35,16 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
-    private Integer id;
+    public Integer id;
 
     @Basic(optional = false)
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
+    @NotBlank(message = "Tên tài khoản không được để trống")
     private String username;
 
     @Basic(optional = false)
     @Column(name = "password")
+    @NotBlank(message = "Mật khẩu không được để trống")
     private String password;
 
     @Basic(optional = false)
@@ -57,13 +62,16 @@ public class User implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "email")
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không hợp lệ")
     private String email;
 
     @Basic(optional = false)
-    @Column(name = "phone")
+    @Column(name = "phone", nullable = true)
+    @Pattern(regexp = "\\d{10,11}", message = "Số điện thoại phải có 10-11 chữ số")
     private String phone;
 
-    @Column(name = "avatar")
+    @Column(name = "avatar", nullable = true)
     private String avatar;
 
     @Basic(optional = false)
@@ -75,10 +83,10 @@ public class User implements Serializable {
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Member member;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Trainer trainer;
 
     public User() {
@@ -200,7 +208,7 @@ public class User implements Serializable {
         return member;
     }
 
-    public void setMembe(Member member) {
+    public void setMember(Member member) {
         this.member = member;
     }
 
