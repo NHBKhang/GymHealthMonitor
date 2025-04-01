@@ -38,7 +38,7 @@ public class Feedback implements Serializable {
     private String comment;
 
     @Basic(optional = false)
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 

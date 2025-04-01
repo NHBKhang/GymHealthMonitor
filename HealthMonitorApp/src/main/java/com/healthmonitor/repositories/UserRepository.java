@@ -21,4 +21,6 @@ public interface UserRepository {
     void deleteUser(int id);
 
     long countUsers(Map<String, String> params);
+
+    User getUserByUsername(String username);
 }

@@ -5,6 +5,7 @@ import com.healthmonitor.pojo.Trainer;
 import com.healthmonitor.pojo.User;
 import com.healthmonitor.pojo.User.Role;
 import com.healthmonitor.repositories.UserRepository;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -83,13 +84,17 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Member getMemberByUserId(int id) {
         Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Member.class, id);
+        Query q = s.createQuery("FROM Member t WHERE t.user.id = :id", Member.class);
+        q.setParameter("id", id);
+        return (Member) q.getSingleResult();
     }
 
     @Override
     public Trainer getTrainerByUserId(int id) {
         Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Trainer.class, id);
+        Query q = s.createQuery("FROM Trainer t WHERE t.user.id = :id", Trainer.class);
+        q.setParameter("id", id);
+        return (Trainer) q.getSingleResult();
     }
 
     @Override
@@ -193,5 +198,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     public static final int getPageSize() {
         return UserRepositoryImpl.PAGE_SIZE;
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        try {
+            Session s = this.factory.getObject().getCurrentSession();
+            Query q = s.createNamedQuery("User.findByUsername", User.class);
+            q.setParameter("username", username);
+            return (User) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

@@ -33,13 +33,11 @@ public class Subscription implements Serializable {
     @ManyToOne(optional = false)
     private Package gymPackage ;
 
-    @Basic(optional = false)
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
-    @Basic(optional = false)
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
@@ -48,7 +46,7 @@ public class Subscription implements Serializable {
     private String status;
 
     @Basic(optional = false)
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 

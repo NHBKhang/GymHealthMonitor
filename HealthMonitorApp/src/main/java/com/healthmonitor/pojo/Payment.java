@@ -36,15 +36,18 @@ public class Payment implements Serializable {
     @Column(name = "method")
     private String method;
 
-    @Column(name = "receipt_image")
+    @Column(name = "receipt_image", nullable = true)
     private String receiptImage;
 
     @Basic(optional = false)
     @Column(name = "status")
     private String status;
 
+    @Column(name = "description", nullable = true)
+    private String description;
+
     @Basic(optional = false)
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
@@ -56,13 +59,14 @@ public class Payment implements Serializable {
     }
 
     public Payment(Integer id, Subscription subscription, Double amount,
-                   String method, String status, Date createdAt) {
+                   String method, String status, Date createdAt, String description) {
         this.id = id;
         this.subscription = subscription;
         this.amount = amount;
         this.method = method;
         this.status = status;
         this.createdAt = createdAt;
+        this.description = description;
     }
 
     // Getters and setters
@@ -112,6 +116,14 @@ public class Payment implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreatedAt() {

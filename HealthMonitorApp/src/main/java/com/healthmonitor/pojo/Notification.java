@@ -7,20 +7,24 @@ import java.util.Date;
 @Entity
 @Table(name = "notifications")
 @NamedQueries({
-        @NamedQuery(name = "Notification.findAll", query = "SELECT n FROM Notification n"),
-        @NamedQuery(name = "Notification.findById", query = "SELECT n FROM Notification n WHERE n.id = :id"),
-        @NamedQuery(name = "Notification.findByUser",
-                query = "SELECT n FROM Notification n WHERE n.user.id = :userId"),
-        @NamedQuery(name = "Notification.findByType",
-                query = "SELECT n FROM Notification n WHERE n.type = :type"),
-        @NamedQuery(name = "Notification.findByStatus",
-                query = "SELECT n FROM Notification n WHERE n.status = :status"),
-        @NamedQuery(name = "Notification.findUnreadByUser",
-                query = "SELECT n FROM Notification n WHERE n.user.id = :userId AND n.status = 'unread'"),
-        @NamedQuery(name = "Notification.findRecentNotifications",
-                query = "SELECT n FROM Notification n WHERE n.createdAt >= :date ORDER BY n.createdAt DESC")
+    @NamedQuery(name = "Notification.findAll", query = "SELECT n FROM Notification n"),
+    @NamedQuery(name = "Notification.findById", query = "SELECT n FROM Notification n WHERE n.id = :id"),
+    @NamedQuery(name = "Notification.findByUser",
+            query = "SELECT n FROM Notification n WHERE n.user.id = :userId"),
+    @NamedQuery(name = "Notification.findByType",
+            query = "SELECT n FROM Notification n WHERE n.type = :type"),
+    @NamedQuery(name = "Notification.findByStatus",
+            query = "SELECT n FROM Notification n WHERE n.status = :status"),
+    @NamedQuery(name = "Notification.findUnreadByUser",
+            query = "SELECT n FROM Notification n WHERE n.user.id = :userId AND n.status = 'UNREAD'"),
+    @NamedQuery(name = "Notification.findRecentNotifications",
+            query = "SELECT n FROM Notification n WHERE n.createdAt >= :date ORDER BY n.createdAt DESC")
 })
 public class Notification implements Serializable {
+
+    public enum NotificationStatus {
+        UNREAD, READ, ARCHIVED
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -38,21 +42,21 @@ public class Notification implements Serializable {
     @Column(name = "message")
     private String message;
 
-    @Basic(optional = false)
-    @Column(name = "type")
+    @Column(name = "type", nullable = true)
     private String type;
 
     @Basic(optional = false)
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private NotificationStatus status;
 
     @Basic(optional = false)
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     public Notification() {
-        this.status = "unread";
+        this.status = NotificationStatus.UNREAD;
     }
 
     public Notification(Integer id) {
@@ -65,7 +69,7 @@ public class Notification implements Serializable {
         this.message = message;
         this.type = type;
         this.createdAt = createdAt;
-        this.status = "unread";
+        this.status = NotificationStatus.UNREAD;
     }
 
     public Integer getId() {
@@ -100,11 +104,15 @@ public class Notification implements Serializable {
         this.type = type;
     }
 
-    public String getStatus() {
+    public NotificationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public String getStatusName() {
+        return status.name();
+    }
+
+    public void setStatus(NotificationStatus status) {
         this.status = status;
     }
 

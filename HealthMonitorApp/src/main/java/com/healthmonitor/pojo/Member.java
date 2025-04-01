@@ -21,15 +21,12 @@ public class Member implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Basic(optional = false)
     @Column(name = "height", nullable = true)
     private Float height;
 
-    @Basic(optional = false)
     @Column(name = "weight", nullable = true)
     private Float weight;
 
-    @Basic(optional = false)
     @Column(name = "fitness_goal", nullable = true)
     private String fitnessGoal;
 

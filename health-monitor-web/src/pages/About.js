@@ -72,14 +72,6 @@ const About = () => {
                         <li>Lớp học nhóm: Yoga, Zumba, HIIT</li>
                     </ul>
                 </section>
-
-                {/* Liên hệ */}
-                <section className="text-center">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-start">Liên Hệ</h2>
-                    <p className="text-gray-600 text-start">📍 Địa chỉ: 123 Nguyễn Văn Linh, Quận 7, TP.HCM</p>
-                    <p className="text-gray-600 text-start">📞 Hotline: 0909-123-456</p>
-                    <p className="text-gray-600 text-start">📧 Email: support@gymhealth.vn</p>
-                </section>
             </div>
         </>
     );

@@ -1,5 +1,7 @@
 package com.healthmonitor.configs;
 
+import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+import jakarta.annotation.PreDestroy;
 import java.util.Properties;
 import javax.sql.DataSource;
 import static org.hibernate.cfg.JdbcSettings.DIALECT;
@@ -16,6 +18,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 @Configuration
 @PropertySource("classpath:database.properties")
 public class HibernateConfigs {
+
     @Autowired
     private Environment env;
 
@@ -53,5 +56,11 @@ public class HibernateConfigs {
         HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(getSessionFactory().getObject());
         return transactionManager;
+    }
+
+    @PreDestroy
+    public void closeSessionFactory() {
+        AbandonedConnectionCleanupThread.checkedShutdown();
+        System.out.println("AbandonedConnectionCleanupThread has been shutdown.");
     }
 }
