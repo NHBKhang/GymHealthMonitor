@@ -18,8 +18,7 @@ public class Trainer implements Serializable {
     @Column(name = "id") 
     private Integer id;
 
-    @Basic(optional = false)
-    @Column(name = "major", nullable = false)
+    @Column(name = "major", nullable = true)
     private String major;
 
     @OneToOne

@@ -39,20 +39,17 @@ public class Package implements Serializable {
     @Column(name = "price")
     private Double price;
 
-    @Basic(optional = false)
-    @Column(name = "description")
+    @Column(name = "description", nullable = true)
     private String description;
 
-    @Basic(optional = false)
-    @Column(name = "pt_sessions")
+    @Column(name = "pt_sessions", nullable = true)
     private Integer ptSessions;
 
     @Basic(optional = false)
     @Column(name = "status")
     private String status;
 
-    @Basic(optional = false)
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private String createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gymPackage")

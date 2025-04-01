@@ -42,13 +42,11 @@ public class Schedule implements Serializable {
     @ManyToOne
     private User pt;
 
-    @Basic(optional = false)
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
 
-    @Basic(optional = false)
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endTime;
 
@@ -61,7 +59,7 @@ public class Schedule implements Serializable {
     private String status;
 
     @Basic(optional = false)
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 

@@ -41,19 +41,16 @@ public class Progress implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @Basic(optional = false)
-    @Column(name = "weight")
+    @Column(name = "weight", nullable = true)
     private Float weight;
 
-    @Basic(optional = false)
-    @Column(name = "body_fat")
+    @Column(name = "body_fat", nullable = true)
     private Float bodyFat;
 
-    @Basic(optional = false)
-    @Column(name = "muscle_mass")
+    @Column(name = "muscle_mass", nullable = true)
     private Float muscleMass;
 
-    @Column(name = "notes")
+    @Column(name = "notes", nullable = true)
     private String notes;
 
     public Progress() {

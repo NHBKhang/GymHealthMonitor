@@ -1,11 +1,11 @@
 package com.healthmonitor.pojo;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import org.springframework.web.multipart.MultipartFile;
 
 @Entity
@@ -28,6 +28,10 @@ public class User implements Serializable {
 
     public enum Role {
         ADMIN, MEMBER, TRAINER
+    }
+
+    public enum UserStatus {
+        ACTIVE, INACTIVE
     }
 
     private static final long serialVersionUID = 1L;
@@ -53,21 +57,18 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Basic(optional = false)
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = true)
     private String firstName;
 
-    @Basic(optional = false)
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = true)
     private String lastName;
 
     @Basic(optional = false)
-    @Column(name = "email", nullable = true)
+    @Column(name = "email", nullable = false)
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ")
     private String email;
 
-    @Basic(optional = false)
     @Column(name = "phone", nullable = true)
     @Pattern(regexp = "\\d{10,11}", message = "Số điện thoại phải có 10-11 chữ số")
     private String phone;
@@ -80,7 +81,8 @@ public class User implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @Basic(optional = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -100,9 +102,21 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    public User(String username, String password, String email, Role role, 
+            String firstName, String lastName, String phone) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.status = UserStatus.ACTIVE;
+    }
+
     public User(Integer id, String username, String password, Role role,
             String firstName, String lastName, String email, String phone,
-            String avatar, String status) {
+            String avatar, UserStatus status) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -146,6 +160,10 @@ public class User implements Serializable {
 
     public Role getRole() {
         return role;
+    }
+
+    public String getRoleName() {
+        return this.role.name();
     }
 
     public void setRole(Role role) {
@@ -192,11 +210,11 @@ public class User implements Serializable {
         this.avatar = avatar;
     }
 
-    public String getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
     }
 
@@ -230,5 +248,26 @@ public class User implements Serializable {
 
     public void setFile(MultipartFile file) {
         this.file = file;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof User)) {
+            return false;
+        }
+        User other = (User) object;
+        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+    }
+
+    @Override
+    public String toString() {
+        return "com.dht.pojo.User[ id=" + id + " ]";
     }
 }
