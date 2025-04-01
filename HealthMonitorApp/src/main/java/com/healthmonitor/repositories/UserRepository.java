@@ -23,4 +23,6 @@ public interface UserRepository {
     long countUsers(Map<String, String> params);
 
     User getUserByUsername(String username);
+    
+    boolean authUser(String username, String password);
 }
