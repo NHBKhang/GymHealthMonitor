@@ -27,9 +27,6 @@ public class DataInitializer {
             userService.createOrUpdateUser(admin);
             userService.createOrUpdateUser(trainer);
             userService.createOrUpdateUser(member);
-            System.out.println("✅ Tài khoản Admin đã được tạo!");
-        } else {
-            System.out.println("🔹 Admin đã tồn tại.");
         }
     }
 }

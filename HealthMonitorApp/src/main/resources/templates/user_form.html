@@ -8,9 +8,10 @@
 </head>
 <body>
     <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
 
-    <main class="container mt-4">
-        <h2 class="text-center mb-4">
+    <main class="container mt-3">
+        <h2 class="text-center mb-5">
             <span th:text="${user.id != null} ? '✏️ Chỉnh Sửa Thành Viên' : '➕ Thêm Thành Viên'"></span>
         </h2>
 
@@ -73,7 +74,7 @@
                 <div class="col-md-6 mb-3">
                     <label for="role" class="form-label">Vai trò</label>
                     <select id="role" th:field="*{role}" class="form-select">
-                        <option value="ADMIN">Quản trị viên</option>
+                        <option value="ADMIN" selected>Quản trị viên</option>
                         <option value="MEMBER">Thành viên</option>
                         <option value="TRAINER">Huấn luyện viên</option>
                     </select>
@@ -81,12 +82,8 @@
                 <div class="col-md-6 mb-3">
                     <label for="status" class="form-label">Trạng thái</label>
                     <select id="status" th:field="*{status}" class="form-select">
-                        <option value="ACTIVE">
-                        <i class="fas fa-check-circle text-success"></i> Hoạt động
-                        </option>
-                        <option value="INACTIVE">
-                        <i class="fas fa-times-circle text-danger"></i> Không hoạt động
-                        </option>
+                        <option value="ACTIVE" selected>Hoạt động</option>
+                        <option value="INACTIVE">Không hoạt động</option>
                     </select>
                 </div>
             </div>

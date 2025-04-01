@@ -11,6 +11,7 @@
 </head>
 <body>
     <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
 
     <main class="container mt-4">
         <h2 class="text-center w-100 mb-3">📋 Danh sách Thành viên</h2>
@@ -49,7 +50,7 @@
                     <tbody>
                         <tr th:each="user : ${users}">
                             <td>
-                                <input type="checkbox" name="selectedUsers" value="${user.id}">
+                                <input type="checkbox" name="selectedUsers" th:value="${user.id}">
                             </td>
                             <td>
                                 <a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.username}"></a>

@@ -1,58 +1,61 @@
-//package com.healthmonitor.filters;
-//
-//import com.healthmonitor.components.JwtService;
-//import com.healthmonitor.pojo.User;
-//import com.healthmonitor.services.UserService;
-//import jakarta.servlet.FilterChain;
-//import jakarta.servlet.ServletException;
-//import jakarta.servlet.ServletRequest;
-//import jakarta.servlet.ServletResponse;
-//import jakarta.servlet.http.HttpServletRequest;
-//import java.io.IOException;
-//import java.util.HashSet;
-//import java.util.Set;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.authority.SimpleGrantedAuthority;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-//import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-//
-//public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
-//
-//    private final static String TOKEN_HEADER = "authorization";
-//    @Autowired
-//    private JwtService jwtService;
-//    @Autowired
-//    private UserService userService;
-//
-//    @Override
-//    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-//            throws IOException, ServletException {
-//        HttpServletRequest httpRequest = (HttpServletRequest) request;
-//        String authToken = httpRequest.getHeader(TOKEN_HEADER);
-//        if (jwtService.validateTokenLogin(authToken)) {
-//            String username = jwtService.getUsernameFromToken(authToken);
-//            User user = userService.getUserByUsername(username);
-//            if (user != null) {
-//                boolean enabled = true;
-//                boolean accountNonExpired = true;
-//                boolean credentialsNonExpired = true;
-//                boolean accountNonLocked = true;
-//
-//                Set<GrantedAuthority> authorities = new HashSet<>();
-//                authorities.add(new SimpleGrantedAuthority(user.getRoleName()));
-//
-//                UserDetails userDetail = new org.springframework.security.core.userdetails.User(username, user.getPassword(), enabled, accountNonExpired,
-//                        credentialsNonExpired, accountNonLocked, authorities);
-//                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail,
-//                        null, userDetail.getAuthorities());
-//                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-//                SecurityContextHolder.getContext().setAuthentication(authentication);
-//            }
-//        }
-//        chain.doFilter(request, response);
-//    }
-//}
+package com.healthmonitor.filters;
+
+import com.healthmonitor.components.JwtService;
+import com.healthmonitor.services.UserService;
+import java.io.IOException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+
+    private final static String TOKEN_HEADER = "Authorization";
+    private final JwtService jwtService;
+    private final UserService userService;
+
+    public JwtAuthenticationTokenFilter(JwtService jwtService, UserService userService) {
+        this.jwtService = jwtService;
+        this.userService = userService;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
+
+        final String authHeader = request.getHeader(TOKEN_HEADER);
+        final String jwtToken;
+        final String username;
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        jwtToken = authHeader.substring(7);
+        try {
+            username = jwtService.getUsernameFromToken(jwtToken);
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
+            return;
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userService.loadUserByUsername(username);
+
+            if (jwtService.validateTokenLogin(jwtToken)) {
+                UsernamePasswordAuthenticationToken authToken
+                        = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+
+        chain.doFilter(request, response);
+    }
+}
