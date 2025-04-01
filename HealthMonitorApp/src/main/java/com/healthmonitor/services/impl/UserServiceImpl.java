@@ -8,6 +8,9 @@ import com.healthmonitor.pojo.User;
 import com.healthmonitor.repositories.UserRepository;
 import com.healthmonitor.services.UserService;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -106,5 +109,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean authUser(String username, String password) {
         return this.userRepository.authUser(username, password);
+    }
+    
+    @Override
+    public Map<String, Object> getUserStats(LocalDate fromDate, LocalDate toDate) {
+        List<Object[]> results = this.userRepository.getUserStats(fromDate, toDate);
+
+        Map<String, Object> data = new HashMap<>();
+        List<String> labels = new ArrayList<>();
+        List<Long> values = new ArrayList<>();
+
+        for (Object[] row : results) {
+            labels.add(row[0].toString());
+            values.add((Long) row[1]);
+        }
+
+        data.put("labels", labels);
+        data.put("values", values);
+        return data;
     }
 }

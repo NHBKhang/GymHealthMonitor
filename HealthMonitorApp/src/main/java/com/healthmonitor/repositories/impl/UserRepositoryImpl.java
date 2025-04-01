@@ -5,13 +5,17 @@ import com.healthmonitor.pojo.Trainer;
 import com.healthmonitor.pojo.User;
 import com.healthmonitor.pojo.User.Role;
 import com.healthmonitor.repositories.UserRepository;
+import jakarta.data.repository.Param;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -32,7 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
     private LocalSessionFactoryBean factory;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-    
+
     @Override
     public List<User> getUsers(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
@@ -113,6 +117,7 @@ public class UserRepositoryImpl implements UserRepository {
                     member.setFitnessGoal(user.getMember().getFitnessGoal());
                 }
                 user.setMember(member);
+                user.setTrainer(null);
                 s.persist(user);
                 s.persist(member);
             } else if (user.getRole() == Role.TRAINER) {
@@ -121,9 +126,12 @@ public class UserRepositoryImpl implements UserRepository {
                     trainer.setMajor(user.getTrainer().getMajor());
                 }
                 user.setTrainer(trainer);
+                user.setMember(null);
                 s.persist(user);
                 s.persist(trainer);
             } else {
+                user.setMember(null);
+                user.setTrainer(null);
                 s.persist(user);
             }
         } else {
@@ -214,11 +222,32 @@ public class UserRepositoryImpl implements UserRepository {
             return null;
         }
     }
-    
+
     @Override
     public boolean authUser(String username, String password) {
-        User  u = this.getUserByUsername(username);
-        
+        User u = this.getUserByUsername(username);
+
         return this.passwordEncoder.matches(password, u.getPassword());
+    }
+
+    @Override
+    public List<Object[]> getUserStats(@Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate) {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        Query q = s.createQuery(
+                "SELECT DATE(u.createdAt), COUNT(u) "
+                + "FROM User u "
+                + "WHERE u.createdAt BETWEEN :fromDate AND :toDate "
+                + "GROUP BY DATE(u.createdAt)",
+                Object[].class
+        );
+
+        LocalDateTime fromDateTime = fromDate.atStartOfDay();
+        LocalDateTime toDateTime = toDate.atTime(23, 59, 59);
+
+        q.setParameter("fromDate", fromDateTime);
+        q.setParameter("toDate", toDateTime);
+
+        return q.getResultList();
     }
 }

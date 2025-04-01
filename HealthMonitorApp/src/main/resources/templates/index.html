@@ -13,53 +13,102 @@
 <body>
     <!-- Header -->
     <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
 
     <!-- Nội dung chính -->
-    <main class="container mt-5">
+    <main class="container mt-4">
+        <h5 class="text-center">Chào mừng <strong bsec:authentication="name"></strong> đến với hệ thống của chúng tôi!</h5>
+        <!-- Bộ lọc thống kê -->
+        <div class="filter-container">
+            <label for="fromDate">Từ ngày:</label>
+            <input type="date" id="fromDate">
+
+            <label for="toDate">Đến ngày:</label>
+            <input type="date" id="toDate">
+
+            <button class="btn btn-success" onclick="loadChart()">Lọc</button>
+        </div>
+
+        <!-- Biểu đồ -->
+        <canvas id="userChart" class="mb-4"></canvas>
+
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 mb-2">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">🏋️ Thành viên</h5>
                         <p class="card-text">Quản lý danh sách hội viên, gói tập.</p>
-                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                        <a th:href="@{/users}" class="btn btn-primary">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4 mb-2">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">📅 Lịch tập</h5>
                         <p class="card-text">Quản lý lịch tập, huấn luyện viên.</p>
-                        <a href="#" class="btn btn-success">Xem chi tiết</a>
+                        <a th:href="@{/schudule}" class="btn btn-success">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4 mb-2">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">📊 Theo dõi sức khỏe</h5>
-                        <p class="card-text">Xem chỉ số BMI, cân nặng, tiến độ tập luyện.</p>
-                        <a href="#" class="btn btn-warning text-white">Xem chi tiết</a>
+                        <h5 class="card-title">💪 Gói tập</h5>
+                        <p class="card-text">Quản lý danh sách gói tập, giá cả và thời hạn.</p>
+                        <a th:href="@{/packages}" class="btn btn-warning text-white">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4 mb-2">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">📈 Báo cáo doanh thu</h5>
                         <p class="card-text">Xem báo cáo doanh thu và phân tích.</p>
-                        <a href="#" class="btn btn-info">Xem chi tiết</a>
+                        <a th:href="@{/stats}" class="btn btn-info text-white">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
+    
     <!-- Footer -->
     <div th:replace="base :: footer"></div>
+
+    <script>
+        async function loadChart() {
+            const fromDate = document.getElementById("fromDate").value;
+            const toDate = document.getElementById("toDate").value;
+
+            const url = new URL("/HealthMonitorApp/stats/users", window.location.origin);
+            if (fromDate)
+                url.searchParams.append("fromDate", fromDate);
+            if (toDate)
+                url.searchParams.append("toDate", toDate);
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            const ctx = document.getElementById('userChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                            label: 'Số thành viên đăng ký',
+                            data: data.values,
+                            borderColor: 'blue',
+                            borderWidth: 2,
+                            fill: false
+                        }]
+                }
+            });
+        }
+
+        window.onload = loadChart;
+    </script>
 </body>
 </html>

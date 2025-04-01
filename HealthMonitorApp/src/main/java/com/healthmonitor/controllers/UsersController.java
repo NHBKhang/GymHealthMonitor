@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/users")
@@ -47,13 +48,16 @@ public class UsersController {
     }
 
     @PostMapping("/save")
-    public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
-//        if (result.hasErrors()) {
-//            model.addAttribute("user", user);
-//            return "redirect:/users/edit/" + user.getId();
-//        }
+    public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result, 
+            Model model, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            model.addAttribute("user", user);
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi hệ thống!");
+            return "redirect:/users/edit/" + user.getId();
+        }
 
         User u = userService.createOrUpdateUser(user);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
         return "redirect:/users/edit/" + u.getId();
     }
 

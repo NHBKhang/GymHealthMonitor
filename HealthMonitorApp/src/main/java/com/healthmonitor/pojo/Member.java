@@ -31,7 +31,7 @@ public class Member implements Serializable {
     private String fitnessGoal;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true, unique = true)
     private User user;
 
     public Member() {
