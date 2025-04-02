@@ -1,0 +1,340 @@
+.signupContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.signupCard {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 520px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signupCard:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+
+.signupCard h1 {
+    color: #2b2d42;
+    margin-bottom: 0.5rem;
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.subtitle {
+    color: #6c757d;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.formRow {
+    display: flex;
+    gap: 1rem;
+}
+
+.formRow .formGroup {
+    flex: 1;
+}
+
+
+.formGroup {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #4a4e69;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.formGroup label:after {
+    content: '*';
+    color: #d90429;
+    margin-left: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.formGroup.required label:after {
+    opacity: 1;
+}
+
+.formGroup input:not([type="file"]) {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #edf2f4;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.formGroup input:not([type="file"]):focus {
+    outline: none;
+    border-color: #4361ee;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+
+.avatarUpload {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.avatarPreview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatarPreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+}
+
+.avatarPlaceholder svg {
+    width: 50%;
+    height: 50%;
+    fill: currentColor;
+}
+
+.fileInput {
+    display: none;
+}
+
+.uploadButton {
+    padding: 0.75rem 1.5rem;
+    background: #f1f3f5;
+    color: #495057;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.uploadButton:hover {
+    background: #e9ecef;
+}
+
+
+.errorInput {
+    border-color: #d90429 !important;
+    background-color: #fff5f5 !important;
+}
+
+.errorText {
+    color: #d90429;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+
+.submitButton {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(58, 12, 163, 0.2);
+    position: relative;
+    overflow: hidden;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.submitButton:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(58, 12, 163, 0.25);
+}
+
+.submitButton:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(58, 12, 163, 0.2);
+}
+
+.submitButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Spinner */
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+/* Login Link */
+.loginLink {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #6c757d;
+}
+
+.loginLink a {
+    color: #4361ee;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.loginLink a:hover {
+    color: #3a0ca3;
+    text-decoration: underline;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+@media (max-width: 768px) {
+    .formRow {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .signupContainer {
+        padding: 1.5rem;
+    }
+
+    .signupCard {
+        padding: 2rem 1.5rem;
+    }
+
+    .signupCard h1 {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .formGroup input:not([type="file"]) {
+        padding: 0.85rem;
+    }
+
+    .submitButton {
+        padding: 0.9rem;
+    }
+
+    .avatarUpload {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+/* Add these new styles to your existing Signup.module.css */
+
+.passwordInput {
+    position: relative;
+}
+
+.passwordInput input {
+    padding-right: 40px !important;
+}
+
+.togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: #6c757d;
+}
+
+.togglePassword svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.togglePassword:hover {
+    color: #4361ee;
+}
+
+/* Add to your existing animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
