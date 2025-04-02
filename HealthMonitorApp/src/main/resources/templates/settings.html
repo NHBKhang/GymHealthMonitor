@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Cài đặt | Gym Health Monitor</title>
-        <link rel="icon" th:href="@{/images/logo.png}" />
 
-    <th:block th:replace="base :: bootstrap"></th:block>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head>
+    <title>Cài đặt | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
 </head>
+
 <body>
     <div th:replace="base :: header"></div>
 
@@ -36,4 +36,5 @@
 
     <div th:replace="base :: footer"></div>
 </body>
+
 </html>

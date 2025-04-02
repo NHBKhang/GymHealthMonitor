@@ -19,6 +19,10 @@ import java.util.Set;
 })
 public class Package implements Serializable {
 
+    public enum PackageStatus {
+        ACTIVE, INACTIVE
+    }
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -47,7 +51,8 @@ public class Package implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PackageStatus status;
 
     @Column(name = "created_at", updatable = false)
     private String createdAt;
@@ -63,7 +68,7 @@ public class Package implements Serializable {
     }
 
     public Package(Integer id, String name, String duration, Double price,
-                   String description, Integer ptSessions, String status, String createdAt) {
+                   String description, Integer ptSessions, PackageStatus status, String createdAt) {
         this.id = id;
         this.name = name;
         this.duration = duration;
@@ -122,11 +127,15 @@ public class Package implements Serializable {
         this.ptSessions = ptSessions;
     }
 
-    public String getStatus() {
+    public PackageStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public String getStatusName() {
+        return status.name();
+    }
+
+    public void setStatus(PackageStatus status) {
         this.status = status;
     }
 

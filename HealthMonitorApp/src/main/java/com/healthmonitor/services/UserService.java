@@ -21,6 +21,8 @@ public interface UserService extends UserDetailsService {
     User createOrUpdateUser(User user);
 
     void deleteUser(int id);
+    
+    void deleteUsers(List<Integer> ids);
 
     long countUsers(Map<String, String> params);
 

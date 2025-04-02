@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
@@ -24,10 +25,10 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
     "com.healthmonitor.components"
 })
 public class SpringSecurityConfigs {
-    
+
     @Autowired
     private UserService userService;
-    
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -37,21 +38,21 @@ public class SpringSecurityConfigs {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(c -> c.disable())
                 .authorizeHttpRequests(requests -> requests
-                    .requestMatchers("/").hasAnyRole("TRAINER", "ADMIN")
-                    .requestMatchers("/users").hasAnyRole("ADMIN")
-                    .requestMatchers("/api/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/packages/**").hasAnyRole("TRAINER", "ADMIN")
-                    .requestMatchers("/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
-                    .anyRequest().authenticated())
+                .requestMatchers("/").hasAnyRole("TRAINER", "ADMIN")
+                .requestMatchers("/users").hasAnyRole("ADMIN")
+                .requestMatchers("/api/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/packages/**").hasAnyRole("TRAINER", "ADMIN")
+                .requestMatchers("/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .anyRequest().authenticated())
                 .formLogin(form -> form
-                    .loginPage("/login")
-                    .loginProcessingUrl("/login")
-                    .defaultSuccessUrl("/", true)
-                    .failureUrl("/login?error=true").permitAll())
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true").permitAll())
                 .logout(logout -> logout
-                    .logoutSuccessUrl("/login")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID").permitAll());
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID").permitAll());
 
         return http.build();
     }
@@ -60,8 +61,13 @@ public class SpringSecurityConfigs {
     public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
         return new HandlerMappingIntrospector();
     }
-    
+
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new HiddenHttpMethodFilter();
     }
 }

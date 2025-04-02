@@ -1,15 +1,25 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Tiến độ tập luyện | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-4">
+        <h2 class="text-center mb-3">Tiến độ tập luyện</h2>
+
+
+
+        <div th:replace="base :: pagination"></div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+</body>
+
 </html>

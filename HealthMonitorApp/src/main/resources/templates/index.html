@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Trang chủ | Gym Health Monitor</title>
-        <link rel="icon" th:href="@{/images/logo.png}" />
 
-        <!-- Bootstrap -->
-    <th:block th:replace="base :: bootstrap"></th:block>
+<head>
+    <title>Trang chủ | Gym Health Monitor</title>
 
-    <!-- Import CSS -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="base :: head"></th:block>
 </head>
+
 <body>
     <!-- Header -->
     <div th:replace="base :: header"></div>
@@ -17,7 +14,8 @@
 
     <!-- Nội dung chính -->
     <main class="container mt-4">
-        <h5 class="text-center">Chào mừng <strong bsec:authentication="name"></strong> đến với hệ thống của chúng tôi!</h5>
+        <h5 class="text-center">Chào mừng <strong bsec:authentication="name"></strong> đến với hệ thống của chúng tôi!
+        </h5>
         <!-- Bộ lọc thống kê -->
         <div class="filter-container">
             <label for="fromDate">Từ ngày:</label>
@@ -74,7 +72,7 @@
             </div>
         </div>
     </main>
-    
+
     <!-- Footer -->
     <div th:replace="base :: footer"></div>
 
@@ -98,12 +96,12 @@
                 data: {
                     labels: data.labels,
                     datasets: [{
-                            label: 'Số thành viên đăng ký',
-                            data: data.values,
-                            borderColor: 'blue',
-                            borderWidth: 2,
-                            fill: false
-                        }]
+                        label: 'Số thành viên đăng ký',
+                        data: data.values,
+                        borderColor: 'blue',
+                        borderWidth: 2,
+                        fill: false
+                    }]
                 }
             });
         }
@@ -111,4 +109,5 @@
         window.onload = loadChart;
     </script>
 </body>
+
 </html>

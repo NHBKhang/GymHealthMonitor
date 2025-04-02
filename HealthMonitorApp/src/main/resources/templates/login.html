@@ -1,50 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Đăng nhập | Gym Health Monitor</title>
-        <link rel="icon" th:href="@{/images/logo.png}" />
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Bootstrap -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<head>
+    <title>Đăng nhập | Gym Health Monitor</title>
 
-        <!-- Font Awesome (Icons) -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <th:block th:replace="base :: head"></th:block>
+    <link th:href="@{/css/login.css}" rel="stylesheet">
+</head>
 
-        <!-- CSS Riêng -->
-        <link rel="stylesheet" th:href="@{/css/login.css}">
-    </head>
-    <body class="d-flex align-items-center justify-content-center flex-column vh-100">
-        <div class="mb-4 d-flex align-items-center justify-content-center gap-3">
-            <img th:src="@{/images/logo.png}" alt="Logo" width="50" class="mb-2">
-            <h1 class="fw-bold text-white">Gym Health Monitor</h1>
-        </div>
+<body class="d-flex align-items-center justify-content-center flex-column vh-100">
+    <div class="mb-4 d-flex align-items-center justify-content-center gap-3">
+        <img th:src="@{/images/logo.png}" alt="Logo" width="50" class="mb-2">
+        <h1 class="fw-bold text-white">Gym Health Monitor</h1>
+    </div>
 
-        <div class="login-container p-4 pb-5 shadow-lg rounded bg-white">
-            <h3 class="text-center mb-4">🔑 Đăng nhập</h3>
+    <div class="login-container p-4 pb-5 shadow-lg rounded bg-white">
+        <h3 class="text-center mb-4">🔑 Đăng nhập</h3>
 
-            <form th:action="@{/login}" method="post">
-                <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fa fa-user"></i></span>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Tài khoản" required>
-                </div>
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Tài khoản" required>
+            </div>
 
-                <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Mật khẩu" required>
-                    <button type="button" class="btn btn-outline-secondary" id="togglePassword">
-                        <i class="fa fa-eye"></i>
-                    </button>
-                </div>
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Mật khẩu"
+                    required>
+                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </div>
 
-                <button type="submit" class="btn btn-primary w-100 mt-2">Đăng nhập</button>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary w-100 mt-2">Đăng nhập</button>
+        </form>
+    </div>
 
-        <!-- Load JavaScript riêng -->
-        <script th:src="@{/js/login.js}"></script>
+    <!-- Load JavaScript riêng -->
+    <script th:src="@{/js/login.js}"></script>
+</body>
 
-    </body>
 </html>

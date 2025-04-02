@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title th:text="${user.id != null} ? 'Chỉnh Sửa Thành Viên | Gym Health Monitor' : ('Thêm Thành Viên | Gym Health Monitor')"></title>
-        <link rel="icon" th:href="@{/images/logo.png}" />
-    <th:block th:replace="base :: bootstrap"></th:block>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+<head>
+    <title
+        th:text="${user.id != null} ? 'Chỉnh Sửa Thành Viên | Gym Health Monitor' : ('Thêm Thành Viên | Gym Health Monitor')">
+    </title>
+
+    <th:block th:replace="base :: head"></th:block>
 </head>
+
 <body>
     <div th:replace="base :: header"></div>
     <div th:replace="base :: message"></div>
@@ -15,22 +18,24 @@
             <span th:text="${user.id != null} ? '✏️ Chỉnh Sửa Thành Viên' : '➕ Thêm Thành Viên'"></span>
         </h2>
 
-        <form th:action="@{/users/save}" method="post" th:object="${user}" 
-              class="p-4 border rounded shadow-sm bg-light" enctype="multipart/form-data">
+        <form th:action="@{/users/save}" method="post" th:object="${user}" class="p-4 border rounded shadow-sm bg-light"
+            enctype="multipart/form-data">
             <input type="hidden" th:if="${user.id != null}" th:field="*{id}">
 
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Tên tài khoản <span class="text-danger">*</span></label>
+                        <label for="username" class="form-label">Tên tài khoản <span
+                                class="text-danger">*</span></label>
                         <input type="text" id="username" th:field="*{username}" class="form-control" required>
                         <p class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="form-label">Mật khẩu <span class="text-danger" th:if="${user.id == null}">*</span></label>
+                        <label for="password" class="form-label">Mật khẩu <span class="text-danger"
+                                th:if="${user.id == null}">*</span></label>
                         <input type="password" id="password" th:field="*{password}" class="form-control"
-                               placeholder="*****" th:attr="required=${user.id == null ? 'required' : null}">
+                            placeholder="*****" th:attr="required=${user.id == null ? 'required' : null}">
                         <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
                     </div>
 
@@ -41,7 +46,7 @@
 
                     <div class="mb-3">
                         <label for="lastName" class="form-label">Tên</label>
-                        <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required>
+                        <input type="text" id="lastName" th:field="*{lastName}" class="form-control">
                     </div>
                 </div>
 
@@ -49,11 +54,12 @@
                     <div class="mb-3">
                         <label for="avatar" class="form-label d-block">Ảnh đại diện</label>
 
-                        <!--Hiển thị ảnh nếu đã có--> 
-                        <img th:src="${user.avatar != null ? user.avatar : '/HealthMonitorApp/images/default_image.svg'}" 
-                             class="border shadow-sm mb-2" width="249" height="249" alt="avatar" id="avatarPreview">
+                        <!--Hiển thị ảnh nếu đã có-->
+                        <img th:src="${user.avatar != null ? user.avatar : '/HealthMonitorApp/images/default_image.svg'}"
+                            class="border shadow-sm mb-2" width="249" height="249" alt="avatar" id="avatarPreview">
 
-                        <input type="file" class="form-control" th:field="*{file}" accept="image/*" onchange="previewImage(event)"/>
+                        <input type="file" class="form-control" th:field="*{file}" accept="image/*"
+                            onchange="previewImage(event)" />
                     </div>
                 </div>
             </div>
@@ -93,23 +99,25 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="height" class="form-label">Chiều cao</label>
-                        <input type="number" step="1" min="1" max="300" id="height" 
-                               th:field="*{member.height}" class="form-control">
+                        <input type="number" step="1" min="1" max="300" id="height" th:field="*{member.height}"
+                            class="form-control">
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label for="weight" class="form-label">Cân nặng</label>
-                        <input type="number" step="1" min="1" max="1000" id="weight" 
-                               th:field="*{member.weight}" class="form-control">
+                        <input type="number" step="1" min="1" max="1000" id="weight" th:field="*{member.weight}"
+                            class="form-control">
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="fitnessGoal" class="form-label">Mục tiêu tập luyện</label>
-                    <textarea id="fitnessGoal" th:field="*{member.fitnessGoal}" class="form-control" rows="3"></textarea>
+                    <textarea id="fitnessGoal" th:field="*{member.fitnessGoal}" class="form-control"
+                        rows="3"></textarea>
                 </div>
 
-                <input type="hidden" id="memberUser" th:if="${user.id != null}" th:field="*{member.user.id}" th:value="${user.id}">
+                <input type="hidden" id="memberUser" th:if="${user.id != null}" th:field="*{member.user.id}"
+                    th:value="${user.id}">
             </div>
 
             <!-- Các trường chỉ hiển thị khi vai trò là TRAINER -->
@@ -119,17 +127,17 @@
                     <input id="major" th:field="*{trainer.major}" class="form-control" />
                 </div>
 
-                <input type="hidden" id="trainerUser" th:if="${user.id != null}" th:field="*{trainer.user.id}" th:value="${user.id}">
+                <input type="hidden" id="trainerUser" th:if="${user.id != null}" th:field="*{trainer.user.id}"
+                    th:value="${user.id}">
             </div>
 
             <div class="text-end my-2">
                 <button type="submit" class="btn btn-success px-4 me-1">
                     <span th:text="${user.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
                 </button>
-                <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
-                    <input type="hidden" name="_method" value="DELETE"/>
-                    <button type="submit" class="btn btn-danger px-4 me-1" onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?');">🗑️ Xóa</button>
-                </form>
+                <button type="button" class="btn btn-danger px-4 me-1" 
+                        onclick="deleteUser()">🗑️ Xóa
+                </button>
                 <a th:href="@{/users}" class="btn btn-secondary px-4">❌ Hủy</a>
             </div>
         </form>
@@ -171,5 +179,29 @@
             }
         }
     </script>
+    <script th:inline="javascript">
+        function deleteUser() {
+            if (confirm('Bạn có chắc chắn muốn xóa thành viên này?')) {
+                fetch('/HealthMonitorApp/users/delete/' + "[[${user.id}]]", {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showMessage('success', response.json().message);
+                        setTimeout(() => {
+                            window.location.href = "/HealthMonitorApp/users";
+                        }, 1000);
+                    } else {
+                        showMessage('danger', 'Đã xảy ra lỗi khi xóa thành viên!');
+                    }
+                })     
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                });
+            }
+        }
+    </script>
 </body>
+
 </html>

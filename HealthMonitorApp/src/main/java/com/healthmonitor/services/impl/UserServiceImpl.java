@@ -79,6 +79,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void deleteUsers(List<Integer> ids) {
+        this.userRepository.deleteUsers(ids);
+    }
+
+    @Override
     public long countUsers(Map<String, String> params) {
         return this.userRepository.countUsers(params);
     }

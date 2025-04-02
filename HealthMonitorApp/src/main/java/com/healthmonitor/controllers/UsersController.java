@@ -7,15 +7,19 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -33,7 +37,7 @@ public class UsersController {
         long totalUsers = userService.countUsers(params);
         int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
         List<User> users = userService.getUsers(params);
-        
+
         model.addAttribute("users", users);
         model.addAttribute("totalUsers", totalUsers);
         model.addAttribute("totalPages", totalPages);
@@ -48,17 +52,25 @@ public class UsersController {
     }
 
     @PostMapping("/save")
-    public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result, 
+    public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result,
             Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("user", user);
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi hệ thống!");
+            redirectAttributes.addFlashAttribute("error", "Lỗi hệ thống!");
             return "redirect:/users/edit/" + user.getId();
         }
 
-        User u = userService.createOrUpdateUser(user);
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
-        return "redirect:/users/edit/" + u.getId();
+        try {
+            User u = userService.createOrUpdateUser(user);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật thành công!");
+            return "redirect:/users/edit/" + u.getId();
+        } catch (org.hibernate.exception.ConstraintViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Tên người dùng đã tồn tại!");
+            return "redirect:/users/add";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra, vui lòng thử lại!");
+            return "redirect:/users/add";
+        }
     }
 
     @GetMapping("/edit/{id}")
@@ -68,9 +80,26 @@ public class UsersController {
         return "user_form";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable(value = "id") int id) {
-        userService.deleteUser(id);
-        return "redirect:/users";
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<?> deleteUser(@PathVariable(value = "id") int id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok().body(Map.of("message", "Xóa thành viên thành công!"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Lỗi khi xóa thành viên."));
+        }
+    }
+
+    @DeleteMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<?> deleteUsers(@RequestBody Map<String, List<Integer>> request) {
+        List<Integer> ids = request.get("ids");
+        if (ids == null || ids.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Không có ID nào được chọn để xóa."));
+        }
+
+        userService.deleteUsers(ids);
+        return ResponseEntity.ok().body(Map.of("message", "Xóa thành viên thành công!"));
     }
 }
