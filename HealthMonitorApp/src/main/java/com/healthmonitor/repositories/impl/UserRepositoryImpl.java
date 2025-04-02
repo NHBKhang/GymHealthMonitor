@@ -93,7 +93,8 @@ public class UserRepositoryImpl implements UserRepository {
         Session s = this.factory.getObject().getCurrentSession();
         Query q = s.createQuery("FROM Member t WHERE t.user.id = :id", Member.class);
         q.setParameter("id", id);
-        return (Member) q.getSingleResult();
+        List<Member> results = q.getResultList();
+        return results.isEmpty() ? null : results.get(0);
     }
 
     @Override
@@ -101,7 +102,8 @@ public class UserRepositoryImpl implements UserRepository {
         Session s = this.factory.getObject().getCurrentSession();
         Query q = s.createQuery("FROM Trainer t WHERE t.user.id = :id", Trainer.class);
         q.setParameter("id", id);
-        return (Trainer) q.getSingleResult();
+        List<Trainer> results = q.getResultList();
+        return results.isEmpty() ? null : results.get(0);
     }
 
     @Override
@@ -170,9 +172,24 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteUser(int id) {
         Session s = this.factory.getObject().getCurrentSession();
+        Member member = getMemberByUserId(id);
+        if (member != null) {
+            s.remove(member);
+        }
+        Trainer trainer = getTrainerByUserId(id);
+        if (trainer != null) {
+            s.remove(trainer);
+        }
         User user = this.getUserById(id);
         if (user != null) {
             s.remove(user);
+        }
+    }
+
+    @Override
+    public void deleteUsers(List<Integer> ids) {
+        for (Integer id : ids) {
+            this.deleteUser(id);
         }
     }
 

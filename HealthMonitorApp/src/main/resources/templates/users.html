@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Quản lý Thành viên | Gym Health Monitor</title>
-        <link rel="icon" th:href="@{/images/logo.png}" />
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <th:block th:replace="base :: bootstrap"></th:block>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head>
+    <title>Quản lý Thành viên | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
 </head>
+
 <body>
     <div th:replace="base :: header"></div>
     <div th:replace="base :: message"></div>
@@ -20,16 +18,14 @@
             <div>
                 <a th:href="@{/users/add}" class="btn btn-success me-1">➕ Thêm</a>
 
-                <!-- Xóa nhiều thành viên -->
-                <button type="submit" id="deleteButton" class="btn btn-danger" 
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa các thành viên đã chọn?');" disabled>
+                <button onclick="deleteUsers()" id="deleteButton" class="btn btn-danger" disabled>
                     🗑️ Xóa
                 </button>
             </div>
 
-            <!-- Thanh tìm kiếm -->
             <form th:action="@{/users}" method="get" class="mb-3 d-flex">
-                <input type="text" name="kw" th:value="${kw}" class="form-control me-2 w-auto" placeholder="🔍 Tìm kiếm...">
+                <input type="text" name="kw" th:value="${kw}" class="form-control me-2 w-auto"
+                    placeholder="🔍 Tìm kiếm...">
                 <button type="submit" class="btn btn-primary w-auto">Tìm kiếm</button>
             </form>
         </div>
@@ -49,12 +45,8 @@
                     </thead>
                     <tbody>
                         <tr th:each="user : ${users}">
-                            <td>
-                                <input type="checkbox" name="selectedUsers" th:value="${user.id}">
-                            </td>
-                            <td>
-                                <a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.username}"></a>
-                            </td>
+                            <td><input type="checkbox" th:value="${user.id}"></td>
+                            <td><a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.username}"></a></td>
                             <td th:text="${user.firstName}"></td>
                             <td th:text="${user.lastName}"></td>
                             <td th:text="${user.email}"></td>
@@ -71,66 +63,45 @@
             Tổng số thành viên: <span th:text="${totalUsers}"></span>
         </div>
 
-        <!-- Pagination -->
-        <nav aria-label="Page navigation" th:if="${totalPages > 1}">
-            <ul class="pagination justify-content-center">
-                <!-- Trang đầu -->
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/users(page=1, keyword=${keyword})}" tabindex="-1">⏮️ Đầu</a>
-                </li>
-
-                <!-- Trang trước -->
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/users(page=${currentPage - 1}, keyword=${keyword})}" tabindex="-1">⬅️ Trước</a>
-                </li>
-
-                <!-- Hiển thị tối đa 5 số trang -->
-                <th:block th:with="start=${currentPage - 2 > 1 ? currentPage - 2 : 1}, 
-                          end=${currentPage + 2 < totalPages ? currentPage + 2 : totalPages}">
-                    <li class="page-item" th:each="i : ${#numbers.sequence(start, end)}"
-                        th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/users(page=${i}, keyword=${keyword})}" th:text="${i}"></a>
-                    </li>
-                </th:block>
-
-                <!-- Trang sau -->
-                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/users(page=${currentPage + 1}, keyword=${keyword})}">Tiếp ➡️</a>
-                </li>
-
-                <!-- Trang cuối -->
-                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/users(page=${totalPages}, keyword=${keyword})}">Cuối ⏭️</a>
-                </li>
-            </ul>
-        </nav>
+        <div th:replace="base :: pagination"></div>
     </main>
 
     <div th:replace="base :: footer"></div>
+    
+    <script th:inline="javascript">
+        function deleteUsers() {
+            if (confirm('Bạn có chắc chắn muốn xóa các thành viên đã chọn?')) {
+                const ids = Array.from(document.querySelectorAll("tbody input[type='checkbox']:checked"))
+                                  .map(checkbox => Number(checkbox.value));
 
-    <script>
-        // Toggle select/unselect all checkboxes
-        function toggleSelectAll() {
-            const selectAllCheckbox = document.getElementById("selectAll");
-            const checkboxes = document.querySelectorAll("input[name='selectedUsers']");
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = selectAllCheckbox.checked;
-            });
-            checkSelectedUsers();
-        }
-
-        // Enable or disable delete button based on selected checkboxes
-        function checkSelectedUsers() {
-            const selectedUsers = document.querySelectorAll("input[name='selectedUsers']:checked");
-            const deleteButton = document.getElementById("deleteButton");
-
-            // Enable delete button if at least one checkbox is selected
-            if (selectedUsers.length > 0) {
-                deleteButton.disabled = false;
-            } else {
-                deleteButton.disabled = true;
+                if (ids.length === 0) {
+                    showMessage('warning', 'Vui lòng chọn ít nhất một thành viên để xóa.');
+                    return;
+                }
+                
+                fetch('/HealthMonitorApp/users/delete', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ids: ids })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        location.reload();
+                        showMessage('success', 'Đã xóa các thành viên thành công!');
+                    } else {
+                        showMessage('danger', 'Đã xảy ra lỗi khi xóa thành viên!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                });
             }
         }
     </script>
 </body>
+
 </html>
