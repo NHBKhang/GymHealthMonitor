@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title
+            th:text="${schedule.id != null} ? 'Chỉnh Sửa Lịch tập | Gym Health Monitor' : ('Thêm Lịch tập | Gym Health Monitor')">
+        </title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-3">
+        <h2 class="text-center mb-4">
+            <span th:text="${schedule.id != null} ? '✏️ Chỉnh Sửa Lịch tập' : '➕ Thêm Lịch tập'"></span>
+        </h2>
+
+        <form th:action="@{/schedules/save}" method="post" th:object="${schedule}"
+              class="p-4 border rounded shadow-sm bg-light" enctype="multipart/form-data">
+            <input type="hidden" th:if="${schedule.id != null}" th:field="*{id}" />
+
+            <div class="mb-3">
+                <label for="code" class="form-label">Mã lịch tập <span class="text-danger">*</span></label>
+                <input type="text" id="code" th:field="*{code}" class="form-control" required readonly>
+                <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="member" class="form-label">Thành viên <span class="text-danger">*</span></label>
+                    <div id="member-dropdown">
+                        <input id="member" th:field="*{member.id}" required/>
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('member')}" th:errors="*{member}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="trainer" class="form-label">Huấn luyện viên <span class="text-danger">*</span></label>
+                    <div id="trainer-dropdown">
+                        <input id="trainer" th:field="*{trainer.id}" required/>
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('trainer')}" th:errors="*{trainer}"></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="startTime" class="form-label">Thời gian bắt đầu <span class="text-danger">*</span></label>
+                    <input type="datetime-local" id="startTime" th:field="*{startTime}" class="form-control" required>
+                    <p class="text-danger" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="endTime" class="form-label">Thời gian kết thúc <span class="text-danger">*</span></label>
+                    <input type="datetime-local" id="endTime" th:field="*{endTime}" class="form-control" required>
+                    <p class="text-danger" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">Trạng thái</label>
+                    <select id="status" th:field="*{status}" class="form-select">
+                        <option th:each="status : ${T(com.healthmonitor.pojo.Schedule.ScheduleStatus).values()}" 
+                                th:value="${status}" 
+                                th:text="${status.label}"></option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="type" class="form-label">Bộ môn</label>
+                    <input type="text" id="type" th:field="*{type}" class="form-control">
+                </div>
+                
+<!--                <div class="col-md-6 mb-3">
+                    <label for="subscription" class="form-label">Gói đăng ký</label>
+                    <div id="subscription-dropdown">
+                        <input id="subscription" th:field="*{subscription.id}"/>
+                    </div>
+                </div>-->
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Mô tả</label>
+                <textarea id="description" th:field="*{description}" class="form-control"
+                          rows="3"></textarea>
+            </div>
+
+            <div class="text-end my-2">
+                <button type="submit" class="btn btn-success px-4 me-1">
+                    <span th:text="${schedule.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
+                </button>
+                <button type="button" class="btn btn-danger px-4 me-1" onclick="deleteSchedule()">🗑️ Xóa
+                </button>
+                <a th:href="@{/schedules}" class="btn btn-secondary px-4">❌ Hủy</a>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script th:inline="javascript">
+        function deleteSchedule() {
+        if (confirm('Bạn có chắc chắn muốn xóa lịch tập này?')) {
+            fetch([[@{/schedules/delete/{id}(id=${schedule.id})}]], {
+            method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    showMessage('success', 'Xóa lịch tập thành công!');
+                    setTimeout(() => {
+                        window.location.href = [[@{/schedules}]];
+                    }, 1000);
+                } else {
+                    showMessage('danger', 'Đã xảy ra lỗi khi xóa lịch tập!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                    showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                });
+            }
+        }
+        
+        renderDynamicDropdown({
+            containerId: 'member-dropdown',
+            apiUrl: [[@{/api/users}]],
+            buildOptionText: item => {
+                const text = `${item.first_name || ''} ${item.last_name || ''}`.trim();
+                return text !== '' ? text : (item.username || '');
+            },
+            value: {
+                first_name: [[${schedule.member.firstName}]],
+                last_name: [[${schedule.member.lastName}]]
+            }
+        });
+        
+        renderDynamicDropdown({
+            containerId: 'trainer-dropdown',
+            apiUrl: [[@{/api/users}]],
+            buildOptionText: item => {
+                const text = `${item.first_name || ''} ${item.last_name || ''}`.trim();
+                return text !== '' ? text : (item.username || '');
+            },
+            value: {
+                first_name: [[${schedule.trainer.firstName}]],
+                last_name: [[${schedule.trainer.lastName}]]
+            }
+        });
+//        renderDynamicDropdown({
+//            containerId: 'subscription-dropdown',
+//            apiUrl: [[@{/api/subscriptions}]],
+//            buildOptionText: item => item.code,
+//            value: {
+//                code: [[${schedule.subscription.code}]]
+//            }
+//        });
+    </script>
+    
+</body>
+
+</html>

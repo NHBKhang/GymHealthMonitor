@@ -6,14 +6,18 @@ import java.util.Map;
 
 public interface PackageService {
 
-    List<Package> getPackage(Map<String, String> params);
+    List<Package> getPackages(Map<String, String> params);
 
     Package getPackageById(int id);
 
-    Package createOrUpdateProgress(Package progress);
+    Package createOrUpdatePackage(Package pkg);
 
     void deletePackage(int id);
-
-    long countPackage(Map<String, String> params);
     
+    void deletePackages(List<Integer> ids);
+
+    long countPackages(Map<String, String> params);
+    
+    String generateNextCode();
+
 }

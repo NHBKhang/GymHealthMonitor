@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Signup.module.css';
+import API, { endpoints } from '../configs/API';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
-        first_name: '',
-        last_name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         phone: '',
-        avatar: null
+        file: null
     });
     const [previewAvatar, setPreviewAvatar] = useState(null);
     const [errors, setErrors] = useState({});
@@ -31,7 +32,7 @@ const Signup = () => {
         if (file) {
             setFormData({
                 ...formData,
-                avatar: file
+                file
             });
             setPreviewAvatar(URL.createObjectURL(file));
         }
@@ -39,26 +40,26 @@ const Signup = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
-        if (!formData.username.trim()) newErrors.username = 'Username is required';
+
+        if (!formData.username.trim()) newErrors.username = 'Tên người dùng là bắt buộc';
         if (!formData.password) {
-            newErrors.password = 'Password is required';
+            newErrors.password = 'Mật khẩu là bắt buộc';
         } else if (formData.password.length < 8) {
-            newErrors.password = 'Password must be at least 8 characters';
+            newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
         }
-        if (!formData.first_name.trim()) newErrors.first_name = 'First name is required';
-        if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
-        
+        if (!formData.firstName.trim()) newErrors.firstName = 'Họ là bắt buộc';
+        if (!formData.lastName.trim()) newErrors.lastName = 'Tên là bắt buộc';
+
         if (!formData.email.trim()) {
-            newErrors.email = 'Email is required';
+            newErrors.email = 'Email là bắt buộc';
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = 'Email is invalid';
+            newErrors.email = 'Email không hợp lệ';
         }
-        
+
         if (!formData.phone.trim()) {
-            newErrors.phone = 'Phone number is required';
+            newErrors.phone = 'Số điện thoại là bắt buộc';
         } else if (!/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(formData.phone)) {
-            newErrors.phone = 'Phone number is invalid';
+            newErrors.phone = 'Số điện thoại không hợp lệ';
         }
 
         setErrors(newErrors);
@@ -72,16 +73,24 @@ const Signup = () => {
         if (validateForm()) {
             const formPayload = new FormData();
             for (const key in formData) {
-                formPayload.append(key, formData[key]);
+                let value = formData[key]
+                if (value && value.trim() != '')
+                    formPayload.append(key, value);
             }
 
             try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                console.log('Form data:', Object.fromEntries(formPayload));
-                navigate('/dashboard');
+                let res = await API.post(endpoints.users, formPayload,
+                    {
+                        headers: { "Content-Type": "mulitpart/form-data" }
+                    }
+                );
+
+                if (res.status === 201)
+                    navigate('/');
+                else
+                    setErrors({ submit: "Yêu cầu không hợp lệ!" })
             } catch (error) {
-                console.error('Signup error:', error);
+                setErrors({ submit: error.message })
             } finally {
                 setIsSubmitting(false);
             }
@@ -92,41 +101,51 @@ const Signup = () => {
 
     return (
         <div className={styles.signupContainer}>
+            <div className={styles.logoContainer} onClick={() => navigate('/')}>
+                <img src='./logo.png' alt='Gym Logo' />
+                <h1>Gym Health Monitor</h1>
+            </div>
+
             <div className={styles.signupCard}>
-                <h1>Create Account</h1>
-                <p className={styles.subtitle}>Join our community</p>
-                
+                <h1>Tạo tài khoản</h1>
+
                 <form onSubmit={handleSubmit} noValidate>
                     <div className={styles.formRow}>
                         <div className={styles.formGroup}>
-                            <label htmlFor="first_name">First Name*</label>
+                            <label htmlFor="firstName">
+                                Họ <span style={{ color: 'red' }}>*</span>
+                            </label>
                             <input
                                 type="text"
-                                id="first_name"
-                                name="first_name"
-                                value={formData.first_name}
+                                id="firstName"
+                                name="firstName"
+                                value={formData.firstName}
                                 onChange={handleChange}
-                                className={errors.first_name ? styles.errorInput : ''}
+                                className={errors.firstName ? styles.errorInput : ''}
                             />
-                            {errors.first_name && <span className={styles.errorText}>{errors.first_name}</span>}
+                            {errors.firstName && <span className={styles.errorText}>{errors.firstName}</span>}
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="last_name">Last Name*</label>
+                            <label htmlFor="lastName">
+                                Tên <span style={{ color: 'red' }}>*</span>
+                            </label>
                             <input
                                 type="text"
-                                id="last_name"
-                                name="last_name"
-                                value={formData.last_name}
+                                id="lastName"
+                                name="lastName"
+                                value={formData.lastName}
                                 onChange={handleChange}
-                                className={errors.last_name ? styles.errorInput : ''}
+                                className={errors.lastName ? styles.errorInput : ''}
                             />
-                            {errors.last_name && <span className={styles.errorText}>{errors.last_name}</span>}
+                            {errors.lastName && <span className={styles.errorText}>{errors.lastName}</span>}
                         </div>
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label htmlFor="username">Username*</label>
+                        <label htmlFor="username">
+                            Tên tài khoản <span style={{ color: 'red' }}>*</span>
+                        </label>
                         <input
                             type="text"
                             id="username"
@@ -139,7 +158,9 @@ const Signup = () => {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label htmlFor="email">Email*</label>
+                        <label htmlFor="email">
+                            Email <span style={{ color: 'red' }}>*</span>
+                        </label>
                         <input
                             type="email"
                             id="email"
@@ -152,7 +173,9 @@ const Signup = () => {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label htmlFor="phone">Phone Number*</label>
+                        <label htmlFor="phone">
+                            Số điện thoại <span style={{ color: 'red' }}>*</span>
+                        </label>
                         <input
                             type="tel"
                             id="phone"
@@ -166,7 +189,9 @@ const Signup = () => {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label htmlFor="password">Password*</label>
+                        <label htmlFor="password">
+                            Mật khẩu <span style={{ color: 'red' }}>*</span>
+                        </label>
                         <div className={styles.passwordInput}>
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -195,8 +220,8 @@ const Signup = () => {
                         {errors.password && <span className={styles.errorText}>{errors.password}</span>}
                     </div>
 
-                    <div className={styles.formGroup}>
-                        <label htmlFor="avatar">Profile Picture</label>
+                    <div className={styles.formGroup} style={{ marginBottom: '1rem' }}>
+                        <label htmlFor="avatar">Ảnh đại diện</label>
                         <div className={styles.avatarUpload}>
                             <div className={styles.avatarPreview}>
                                 {previewAvatar ? (
@@ -218,10 +243,12 @@ const Signup = () => {
                                 className={styles.fileInput}
                             />
                             <label htmlFor="avatar" className={styles.uploadButton}>
-                                {previewAvatar ? 'Change Photo' : 'Upload Photo'}
+                                {previewAvatar ? 'Thay đổi hình ảnh' : 'Tải ảnh lên'}
                             </label>
                         </div>
                     </div>
+
+                    {errors.submit && <span className={`${styles.errorText} ${styles.submitError}`}>{errors.submit}</span>}
 
                     <button
                         type="submit"
@@ -231,16 +258,16 @@ const Signup = () => {
                         {isSubmitting ? (
                             <>
                                 <span className={styles.spinner}></span>
-                                Creating Account...
+                                Đang tạo tài khoản...
                             </>
                         ) : (
-                            'Sign Up'
+                            'Đăng ký'
                         )}
                     </button>
                 </form>
 
                 <p className={styles.loginLink}>
-                    Already have an account? <a href="/login">Log in</a>
+                    Đã có tài khoản? <a href="/login">Đăng nhập</a>
                 </p>
             </div>
         </div>

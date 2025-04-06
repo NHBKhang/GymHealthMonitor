@@ -30,35 +30,33 @@
             </form>
         </div>
 
-        <form th:action="@{/users/delete}" method="post">
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered text-center">
-                    <thead class="table-dark">
-                        <tr>
-                            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
-                            <th>Tên tài khoản</th>
-                            <th>Họ</th>
-                            <th>Tên</th>
-                            <th>Email</th>
-                            <th>Số điện thoại</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="user : ${users}">
-                            <td><input type="checkbox" th:value="${user.id}"></td>
-                            <td><a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.username}"></a></td>
-                            <td th:text="${user.firstName}"></td>
-                            <td th:text="${user.lastName}"></td>
-                            <td th:text="${user.email}"></td>
-                            <td th:text="${user.phone}"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(users)}">
-                            <td colspan="6">Không có thành viên nào.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </form>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                        <th>Tên tài khoản</th>
+                        <th>Họ</th>
+                        <th>Tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td><input type="checkbox" th:value="${user.id}"></td>
+                        <td><a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.username}"></a></td>
+                        <td th:text="${user.firstName}"></td>
+                        <td th:text="${user.lastName}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.phone}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(users)}">
+                        <td colspan="6">Không có thành viên nào.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="text-end fw-bold mb-1">
             Tổng số thành viên: <span th:text="${totalUsers}"></span>
         </div>
@@ -67,19 +65,19 @@
     </main>
 
     <div th:replace="base :: footer"></div>
-    
+
     <script th:inline="javascript">
         function deleteUsers() {
             if (confirm('Bạn có chắc chắn muốn xóa các thành viên đã chọn?')) {
                 const ids = Array.from(document.querySelectorAll("tbody input[type='checkbox']:checked"))
-                                  .map(checkbox => Number(checkbox.value));
+                    .map(checkbox => Number(checkbox.value));
 
                 if (ids.length === 0) {
                     showMessage('warning', 'Vui lòng chọn ít nhất một thành viên để xóa.');
                     return;
                 }
-                
-                fetch('/HealthMonitorApp/users/delete', {
+
+                fetch([[@{/users/delete}]], {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -89,8 +87,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        location.reload();
                         showMessage('success', 'Đã xóa các thành viên thành công!');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     } else {
                         showMessage('danger', 'Đã xảy ra lỗi khi xóa thành viên!');
                     }

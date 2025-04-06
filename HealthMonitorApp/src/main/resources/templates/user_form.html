@@ -14,7 +14,7 @@
     <div th:replace="base :: message"></div>
 
     <main class="container mt-3">
-        <h2 class="text-center mb-5">
+        <h2 class="text-center mb-4">
             <span th:text="${user.id != null} ? '✏️ Chỉnh Sửa Thành Viên' : '➕ Thêm Thành Viên'"></span>
         </h2>
 
@@ -135,8 +135,7 @@
                 <button type="submit" class="btn btn-success px-4 me-1">
                     <span th:text="${user.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
                 </button>
-                <button type="button" class="btn btn-danger px-4 me-1" 
-                        onclick="deleteUser()">🗑️ Xóa
+                <button type="button" class="btn btn-danger px-4 me-1" onclick="deleteUser()">🗑️ Xóa
                 </button>
                 <a th:href="@{/users}" class="btn btn-secondary px-4">❌ Hủy</a>
             </div>
@@ -182,23 +181,23 @@
     <script th:inline="javascript">
         function deleteUser() {
             if (confirm('Bạn có chắc chắn muốn xóa thành viên này?')) {
-                fetch('/HealthMonitorApp/users/delete/' + "[[${user.id}]]", {
+                fetch([[@{/users/delete/{id}(id=${user.id})}]], {
                     method: 'DELETE'
                 })
-                .then(response => {
-                    if (response.ok) {
-                        showMessage('success', response.json().message);
-                        setTimeout(() => {
-                            window.location.href = "/HealthMonitorApp/users";
-                        }, 1000);
-                    } else {
-                        showMessage('danger', 'Đã xảy ra lỗi khi xóa thành viên!');
-                    }
-                })     
-                .catch(error => {
-                    console.error('Error:', error);
-                    showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
-                });
+                    .then(response => {
+                        if (response.ok) {
+                            showMessage('success', 'Xóa thành viên thành công!');
+                            setTimeout(() => {
+                                window.location.href = [[@{/users}]];
+                            }, 1000);
+                        } else {
+                            showMessage('danger', 'Đã xảy ra lỗi khi xóa thành viên!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                    });
             }
         }
     </script>

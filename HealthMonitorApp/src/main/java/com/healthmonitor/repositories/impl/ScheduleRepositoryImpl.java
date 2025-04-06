@@ -1,7 +1,7 @@
 package com.healthmonitor.repositories.impl;
 
-import com.healthmonitor.pojo.Package;
-import com.healthmonitor.repositories.PackageRepository;
+import com.healthmonitor.pojo.Schedule;
+import com.healthmonitor.repositories.ScheduleRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class PackageRepositoryImpl implements PackageRepository {
+public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     private static final int PAGE_SIZE = 10;
 
@@ -26,11 +26,11 @@ public class PackageRepositoryImpl implements PackageRepository {
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<Package> getPackages(Map<String, String> params) {
+    public List<Schedule> getSchedules(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
-        CriteriaQuery<Package> q = b.createQuery(Package.class);
-        Root<Package> root = q.from(Package.class);
+        CriteriaQuery<Schedule> q = b.createQuery(Schedule.class);
+        Root<Schedule> root = q.from(Schedule.class);
         q.orderBy(b.desc(root.get("createdAt")));
         q.select(root);
 
@@ -68,40 +68,40 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public Package createOrUpdatePackage(Package pkg) {
+    public Schedule createOrUpdateSchedule(Schedule schedule) {
         Session s = factory.getObject().getCurrentSession();
 
-        if (pkg.getId() == null) {
-            s.persist(pkg);
+        if (schedule.getId() == null) {
+            s.persist(schedule);
         } else {
-            pkg = s.merge(pkg);
+            schedule = s.merge(schedule);
         }
 
-        return pkg;
+        return schedule;
     }
 
     @Override
-    public void deletePackage(int id) {
+    public void deleteSchedule(int id) {
         Session s = this.factory.getObject().getCurrentSession();
-        Package p = this.getPackageById(id);
-        if (p != null) {
-            s.remove(p);
+        Schedule scd = this.getScheduleById(id);
+        if (scd != null) {
+            s.remove(scd);
         }
     }
 
     @Override
-    public void deletePackages(List<Integer> ids) {
+    public void deleteSchedules(List<Integer> ids) {
         for (Integer id : ids) {
-            this.deletePackage(id);
+            this.deleteSchedule(id);
         }
     }
 
     @Override
-    public long countPackages(Map<String, String> params) {
+    public long countSchedules(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery<Long> q = b.createQuery(Long.class);
-        Root<Package> root = q.from(Package.class);
+        Root<Schedule> root = q.from(Schedule.class);
         q.select(b.count(root));
 
         if (params != null) {
@@ -125,22 +125,23 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public Package getPackageById(int id) {
+    public Schedule getScheduleById(int id) {
         Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Package.class, id);
+        return s.get(Schedule.class, id);
     }
 
     @Override
     public String generateNextCode() {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("SELECT MAX(s.id) FROM Package s", Integer.class);
+        Query q = s.createQuery("SELECT MAX(s.id) FROM Schedule s", Integer.class);
         Integer maxId = (Integer) q.getSingleResult();
 
         int nextId = (maxId != null) ? maxId + 1 : 1;
-        return "PKG" + String.format("%05d", nextId);
+        return "SCD" + String.format("%05d", nextId);
     }
 
     public static final int getPageSize() {
-        return PackageRepositoryImpl.PAGE_SIZE;
+        return ScheduleRepositoryImpl.PAGE_SIZE;
     }
+
 }

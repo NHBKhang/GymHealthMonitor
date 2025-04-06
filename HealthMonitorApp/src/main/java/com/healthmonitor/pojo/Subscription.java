@@ -4,18 +4,46 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "subscriptions")
 @NamedQueries({
-        @NamedQuery(name = "Subscription.findAll", query = "SELECT s FROM Subscription s"),
-        @NamedQuery(name = "Subscription.findById", query = "SELECT s FROM Subscription s WHERE s.id = :id"),
-        @NamedQuery(name = "Subscription.findByMember", query = "SELECT s FROM Subscription s WHERE s.member.id = :memberId"),
-        @NamedQuery(name = "Subscription.findByStatus", query = "SELECT s FROM Subscription s WHERE s.status = :status"),
-        @NamedQuery(name = "Subscription.findActiveSubscriptions",
-                query = "SELECT s FROM Subscription s WHERE s.status = 'active' AND s.endDate > CURRENT_DATE")
+    @NamedQuery(name = "Subscription.findAll", query = "SELECT s FROM Subscription s"),
+    @NamedQuery(name = "Subscription.findById", query = "SELECT s FROM Subscription s WHERE s.id = :id"),
+    @NamedQuery(name = "Subscription.findByMember", query = "SELECT s FROM Subscription s WHERE s.member.id = :memberId"),
+    @NamedQuery(name = "Subscription.findByStatus", query = "SELECT s FROM Subscription s WHERE s.status = :status"),
+    @NamedQuery(name = "Subscription.findActiveSubscriptions",
+            query = "SELECT s FROM Subscription s WHERE s.status = 'active' AND s.endDate > CURRENT_DATE")
 })
 public class Subscription implements Serializable {
+
+    public enum SubscriptionStatus {
+        ACTIVE("Hoạt động", "badge bg-success"),
+        INACTIVE("Không hoạt động", "badge bg-secondary"),
+        EXPIRED("Hết hạn", "badge bg-danger"),
+        UPCOMING("Sắp tới", "badge bg-info"),
+        CANCELLED("Đã hủy", "badge bg-warning"),
+        PAUSED("Tạm dừng", "badge bg-warning"),
+        PENDING("Chờ duyệt", "badge bg-primary");
+
+        private final String description;
+        private final String badgeClass;
+
+        SubscriptionStatus(String description, String badgeClass) {
+            this.description = description;
+            this.badgeClass = badgeClass;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getBadgeClass() {
+            return badgeClass;
+        }
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -25,29 +53,38 @@ public class Subscription implements Serializable {
     @Column(name = "id")
     private Integer id;
 
+    @Basic(optional = false)
+    @Column(name = "code", nullable = false, unique = true)
+    private String code;
+
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User member;
 
     @JoinColumn(name = "package_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Package gymPackage ;
+    private Package gymPackage;
 
     @Column(name = "start_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
     @Column(name = "end_date", nullable = true)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
     @Basic(optional = false)
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private SubscriptionStatus status;
 
-    @Basic(optional = false)
+    @Column(name = "description", nullable = true)
+    private String description;
+
     @Column(name = "created_at", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subscription")
@@ -63,15 +100,17 @@ public class Subscription implements Serializable {
         this.id = id;
     }
 
-    public Subscription(Integer id, User member, Package gymPackage, Date startDate,
-                        Date endDate, String status, Date createdAt) {
+    public Subscription(Integer id, String code, User member, Package gymPackage, Date startDate,
+            Date endDate, SubscriptionStatus status, Date createdAt, String description) {
         this.id = id;
+        this.code = code;
         this.member = member;
         this.gymPackage = gymPackage;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
         this.createdAt = createdAt;
+        this.description = description;
     }
 
     // Getters and setters
@@ -81,6 +120,14 @@ public class Subscription implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public User getMember() {
@@ -115,11 +162,11 @@ public class Subscription implements Serializable {
         this.endDate = endDate;
     }
 
-    public String getStatus() {
+    public SubscriptionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(SubscriptionStatus status) {
         this.status = status;
     }
 
@@ -129,6 +176,14 @@ public class Subscription implements Serializable {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Set<Payment> getPaymentSet() {
@@ -165,6 +220,6 @@ public class Subscription implements Serializable {
 
     @Override
     public String toString() {
-        return "com.healthmonitor.pojo.Subscription[ id=" + id + " ]";
+        return "com.healthmonitor.pojo.Subscription[ code=" + code + " ]";
     }
 }

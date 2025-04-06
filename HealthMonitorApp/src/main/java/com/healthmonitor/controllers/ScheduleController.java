@@ -1,8 +1,8 @@
 package com.healthmonitor.controllers;
 
-import com.healthmonitor.pojo.Package;
-import com.healthmonitor.repositories.impl.PackageRepositoryImpl;
-import com.healthmonitor.services.PackageService;
+import com.healthmonitor.pojo.Schedule;
+import com.healthmonitor.repositories.impl.ScheduleRepositoryImpl;
+import com.healthmonitor.services.ScheduleService;
 import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
@@ -23,24 +23,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/packages")
-public class PackageController {
+@RequestMapping("/schedules")
+public class ScheduleController {
 
     @Autowired
-    private PackageService packageService;
+    private ScheduleService scheduleService;
 
     @GetMapping
     public String packages(Model model, @RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
         try {
             int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-            int pageSize = PackageRepositoryImpl.getPageSize();
+            int pageSize = ScheduleRepositoryImpl.getPageSize();
 
-            long totalPackages = packageService.countPackages(params);
-            int totalPages = (int) Math.ceil((double) totalPackages / pageSize);
-            List<Package> packages = packageService.getPackages(params);
+            long totalSchedules = scheduleService.countSchedules(params);
+            int totalPages = (int) Math.ceil((double) totalSchedules / pageSize);
+            List<Schedule> schedules = scheduleService.getSchedules(params);
 
-            model.addAttribute("packages", packages);
-            model.addAttribute("totalPackages", totalPackages);
+            model.addAttribute("schedules", schedules);
+            model.addAttribute("totalSchedules", totalSchedules);
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("currentPage", page);
         } catch (NumberFormatException e) {
@@ -48,76 +48,81 @@ public class PackageController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi tải danh sách thành viên!");
         }
-        return "packages";
+        return "schedules";
     }
 
     @GetMapping("/add")
-    public String showAddPackageForm(Model model) {
-        Package p = new Package();
-        String generatedCode = packageService.generateNextCode();
-        p.setCode(generatedCode);
+    public String showAddScheduleForm(Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Schedule s = new Schedule();
+            String generatedCode = scheduleService.generateNextCode();
+            s.setCode(generatedCode);
 
-        model.addAttribute("package", p);
-        return "package_form";
+            model.addAttribute("schedule", s);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi hệ thống!");
+        }
+        return "schedule_form";
     }
 
     @PostMapping("/save")
-    public String savePackage(@Valid @ModelAttribute("package") Package pkg, BindingResult result,
+    public String saveSchedule(@Valid @ModelAttribute("schedule") Schedule schedule, BindingResult result,
             Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            model.addAttribute("package", pkg);
+            model.addAttribute("schedule", schedule);
+            System.out.print(result.getAllErrors());
             redirectAttributes.addFlashAttribute("error", "Lỗi hệ thống!");
-            if (pkg.getId() == null) {
-                return "redirect:/packages/add";
+            if (schedule.getId() == null) {
+                return "redirect:/schedules/add";
             } else {
-                return "redirect:/packages/edit/" + pkg.getId();
+                return "redirect:/schedules/edit/" + schedule.getId();
             }
         }
 
         try {
-            Package p;
-            if (pkg.getId() == null) {
+            Schedule s;
+            if (schedule.getId() == null) {
                 redirectAttributes.addFlashAttribute("success", "Thêm mới thành công!");
-                p = packageService.createOrUpdatePackage(pkg);
+                s = scheduleService.createOrUpdateSchedule(schedule);
             } else {
                 redirectAttributes.addFlashAttribute("success", "Cập nhật thành công!");
-                p = packageService.createOrUpdatePackage(pkg);
+                s = scheduleService.createOrUpdateSchedule(schedule);
             }
-            return "redirect:/packages/edit/" + p.getId();
+            return "redirect:/schedules/edit/" + s.getId();
         } catch (Exception e) {
             System.out.print(e);
             redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra, vui lòng thử lại!");
-            return "redirect:/packages/add";
+            return "redirect:/schedules/add";
         }
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditPackageForm(@PathVariable(value = "id") int id, Model model) {
-        Package pkg = packageService.getPackageById(id);
-        model.addAttribute("package", pkg);
-        return "package_form";
+    public String showEditScheduleForm(@PathVariable(value = "id") int id, Model model) {
+        Schedule s = scheduleService.getScheduleById(id);
+        model.addAttribute("schedule", s);
+        return "schedule_form";
     }
 
     @DeleteMapping("/delete/{id}")
     @ResponseBody
-    public ResponseEntity<?> deletePackage(@PathVariable(value = "id") int id) {
+    public ResponseEntity<?> deleteSchedule(@PathVariable(value = "id") int id) {
         try {
-            packageService.deletePackage(id);
+            scheduleService.deleteSchedule(id);
             return ResponseEntity.ok().body(Map.of("message", "Xóa gói tập thành công!"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Lỗi khi xóa gói tập."));
+            return ResponseEntity.badRequest().body(Map.of("message", "Lỗi khi xóa lịch tập."));
         }
     }
 
     @DeleteMapping("/delete")
     @ResponseBody
-    public ResponseEntity<?> deletePackages(@RequestBody Map<String, List<Integer>> request) {
+    public ResponseEntity<?> deleteSchedules(@RequestBody Map<String, List<Integer>> request) {
         List<Integer> ids = request.get("ids");
         if (ids == null || ids.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Không có ID nào được chọn để xóa."));
         }
 
-        packageService.deletePackages(ids);
+        scheduleService.deleteSchedules(ids);
         return ResponseEntity.ok().body(Map.of("message", "Xóa gói tập thành công!"));
     }
 

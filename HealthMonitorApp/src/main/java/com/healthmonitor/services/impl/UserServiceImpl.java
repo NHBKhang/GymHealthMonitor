@@ -5,6 +5,8 @@ import com.cloudinary.utils.ObjectUtils;
 import com.healthmonitor.pojo.Member;
 import com.healthmonitor.pojo.Trainer;
 import com.healthmonitor.pojo.User;
+import com.healthmonitor.pojo.User.Role;
+import com.healthmonitor.pojo.User.UserStatus;
 import com.healthmonitor.repositories.UserRepository;
 import com.healthmonitor.services.UserService;
 import java.io.IOException;
@@ -68,6 +70,14 @@ public class UserServiceImpl implements UserService {
                 Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 throw new RuntimeException("Error uploading file to Cloudinary", ex);
             }
+        }
+        
+        if (user.getRole() == null || user.getRoleName().isEmpty()) {
+            user.setRole(Role.MEMBER);
+        }
+        
+        if (user.getStatus() == null || user.getStatusName().isEmpty()) {
+            user.setStatus(UserStatus.ACTIVE);
         }
 
         return this.userRepository.createOrUpdateUser(user);

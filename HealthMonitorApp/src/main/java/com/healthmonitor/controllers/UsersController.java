@@ -30,18 +30,25 @@ public class UsersController {
     private UserService userService;
 
     @GetMapping
-    public String users(Model model, @RequestParam Map<String, String> params) {
-        int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-        int pageSize = UserRepositoryImpl.getPageSize();
+    public String users(Model model, @RequestParam Map<String, String> params,  
+            RedirectAttributes redirectAttributes) {
+        try {
+            int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
+            int pageSize = UserRepositoryImpl.getPageSize();
 
-        long totalUsers = userService.countUsers(params);
-        int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
-        List<User> users = userService.getUsers(params);
+            long totalUsers = userService.countUsers(params);
+            int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
+            List<User> users = userService.getUsers(params);
 
-        model.addAttribute("users", users);
-        model.addAttribute("totalUsers", totalUsers);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("currentPage", page);
+            model.addAttribute("users", users);
+            model.addAttribute("totalUsers", totalUsers);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("currentPage", page);
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra, vui lòng thử lại!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi tải danh sách thành viên!");
+        }
         return "users";
     }
 
@@ -57,12 +64,22 @@ public class UsersController {
         if (result.hasErrors()) {
             model.addAttribute("user", user);
             redirectAttributes.addFlashAttribute("error", "Lỗi hệ thống!");
-            return "redirect:/users/edit/" + user.getId();
+            if (user.getId() == null) {
+                return "redirect:/users/add";
+            } else {
+                return "redirect:/users/edit/" + user.getId();
+            }
         }
 
         try {
-            User u = userService.createOrUpdateUser(user);
-            redirectAttributes.addFlashAttribute("success", "Cập nhật thành công!");
+            User u;
+            if (user.getId() == null) {
+                u = userService.createOrUpdateUser(user);
+                redirectAttributes.addFlashAttribute("success", "Thêm mới thành công!");
+            } else {
+                u = userService.createOrUpdateUser(user);
+                redirectAttributes.addFlashAttribute("success", "Cập nhật thành công!");
+            }
             return "redirect:/users/edit/" + u.getId();
         } catch (org.hibernate.exception.ConstraintViolationException e) {
             redirectAttributes.addFlashAttribute("error", "Tên người dùng đã tồn tại!");

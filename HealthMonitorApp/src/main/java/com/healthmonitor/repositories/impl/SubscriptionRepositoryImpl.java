@@ -1,7 +1,7 @@
 package com.healthmonitor.repositories.impl;
 
-import com.healthmonitor.pojo.Package;
-import com.healthmonitor.repositories.PackageRepository;
+import com.healthmonitor.pojo.Subscription;
+import com.healthmonitor.repositories.SubscriptionRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class PackageRepositoryImpl implements PackageRepository {
+public class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
     private static final int PAGE_SIZE = 10;
 
@@ -26,11 +26,11 @@ public class PackageRepositoryImpl implements PackageRepository {
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<Package> getPackages(Map<String, String> params) {
+    public List<Subscription> getSubscriptions(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
-        CriteriaQuery<Package> q = b.createQuery(Package.class);
-        Root<Package> root = q.from(Package.class);
+        CriteriaQuery<Subscription> q = b.createQuery(Subscription.class);
+        Root<Subscription> root = q.from(Subscription.class);
         q.orderBy(b.desc(root.get("createdAt")));
         q.select(root);
 
@@ -68,40 +68,31 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public Package createOrUpdatePackage(Package pkg) {
+    public Subscription getSubscriptionById(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.get(Subscription.class, id);
+
+    }
+
+    @Override
+    public Subscription createOrUpdateSubscription(Subscription subscription) {
         Session s = factory.getObject().getCurrentSession();
 
-        if (pkg.getId() == null) {
-            s.persist(pkg);
+        if (subscription.getId() == null) {
+            s.persist(subscription);
         } else {
-            pkg = s.merge(pkg);
+            subscription = s.merge(subscription);
         }
 
-        return pkg;
+        return subscription;
     }
 
     @Override
-    public void deletePackage(int id) {
-        Session s = this.factory.getObject().getCurrentSession();
-        Package p = this.getPackageById(id);
-        if (p != null) {
-            s.remove(p);
-        }
-    }
-
-    @Override
-    public void deletePackages(List<Integer> ids) {
-        for (Integer id : ids) {
-            this.deletePackage(id);
-        }
-    }
-
-    @Override
-    public long countPackages(Map<String, String> params) {
+    public long countSubscriptions(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery<Long> q = b.createQuery(Long.class);
-        Root<Package> root = q.from(Package.class);
+        Root<Subscription> root = q.from(Subscription.class);
         q.select(b.count(root));
 
         if (params != null) {
@@ -122,25 +113,20 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
 
         return s.createQuery(q).getSingleResult();
-    }
 
-    @Override
-    public Package getPackageById(int id) {
-        Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Package.class, id);
     }
 
     @Override
     public String generateNextCode() {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("SELECT MAX(s.id) FROM Package s", Integer.class);
+        Query q = s.createQuery("SELECT MAX(s.id) FROM Subscription s", Integer.class);
         Integer maxId = (Integer) q.getSingleResult();
 
         int nextId = (maxId != null) ? maxId + 1 : 1;
-        return "PKG" + String.format("%05d", nextId);
+        return "SUB" + String.format("%05d", nextId);
     }
 
     public static final int getPageSize() {
-        return PackageRepositoryImpl.PAGE_SIZE;
+        return SubscriptionRepositoryImpl.PAGE_SIZE;
     }
 }

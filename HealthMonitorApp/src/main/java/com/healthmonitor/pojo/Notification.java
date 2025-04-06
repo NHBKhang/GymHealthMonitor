@@ -3,6 +3,7 @@ package com.healthmonitor.pojo;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "notifications")
@@ -50,9 +51,8 @@ public class Notification implements Serializable {
     @Column(name = "status")
     private NotificationStatus status;
 
-    @Basic(optional = false)
     @Column(name = "created_at", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date createdAt;
 
     public Notification() {

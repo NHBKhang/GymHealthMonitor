@@ -3,24 +3,51 @@ package com.healthmonitor.pojo;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "schedules")
 @NamedQueries({
-        @NamedQuery(name = "Schedule.findAll", query = "SELECT s FROM Schedule s"),
-        @NamedQuery(name = "Schedule.findById", query = "SELECT s FROM Schedule s WHERE s.id = :id"),
-        @NamedQuery(name = "Schedule.findByMember",
-                query = "SELECT s FROM Schedule s WHERE s.member.id = :memberId"),
-        @NamedQuery(name = "Schedule.findByPT",
-                query = "SELECT s FROM Schedule s WHERE s.pt.id = :ptId"),
-        @NamedQuery(name = "Schedule.findBySubscription",
-                query = "SELECT s FROM Schedule s WHERE s.subscription.id = :subscriptionId"),
-        @NamedQuery(name = "Schedule.findByType", query = "SELECT s FROM Schedule s WHERE s.type = :type"),
-        @NamedQuery(name = "Schedule.findByStatus", query = "SELECT s FROM Schedule s WHERE s.status = :status"),
-        @NamedQuery(name = "Schedule.findUpcomingSessions",
-                query = "SELECT s FROM Schedule s WHERE s.startTime > CURRENT_DATE ORDER BY s.startTime")
+    @NamedQuery(name = "Schedule.findAll", query = "SELECT s FROM Schedule s"),
+    @NamedQuery(name = "Schedule.findById", query = "SELECT s FROM Schedule s WHERE s.id = :id"),
+    @NamedQuery(name = "Schedule.findByMember",
+            query = "SELECT s FROM Schedule s WHERE s.member.id = :memberId"),
+    @NamedQuery(name = "Schedule.findByTrainer",
+            query = "SELECT s FROM Schedule s WHERE s.trainer.id = :trainerId"),
+    @NamedQuery(name = "Schedule.findBySubscription",
+            query = "SELECT s FROM Schedule s WHERE s.subscription.id = :subscriptionId"),
+    @NamedQuery(name = "Schedule.findByType", query = "SELECT s FROM Schedule s WHERE s.type = :type"),
+    @NamedQuery(name = "Schedule.findByStatus", query = "SELECT s FROM Schedule s WHERE s.status = :status"),
+    @NamedQuery(name = "Schedule.findUpcomingSessions",
+            query = "SELECT s FROM Schedule s WHERE s.startTime > CURRENT_DATE ORDER BY s.startTime")
 })
 public class Schedule implements Serializable {
+
+    public enum ScheduleStatus {
+        UPCOMING("Sắp tới", "badge bg-info"),
+        COMPLETED("Hoàn thành", "badge bg-success"),
+        CANCELLED("Hủy bỏ", "badge bg-danger"),
+        PENDING("Đang chờ", "badge bg-warning"),
+        RESCHEDULED("Đã dời", "badge bg-secondary");
+
+        private final String label;
+        private final String badgeClass;
+
+        ScheduleStatus(String label, String badgeClass) {
+            this.label = label;
+            this.badgeClass = badgeClass;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public String getBadgeClass() {
+            return badgeClass;
+        }
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -30,37 +57,46 @@ public class Schedule implements Serializable {
     @Column(name = "id")
     private Integer id;
 
+    @Basic(optional = false)
+    @Column(name = "code", nullable = false, unique = true)
+    @NotNull(message = "Mã lịch không được để trống!")
+    private String code;
+
     @JoinColumn(name = "subscription_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Subscription subscription;
 
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User member;
 
-    @JoinColumn(name = "pt_id", referencedColumnName = "id")
+    @JoinColumn(name = "trainer_id", referencedColumnName = "id")
     @ManyToOne
-    private User pt;
+    private User trainer;
 
     @Column(name = "start_time", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date startTime;
 
     @Column(name = "end_time", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date endTime;
 
-    @Basic(optional = false)
-    @Column(name = "type")
+    @Column(name = "type", nullable = true)
     private String type;
 
     @Basic(optional = false)
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ScheduleStatus status;
 
-    @Basic(optional = false)
+    @Column(name = "description", nullable = true)
+    private String description;
+
     @Column(name = "created_at", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date createdAt;
 
     public Schedule() {
@@ -70,15 +106,19 @@ public class Schedule implements Serializable {
         this.id = id;
     }
 
-    public Schedule(Integer id, Subscription subscription, User member,
-                    Date startTime, Date endTime, String type, String status, Date createdAt) {
+    public Schedule(Integer id, String code, Subscription subscription, User member, User trainer,
+            Date startTime, Date endTime, String type, ScheduleStatus status, Date createdAt,
+            String description) {
         this.id = id;
+        this.code = code;
         this.subscription = subscription;
         this.member = member;
+        this.trainer = trainer;
         this.startTime = startTime;
         this.endTime = endTime;
         this.type = type;
         this.status = status;
+        this.description = description;
         this.createdAt = createdAt;
     }
 
@@ -89,6 +129,14 @@ public class Schedule implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Subscription getSubscription() {
@@ -107,12 +155,12 @@ public class Schedule implements Serializable {
         this.member = member;
     }
 
-    public User getPt() {
-        return pt;
+    public User getTrainer() {
+        return trainer;
     }
 
-    public void setPt(User pt) {
-        this.pt = pt;
+    public void setTrainer(User pt) {
+        this.trainer = pt;
     }
 
     public Date getStartTime() {
@@ -139,12 +187,20 @@ public class Schedule implements Serializable {
         this.type = type;
     }
 
-    public String getStatus() {
+    public ScheduleStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ScheduleStatus status) {
         this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreatedAt() {
@@ -173,6 +229,6 @@ public class Schedule implements Serializable {
 
     @Override
     public String toString() {
-        return "com.healthmonitor.pojo.Schedule[ id=" + id + " ]";
+        return "com.healthmonitor.pojo.Schedule[ code=" + code + " ]";
     }
 }

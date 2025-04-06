@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
+    <head>
     <th:block th:fragment="head">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,7 +27,7 @@
                         <span>Gym Management</span>
                     </a>
                     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav">
+                            data-bs-target="#navbarNav">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
@@ -41,7 +41,7 @@
                         <!-- Dropdown Quản lý Thành viên -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="memberDropdown" role="button"
-                                data-bs-toggle="dropdown">
+                               data-bs-toggle="dropdown">
                                 🏋️ Thành viên
                             </a>
                             <ul class="dropdown-menu">
@@ -53,7 +53,7 @@
                         <!-- Dropdown Gói tập -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="packageDropdown" role="button"
-                                data-bs-toggle="dropdown">
+                               data-bs-toggle="dropdown">
                                 🎟️ Gói tập
                             </a>
                             <ul class="dropdown-menu">
@@ -65,18 +65,18 @@
                         <!-- Dropdown Lịch tập -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="scheduleDropdown" role="button"
-                                data-bs-toggle="dropdown">
+                               data-bs-toggle="dropdown">
                                 📅 Lịch tập
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" th:href="@{/schedule}">Xem lịch tập</a></li>
+                                <li><a class="dropdown-item" th:href="@{/schedules}">Xem lịch tập</a></li>
                             </ul>
                         </li>
 
                         <!-- Dropdown Báo cáo & Phản hồi -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="reportDropdown" role="button"
-                                data-bs-toggle="dropdown">
+                               data-bs-toggle="dropdown">
                                 📊 Báo cáo
                             </a>
                             <ul class="dropdown-menu">
