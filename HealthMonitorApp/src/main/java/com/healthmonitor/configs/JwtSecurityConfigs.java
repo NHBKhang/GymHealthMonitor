@@ -64,7 +64,7 @@ class JwtSecurityConfigs {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")) // Bỏ qua CSRF cho API
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/login/**").permitAll()

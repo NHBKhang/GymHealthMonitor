@@ -1,15 +1,116 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title
+        th:text="${package.id != null} ? 'Chỉnh Sửa Gói tập | Gym Health Monitor' : ('Thêm Gói tập | Gym Health Monitor')">
+    </title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-3">
+        <h2 class="text-center mb-4">
+            <span th:text="${package.id != null} ? '✏️ Chỉnh Sửa Gói tập' : '➕ Thêm Gói tập'"></span>
+        </h2>
+
+        <form th:action="@{/packages/save}" method="post" th:object="${package}"
+            class="p-4 border rounded shadow-sm bg-light" enctype="multipart/form-data">
+            <input type="hidden" th:if="${package.id != null}" th:field="*{id}" />
+
+            <div class="mb-3">
+                <label for="code" class="form-label">Mã gói <span class="text-danger">*</span></label>
+                <input type="text" id="code" th:field="*{code}" class="form-control" required readonly>
+                <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+            </div>
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Tên gói <span class="text-danger">*</span></label>
+                <input type="text" id="name" th:field="*{name}" class="form-control" required>
+                <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="price" class="form-label">Giá gói (VND)</label>
+                    <input type="number" id="price" th:field="*{price}" class="form-control" min="100" max="10000000000"
+                        step="100">
+                    <p class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="ptSessions" class="form-label">Số buổi tập</label>
+                    <input type="number" id="ptSessions" th:field="*{ptSessions}" class="form-control" min="1"
+                        max="1000" step="1">
+                    <p class="text-danger" th:if="${#fields.hasErrors('ptSessions')}" th:errors="*{ptSessions}"></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="duration" class="form-label">Loại gói</label>
+                    <select id="duration" th:field="*{duration}" class="form-select">
+                        <option value="MONTHLY" selected>Gói tháng</option>
+                        <option value="QUARTERLY">Gói quý</option>
+                        <option value="YEARLY">Gói năm</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">Trạng thái</label>
+                    <select id="status" th:field="*{status}" class="form-select">
+                        <option value="ACTIVE" selected>Hoạt động</option>
+                        <option value="INACTIVE">Không hoạt động</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Mô tả</label>
+                <textarea id="description" th:field="*{description}" class="form-control"
+                    rows="3"></textarea>
+            </div>
+
+            <div class="text-end my-2">
+                <button type="submit" class="btn btn-success px-4 me-1">
+                    <span th:text="${package.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
+                </button>
+                <button type="button" class="btn btn-danger px-4 me-1" onclick="deletePackage()">🗑️ Xóa
+                </button>
+                <a th:href="@{/packages}" class="btn btn-secondary px-4">❌ Hủy</a>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    
+    <script th:inline="javascript">
+        function deletePackage() {
+            if (confirm('Bạn có chắc chắn muốn xóa gói tập này?')) {
+                fetch([[@{/packages/delete/{id}(id=${package.id})}]], {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            showMessage('success', 'Xóa gói tập thành công!');
+                            setTimeout(() => {
+                                window.location.href = [[@{/packages}]];
+                            }, 1000);
+                        } else {
+                            showMessage('danger', 'Đã xảy ra lỗi khi xóa gói tập!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                    });
+            }
+        }
+    </script>
+</body>
+
 </html>

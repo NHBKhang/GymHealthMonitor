@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.web.multipart.MultipartFile;
 
 @Entity
@@ -84,8 +85,7 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @Basic(optional = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
@@ -214,6 +214,10 @@ public class User implements Serializable {
         return status;
     }
 
+    public String getStatusName() {
+        return status.name();
+    }
+
     public void setStatus(UserStatus status) {
         this.status = status;
     }
@@ -268,6 +272,6 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "com.dht.pojo.User[ id=" + id + " ]";
+        return "com.healthmonitor.pojo.User[ id=" + id + " ]";
     }
 }

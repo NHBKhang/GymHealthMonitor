@@ -3,6 +3,7 @@ package com.healthmonitor.pojo;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "payments")
@@ -23,6 +24,10 @@ public class Payment implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+
+    @Basic(optional = false)
+    @Column(name = "code", nullable = false, unique = true)
+    private String code;
 
     @JoinColumn(name = "subscription_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -46,9 +51,8 @@ public class Payment implements Serializable {
     @Column(name = "description", nullable = true)
     private String description;
 
-    @Basic(optional = false)
     @Column(name = "created_at", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date createdAt;
 
     public Payment() {
@@ -58,9 +62,10 @@ public class Payment implements Serializable {
         this.id = id;
     }
 
-    public Payment(Integer id, Subscription subscription, Double amount,
+    public Payment(Integer id, String code, Subscription subscription, Double amount,
                    String method, String status, Date createdAt, String description) {
         this.id = id;
+        this.code = code;
         this.subscription = subscription;
         this.amount = amount;
         this.method = method;
@@ -76,6 +81,14 @@ public class Payment implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Subscription getSubscription() {
@@ -152,6 +165,6 @@ public class Payment implements Serializable {
 
     @Override
     public String toString() {
-        return "com.healthmonitor.pojo.Payment[ id=" + id + " ]";
+        return "com.healthmonitor.pojo.Payment[ code=" + code + " ]";
     }
 }

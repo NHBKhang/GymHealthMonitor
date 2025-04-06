@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Quản lý Lịch Tập | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-4">
+        <h2 class="text-center mb-3">🗓️️ Danh sách Lịch Tập</h2>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <a th:href="@{/schedules/add}" class="btn btn-success me-1">➕ Thêm</a>
+
+                <button type="submit" id="deleteButton" class="btn btn-danger"
+                    onclick="deleteSchedules()" disabled>
+                    🗑️ Xóa
+                </button>
+            </div>
+
+            <form th:action="@{/schedules}" method="get" class="mb-3 d-flex">
+                <input type="text" name="kw" th:value="${kw}" class="form-control me-2 w-auto"
+                    placeholder="🔍 Tìm kiếm...">
+                <button type="submit" class="btn btn-primary w-auto">Tìm kiếm</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                        <th>Mã lịch tập</th>
+                        <th>Thành viên</th>
+                        <th>Huấn luyện viên</th>
+                        <th>Thời gian bắt đầu</th>
+                        <th>Thời gian kết thúc</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="s : ${schedules}">
+                        <td><input type="checkbox" th:value="${s.id}"></td>
+                        <td><a th:href="@{/schedules/edit/{id}(id=${s.id})}" th:text="${s.code}"></a></td>
+                        <td>
+                            <span th:if="${s.member != null}" th:text="${s.member.firstName + ' ' + s.member.lastName}"></span>
+                            <span th:unless="${s.member != null}">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${s.trainer != null}" th:text="${s.trainer.firstName + ' ' + s.trainer.lastName}"></span>
+                            <span th:unless="${s.trainer != null}">-</span>
+                        </td>
+                        <td th:text="${#dates.format(s.startTime, 'HH:mm dd/MM/yyyy')}"></td>
+                        <td th:text="${#dates.format(s.endTime, 'HH:mm dd/MM/yyyy')}"></td>
+                        <td>
+                            <span th:text="${s.status.description}" 
+                                  th:class="${s.status.badgeClass}"></span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(schedules)}">
+                        <td colspan="6">Không có lịch tập nào.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end fw-bold mb-1">
+            Tổng số lịch tập: <span th:text="${totalSchedules}"></span>
+        </div>
+
+        <!-- <div th:replace="base :: pagination"></div> -->
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script th:inline="javascript">
+        function deleteSchedules() {
+            if (confirm('Bạn có chắc chắn muốn xóa các lịch tập đã chọn?')) {
+                const ids = Array.from(document.querySelectorAll("tbody input[type='checkbox']:checked"))
+                    .map(checkbox => Number(checkbox.value));
+
+                if (ids.length === 0) {
+                    showMessage('warning', 'Vui lòng chọn ít nhất một lịch tập để xóa.');
+                    return;
+                }
+
+                fetch([[@{/schedules/delete}]], {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ids: ids })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        showMessage('success', 'Đã xóa các lịch tập thành công!');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        showMessage('danger', 'Đã xảy ra lỗi khi xóa lịch tập!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>

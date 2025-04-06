@@ -3,6 +3,7 @@ package com.healthmonitor.pojo;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "progress")
@@ -36,9 +37,8 @@ public class Progress implements Serializable {
     @ManyToOne(optional = false)
     private User pt;
 
-    @Basic(optional = false)
     @Column(name = "date")
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date date;
 
     @Column(name = "weight", nullable = true)

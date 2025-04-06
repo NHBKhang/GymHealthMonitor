@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Đăng ký gói tập | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-4">
+        <h2 class="text-center w-100 mb-3">📦 Đăng ký gói tập</h2>
+
+        <div class="d-flex justify-content-end align-items-center mb-1">
+            <form th:action="@{/subscriptions}" method="get" class="mb-3 d-flex">
+                <input type="text" name="kw" th:value="${kw}" class="form-control me-2 w-auto"
+                       placeholder="🔍 Tìm kiếm...">
+                <button type="submit" class="btn btn-primary w-auto">Tìm kiếm</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                        <th>Mã đăng ký</th>
+                        <th>Mã gói tập</th>
+                        <th>Người đăng ký</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sub : ${subscriptions}">
+                        <td><input type="checkbox" th:value="${sub.id}"></td>
+                        <td>
+                            <a th:href="@{/subscriptions/edit/{id}(id=${sub.id})}" th:text="${sub.code}"></a>
+                        </td>
+                        <td>
+                            <a th:href="@{/packages/edit/{id}(id=${sub.gymPackage.id})}" th:text="${sub.gymPackage.code}"></a>
+                        </td>
+                        <td>
+                            <span th:if="${sub.member != null}" th:text="${sub.member.firstName + ' ' + sub.member.lastName}"></span>
+                            <span th:unless="${sub.member != null}">-</span>
+                        </td>
+                        <td th:text="${#dates.format(sub.startDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${#dates.format(sub.endDate, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <span th:text="${sub.status.description}" 
+                                  th:class="${sub.status.badgeClass}"></span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(subscriptions)}">
+                        <td colspan="7">Không có đăng ký gói tập nào.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end fw-bold mb-1">
+            Tổng số đăng ký: <span th:text="${totalSubscriptions}"></span>
+        </div>
+
+        <div th:replace="base :: pagination"></div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script th:inline="javascript">
+
+    </script>
+</body>
+
+</html>

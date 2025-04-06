@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title th:text="${subscription.id != null} ? 'Chỉnh Sửa Đăng Ký Gói tập | Gym Health Monitor' : '➕ Đăng Ký Gói tập | Gym Health Monitor'"></title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-3">
+        <h2 class="text-center mb-4">
+            <span th:text="${subscription.id != null} ? '✏️ Chỉnh Sửa Đăng Ký Gói tập' : '➕ Đăng Ký Gói tập'"></span>
+        </h2>
+
+        <form th:action="@{/subscriptions/save}" method="post" th:object="${subscription}"
+              class="p-4 border rounded shadow-sm bg-light" enctype="multipart/form-data">
+            <input type="hidden" th:if="${subscription.id != null}" th:field="*{id}" />
+
+
+            <div class="mb-3">
+                <label for="code" class="form-label">Mã đăng ký <span class="text-danger">*</span></label>
+                <input id="code" th:field="*{code}" class="form-control" required readonly/>
+                <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="gymPackage" class="form-label">Gói tập <span class="text-danger">*</span></label>
+                    <div id="package-dropdown">
+                        <input id="gymPackage" th:field="*{gymPackage.id}" required/>
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('gymPackage')}" th:errors="*{gymPackage}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="member" class="form-label">Thành viên <span class="text-danger">*</span></label>
+                    <div id="member-dropdown">
+                        <input id="member" th:field="*{member.id}" required/>
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('member')}" th:errors="*{member}"></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="startDate" class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
+                    <input type="date" id="startDate" th:field="*{startDate}" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" class="form-control" required>
+                    <p class="text-danger" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="endDate" class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
+                    <input type="date" id="endDate" th:field="*{endDate}" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" class="form-control" required>
+                    <p class="text-danger" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">Trạng thái</label>
+                    <select id="status" th:field="*{status}" class="form-select">
+                        <option th:each="status : ${T(com.healthmonitor.pojo.Subscription.SubscriptionStatus).values()}" 
+                                th:value="${status}" 
+                                th:text="${status.description}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Ghi chú</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="text-end my-2">
+                <button type="submit" class="btn btn-success px-4 me-1">
+                    <span th:text="${subscription.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
+                </button>
+                <a th:href="@{/subscriptions}" class="btn btn-secondary px-4">❌ Hủy</a>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    
+    <script th:inline="javascript">
+        renderDynamicDropdown({
+            containerId: 'member-dropdown',
+            apiUrl: [[@{/api/users}]],
+            buildOptionText: item => {
+                const text = `${item.first_name || ''} ${item.last_name || ''}`.trim();
+                return text !== '' ? text : (item.username || '');
+            },
+            value: {
+                first_name: [[${subscription.member.firstName}]],
+                last_name: [[${subscription.member.lastName}]]
+            }
+        });
+        renderDynamicDropdown({
+            containerId: 'package-dropdown',
+            apiUrl: [[@{/api/packages}]],
+            buildOptionText: item => item.name,
+            value: {
+                name: [[${subscription.gymPackage.name}]]
+            }
+        });
+    </script>
+</body>
+
+</html>

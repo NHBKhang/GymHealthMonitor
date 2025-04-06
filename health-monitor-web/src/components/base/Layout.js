@@ -17,7 +17,7 @@ const Layout = () => {
                     <Outlet />
                 </section>
 
-                {!currentUser &&
+                {currentUser &&
                     <aside className={styles.sidebar}>
                         <section>
                             <Notifications />

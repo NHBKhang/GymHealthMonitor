@@ -2,19 +2,44 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     min-height: 100vh;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 2rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.logoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+}
+
+.logoContainer img {
+    width: 60px;
+    height: auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.logoContainer h1 {
+    font-size: 2.25rem;
+    font-weight: 600;
+    color: #2b2d42;
+    letter-spacing: -0.5px;
+    animation: fadeIn 0.6s ease-in-out;
+    margin: 0;
+}
+
 .signupCard {
     background: white;
-    padding: 2.5rem;
+    padding: 1.5rem 2.5rem;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     width: 100%;
-    max-width: 520px;
+    max-width: 750px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -45,11 +70,11 @@
 
 .formRow .formGroup {
     flex: 1;
+    margin: 0;
 }
 
-
 .formGroup {
-    margin-bottom: 1.5rem;
+    margin: 2rem 0;
     position: relative;
 }
 
@@ -75,7 +100,7 @@
 
 .formGroup input:not([type="file"]) {
     width: 100%;
-    padding: 1rem;
+    padding: 0.55rem;
     border: 2px solid #edf2f4;
     border-radius: 8px;
     font-size: 1rem;
@@ -89,7 +114,6 @@
     background-color: white;
     box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
 }
-
 
 .avatarUpload {
     display: flex;
@@ -165,7 +189,7 @@
 
 .submitButton {
     width: 100%;
-    padding: 1rem;
+    padding: 0.55rem;
     background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
     color: white;
     border: none;
@@ -184,6 +208,11 @@
     gap: 0.5rem;
 }
 
+.submitError {
+    font-size: 1rem;
+    text-align: center;
+}
+
 .submitButton:hover:not(:disabled) {
     background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
     transform: translateY(-2px);
@@ -200,7 +229,6 @@
     cursor: not-allowed;
 }
 
-/* Spinner */
 .spinner {
     width: 18px;
     height: 18px;
@@ -210,7 +238,6 @@
     animation: spin 1s ease-in-out infinite;
 }
 
-/* Login Link */
 .loginLink {
     text-align: center;
     margin-top: 1.5rem;
@@ -288,8 +315,6 @@
     }
 }
 
-/* Add these new styles to your existing Signup.module.css */
-
 .passwordInput {
     position: relative;
 }
@@ -301,18 +326,18 @@
 .togglePassword {
     position: absolute;
     right: 10px;
-    top: 50%;
+    top: calc(50% - 2px);
     transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
     padding: 5px;
-    color: #6c757d;
+    color: #494d51;
 }
 
 .togglePassword svg {
-    width: 20px;
-    height: 20px;
+    width: 21px;
+    height: 21px;
     fill: currentColor;
 }
 
@@ -320,7 +345,6 @@
     color: #4361ee;
 }
 
-/* Add to your existing animations */
 @keyframes fadeIn {
     from {
         opacity: 0;

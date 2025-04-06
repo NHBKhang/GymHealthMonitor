@@ -1,4 +1,4 @@
-.login-container {
+.loginContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7,73 +7,85 @@
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 2rem;
+  font-size: 14px;
 }
 
-.login-container form {
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+}
+
+.logoContainer img {
+  width: 60px;
+  height: auto;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.logoContainer h1 {
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #2b2d42;
+  letter-spacing: -0.5px;
+  animation: fadeIn 0.6s ease-in-out;
+  margin: 0;
+}
+
+.loginContainer form {
   background: white;
-  padding: 2.5rem;
+  padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 420px;
+  max-width: 550px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-size: 14px;
 }
 
-.login-container form:hover {
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-}
-
-.login-container h1 {
+.loginTitle {
   color: #2b2d42;
-  margin-bottom: 2rem;
-  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   text-align: center;
-  letter-spacing: -0.5px;
 }
 
-.form-group {
-  margin-bottom: 1.75rem;
-  position: relative;
+.formGroup {
+  margin: 2rem 0;
 }
 
-.form-group label {
+.formGroup label {
   display: block;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.4rem;
   color: #4a4e69;
   font-weight: 500;
   font-size: 0.95rem;
 }
 
-.form-group input {
+.formGroup input {
   width: 100%;
-  padding: 1rem;
+  padding: 0.55rem;
   border: 2px solid #edf2f4;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
   background-color: #f8f9fa;
 }
 
-.form-group input:focus {
-  outline: none;
-  border-color: #4361ee;
-  background-color: white;
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
-}
-
-.error-message {
+.errorMessage {
   color: #d90429;
-  margin: -0.75rem 0 1.25rem;
   font-size: 0.85rem;
   text-align: center;
   font-weight: 500;
   animation: fadeIn 0.3s ease-out;
 }
 
-.login-button {
+.loginButton {
   width: 100%;
-  padding: 1rem;
+  padding: 0.55rem;
   background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
   color: white;
   border: none;
@@ -87,18 +99,18 @@
   overflow: hidden;
 }
 
-.login-button:hover {
+.loginButton:hover {
   background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
   transform: translateY(-2px);
   box-shadow: 0 7px 20px rgba(58, 12, 163, 0.25);
 }
 
-.login-button:active {
+.loginButton:active {
   transform: translateY(0);
   box-shadow: 0 4px 12px rgba(58, 12, 163, 0.2);
 }
 
-.login-button::after {
+.loginButton::after {
   content: '';
   position: absolute;
   top: 0;
@@ -112,8 +124,26 @@
   transition: opacity 0.3s ease;
 }
 
-.login-button:hover::after {
+.loginButton:hover::after {
   opacity: 1;
+}
+
+.loginLink {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #6c757d;
+}
+
+.loginLink a {
+  color: #4361ee;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.loginLink a:hover {
+  color: #3a0ca3;
+  text-decoration: underline;
 }
 
 @keyframes fadeIn {
@@ -129,45 +159,24 @@
 }
 
 @media (max-width: 480px) {
-  .login-container {
+  .loginContainer {
     padding: 1.5rem;
   }
 
-  .login-container form {
-    padding: 2rem 1.5rem;
+  .loginContainer form {
+    padding: 1.5rem;
+    font-size: 13px;
   }
 
-  .login-container h1 {
-    font-size: 1.8rem;
+  .logoContainer h1 {
+    font-size: 1.4rem;
   }
 
-  .form-group input {
-    padding: 0.85rem;
+  .formGroup input {
+    padding: 0.75rem;
   }
 
-  .login-button {
-    padding: 0.9rem;
+  .loginButton {
+    padding: 0.8rem;
   }
-}
-
-.login-container::before {
-  content: '';
-  position: fixed;
-  top: -50px;
-  right: -50px;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
-  z-index: 0;
-}
-
-.login-container::after {
-  content: '';
-  position: fixed;
-  bottom: -80px;
-  left: -80px;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(58, 12, 163, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
-  z-index: 0;
 }

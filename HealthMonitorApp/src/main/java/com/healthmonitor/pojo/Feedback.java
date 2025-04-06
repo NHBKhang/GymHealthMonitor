@@ -3,6 +3,7 @@ package com.healthmonitor.pojo;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "feedback")
@@ -37,9 +38,8 @@ public class Feedback implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-    @Basic(optional = false)
     @Column(name = "created_at", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date createdAt;
 
     public Feedback() {
