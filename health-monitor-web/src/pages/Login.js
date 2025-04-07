@@ -1,29 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Login.module.css';
-import API, { endpoints } from '../configs/API';
+import API, { useAuthAPI, endpoints } from '../configs/API';
+import { useUserContext } from '../configs/UserContext';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { state, dispatch, saveToken } = useUserContext();
+    const authAPI = useAuthAPI();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (state.currentUser) {
+            navigate('/');
+        }
+    }, [state.currentUser, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            let res = await API.post(endpoints.login,
-                { username, password }, {
+            let res = await API.post(endpoints.login, { username, password }, {
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
+            saveToken(res.data);
 
             if (res.status === 200) {
+                let res = await authAPI.get(endpoints['current-user']);
+                dispatch({ type: 'SET_USER', payload: res.data.user });
+
                 navigate('/');
             }
         } catch (err) {
+            console.info(err);
             setError(err.message);
         }
     };

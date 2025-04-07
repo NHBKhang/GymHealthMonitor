@@ -70,7 +70,6 @@ public class ScheduleController {
             Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("schedule", schedule);
-            System.out.print(result.getAllErrors());
             redirectAttributes.addFlashAttribute("error", "Lỗi hệ thống!");
             if (schedule.getId() == null) {
                 return "redirect:/schedules/add";

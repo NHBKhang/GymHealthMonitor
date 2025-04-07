@@ -2,11 +2,12 @@ import styles from "../../styles/Header.module.css";
 import { useState } from "react";
 import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../../configs/UserContext";
 
 const Header = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [dropdown, setDropdown] = useState(null);
-
+    const { state, logout } = useUserContext();
     const navigate = useNavigate();
 
     const toggleDropdown = (menu) => {
@@ -40,9 +41,25 @@ const Header = () => {
                             {dropdown === "packages" && (
                                 <ul className={styles.dropdownMenu}>
                                     <li><a href="/packages">Tất cả gói tập</a></li>
+                                    {state.currentUser &&
+                                        <li><a href="/subcriptions">Gói tập đã đăng ký</a></li>
+                                    }
                                 </ul>
                             )}
                         </li>
+
+                        {/* Dropdown - Schedule */}
+                        {state.currentUser && <li className={styles.dropdown}>
+                            <a href="/" onClick={(e) => { e.preventDefault(); toggleDropdown("schedule"); }}>
+                                Lịch tập <FaChevronDown />
+                            </a>
+                            {dropdown === "schedule" && (
+                                <ul className={styles.dropdownMenu}>
+                                    <li><a href="/schedule">Lịch tập của bạn</a></li>
+                                    <li><a href="/">Đặt lịch</a></li>
+                                </ul>
+                            )}
+                        </li>}
 
                         {/* Dropdown - Nutrition */}
                         <li className={styles.dropdown}>
@@ -60,13 +77,35 @@ const Header = () => {
 
                         {/* Dropdown - Nutrition */}
                         <li className={styles.dropdown}>
-                            <a href="/" onClick={(e) => { e.preventDefault(); toggleDropdown("account"); }}>
-                                Tài khoản <FaChevronDown />
-                            </a>
+                            {state.currentUser ? (
+                                <a href="/" onClick={(e) => { e.preventDefault(); toggleDropdown("account"); }}>
+                                    <img
+                                        src={state.currentUser.avatar || "/default-avatar.png"}
+                                        alt="User Avatar"
+                                        className={styles.avatar}
+                                    />
+                                </a>
+                            ) : (
+                                <a href="/" onClick={(e) => { e.preventDefault(); toggleDropdown("account"); }}>
+                                    Tài khoản <FaChevronDown />
+                                </a>
+                            )}
                             {dropdown === "account" && (
                                 <ul className={styles.dropdownMenu}>
-                                    <li><a href="/login">Đăng nhập</a></li>
-                                    <li><a href="/signup">Đăng ký</a></li>
+                                    {state.currentUser ? (
+                                        <>
+                                            <li><a href="/profile">Trang cá nhân</a></li>
+                                            <li onClick={(e) => {
+                                                e.preventDefault();
+                                                logout();
+                                            }}><a href="">Đăng xuất</a></li>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <li><a href="/login">Đăng nhập</a></li>
+                                            <li><a href="/signup">Đăng ký</a></li>
+                                        </>
+                                    )}
                                 </ul>
                             )}
                         </li>
@@ -87,7 +126,21 @@ const Header = () => {
                         <strong>Gói tập</strong>
                         <ul className={styles.groupMenu}>
                             <li><a href="/packages">Tất cả gói tập</a></li>
+                            {state.currentUser &&
+                                <li><a href="/subcriptions">Gói tập đã đăng ký</a></li>
+                            }
                         </ul>
+                    </li>
+
+                    {/* Group Menu - Schedule */}
+                    <li>
+                        {state.currentUser && <li>
+                            <strong>Lịch tập</strong>
+                            <ul className={styles.groupMenu}>
+                                <li><a href="/schedule">Lịch tập của bạn</a></li>
+                                <li><a href="/">Đặt lịch</a></li>
+                            </ul>
+                        </li>}
                     </li>
 
                     {/* Group Menu - Support */}
@@ -104,8 +157,17 @@ const Header = () => {
                     <li>
                         <strong>Tài khoản</strong>
                         <ul className={styles.groupMenu}>
-                            <li><a href="/login">Đăng nhập</a></li>
-                            <li><a href="/signup">Đăng ký</a></li>
+                            {state.currentUser ? (
+                                <>
+                                    <li><a href="/profile">Trang cá nhân</a></li>
+                                    <li><a href="/logout">Đăng xuất</a></li>
+                                </>
+                            ) : (
+                                <>
+                                    <li><a href="/login">Đăng nhập</a></li>
+                                    <li><a href="/signup">Đăng ký</a></li>
+                                </>
+                            )}
                         </ul>
                     </li>
                 </ul>

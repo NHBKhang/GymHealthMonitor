@@ -2,13 +2,14 @@ package com.healthmonitor.serializers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.healthmonitor.pojo.User;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserSerializer {
+public class UserSerializer extends Serializer<UserSerializer> {
 
-    @JsonProperty("id")
-    private final int id;
+    @JsonProperty("username")
+    private final String username;
 
     @JsonProperty("full_name")
     private final String fullName;
@@ -25,13 +26,20 @@ public class UserSerializer {
     @JsonProperty("role")
     private final String role;
 
+    @JsonProperty("avatar")
+    private final String avatar;
+
     public UserSerializer(User user) {
         this.id = user.getId();
         this.fullName = user.getFirstName() + " " + user.getLastName();
+        this.username = user.getUsername();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.role = user.getRoleName();
+        this.avatar = user.getAvatar() == null
+                ? "http://localhost:8080/HealthMonitorApp/images/default_avatar.svg"
+                : user.getAvatar();
     }
 
     public static List<UserSerializer> fromUsers(List<User> users) {
@@ -40,8 +48,8 @@ public class UserSerializer {
                 .collect(Collectors.toList());
     }
 
-    public int getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
     public String getFullName() {
@@ -62,5 +70,9 @@ public class UserSerializer {
 
     public String getRole() {
         return role;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 }

@@ -21,32 +21,45 @@
         <form th:action="@{/packages/save}" method="post" th:object="${package}"
             class="p-4 border rounded shadow-sm bg-light" enctype="multipart/form-data">
             <input type="hidden" th:if="${package.id != null}" th:field="*{id}" />
-
-            <div class="mb-3">
-                <label for="code" class="form-label">Mã gói <span class="text-danger">*</span></label>
-                <input type="text" id="code" th:field="*{code}" class="form-control" required readonly>
-                <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
-            </div>
-
-            <div class="mb-3">
-                <label for="name" class="form-label">Tên gói <span class="text-danger">*</span></label>
-                <input type="text" id="name" th:field="*{name}" class="form-control" required>
-                <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
-            </div>
-
+            
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="price" class="form-label">Giá gói (VND)</label>
-                    <input type="number" id="price" th:field="*{price}" class="form-control" min="100" max="10000000000"
-                        step="100">
-                    <p class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Mã gói <span class="text-danger">*</span></label>
+                        <input type="text" id="code" th:field="*{code}" class="form-control" required readonly>
+                        <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Tên gói <span class="text-danger">*</span></label>
+                        <input type="text" id="name" th:field="*{name}" class="form-control" required>
+                        <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Giá gói (VND)</label>
+                        <input type="number" id="price" th:field="*{price}" class="form-control" min="100" max="10000000000"
+                            step="100">
+                        <p class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ptSessions" class="form-label">Số buổi tập</label>
+                        <input type="number" id="ptSessions" th:field="*{ptSessions}" class="form-control" min="1"
+                            max="1000" step="1">
+                        <p class="text-danger" th:if="${#fields.hasErrors('ptSessions')}" th:errors="*{ptSessions}"></p>
+                    </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label for="ptSessions" class="form-label">Số buổi tập</label>
-                    <input type="number" id="ptSessions" th:field="*{ptSessions}" class="form-control" min="1"
-                        max="1000" step="1">
-                    <p class="text-danger" th:if="${#fields.hasErrors('ptSessions')}" th:errors="*{ptSessions}"></p>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="image" class="form-label d-block">Hình ảnh</label>
+                        <img th:src="${package.image != null ? package.avatar : '/HealthMonitorApp/images/default_image.svg'}"
+                            class="border shadow-sm mb-2" width="249" height="249" alt="avatar" id="avatarPreview">
+
+                        <input type="file" class="form-control" th:field="*{file}" accept="image/*"
+                            onchange="previewImage(event)" />
+                    </div>
                 </div>
             </div>
 

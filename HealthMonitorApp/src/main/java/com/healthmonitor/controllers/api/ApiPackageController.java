@@ -1,7 +1,10 @@
 package com.healthmonitor.controllers.api;
 
 import com.healthmonitor.pojo.Package;
+import com.healthmonitor.serializers.PackageSerializer;
 import com.healthmonitor.services.PackageService;
+import com.healthmonitor.utils.Pagination;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +28,26 @@ public class ApiPackageController {
     
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
-    public ResponseEntity<Package> create(@ModelAttribute("package") Package pkg) {
-        return new ResponseEntity<>(this.packageService.createOrUpdatePackage(pkg), HttpStatus.CREATED);
+    public ResponseEntity<PackageSerializer> create(@ModelAttribute("package") Package pkg) {
+        return new ResponseEntity<>(
+                new PackageSerializer(this.packageService.createOrUpdatePackage(pkg)), 
+                HttpStatus.CREATED
+        );
     }
     
     @GetMapping
     @CrossOrigin
-    public ResponseEntity<List<Package>> list(@RequestParam Map<String, String> params) {
-        return new ResponseEntity<>(this.packageService.getPackages(params), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> list(@RequestParam Map<String, String> params) {
+        try {
+            return Pagination.handlePagination(
+                    params,
+                    packageService::countPackages,
+                    PackageSerializer.fromPackages(packageService.getPackages(params))
+            );
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Có lỗi xảy ra khi tải danh sách người dùng!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 }

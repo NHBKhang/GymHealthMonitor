@@ -63,7 +63,7 @@ public class Schedule implements Serializable {
     private String code;
 
     @JoinColumn(name = "subscription_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne
+    @ManyToOne(optional = true)
     private Subscription subscription;
 
     @JoinColumn(name = "member_id", referencedColumnName = "id")

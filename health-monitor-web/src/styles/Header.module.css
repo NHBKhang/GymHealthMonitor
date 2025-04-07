@@ -49,6 +49,11 @@
     transition: background 0.3s;
 }
 
+.nav a:has(img) {
+    padding: 0 3px;
+    margin: 0 5%;
+}
+
 .nav a:hover {
     background: rgba(255, 255, 255, 0.2);
 }
@@ -77,6 +82,8 @@
     flex-direction: column;
     transition: left 0.3s ease-in-out;
     z-index: 200;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 
 .drawer.open {
@@ -94,6 +101,10 @@
 
 .drawer>ul>li {
     border-bottom: 1px solid whitesmoke;
+}
+
+.drawer>ul>li:first-child {
+    padding-top: 0;
 }
 
 .drawer>ul>li>a:hover {
@@ -136,6 +147,8 @@
     font-size: 24px;
     align-self: flex-end;
     cursor: pointer;
+    position: sticky;
+    top: 0;
 }
 
 /* Overlay khi mở Drawer */
@@ -209,6 +222,12 @@
 
 .dropdownMenu li a:hover {
     background: #f0f0f0;
+}
+
+.avatar {
+    width: 37x;
+    height: 37px;
+    border-radius: 50%;
 }
 
 /* Responsive: Ẩn nav trên mobile, hiển thị menu button */

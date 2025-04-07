@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Signup.module.css';
 import API, { endpoints } from '../configs/API';
+import { useUserContext } from '../configs/UserContext';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -17,7 +18,14 @@ const Signup = () => {
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const { state } = useUserContext();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (state.currentUser) {
+            navigate('/');
+        }
+    }, [state.currentUser, navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -58,7 +66,7 @@ const Signup = () => {
 
         if (!formData.phone.trim()) {
             newErrors.phone = 'Số điện thoại là bắt buộc';
-        } else if (!/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(formData.phone)) {
+        } else if (!/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/.test(formData.phone)) {
             newErrors.phone = 'Số điện thoại không hợp lệ';
         }
 
@@ -67,6 +75,7 @@ const Signup = () => {
     };
 
     const handleSubmit = async (e) => {
+        setErrors('')
         e.preventDefault();
         setIsSubmitting(true);
 
@@ -74,7 +83,7 @@ const Signup = () => {
             const formPayload = new FormData();
             for (const key in formData) {
                 let value = formData[key]
-                if (value && value.trim() != '')
+                if (value && value.toString().trim() !== '')
                     formPayload.append(key, value);
             }
 
@@ -84,12 +93,13 @@ const Signup = () => {
                         headers: { "Content-Type": "mulitpart/form-data" }
                     }
                 );
-
+                console.info(res);
                 if (res.status === 201)
-                    navigate('/');
+                    navigate('/login');
                 else
                     setErrors({ submit: "Yêu cầu không hợp lệ!" })
             } catch (error) {
+                console.info(error);
                 setErrors({ submit: error.message })
             } finally {
                 setIsSubmitting(false);

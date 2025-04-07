@@ -57,6 +57,7 @@ function showMessage(type, message) {
 function renderDynamicDropdown( {
 containerId,
         apiUrl,
+        params = {},
         buildOptionText = item => item.label,
         pageSize = 10,
         placeholder = '',
@@ -121,7 +122,14 @@ containerId,
 
         isLoading = true;
 
-        fetch(`${apiUrl}?page=${page}&size=${pageSize}&kw=${encodeURIComponent(searchInput.value)}`)
+        const queryString = new URLSearchParams({
+            page: page,
+            size: pageSize,
+            kw: searchInput.value,
+            ...params
+        }).toString();
+
+        fetch(`${apiUrl}?${queryString}`)
                 .then(res => res.json())
                 .then(data => {
                     if (!data.results || data.results.length === 0) {
@@ -186,4 +194,18 @@ containerId,
             loadData();
         }
     });
+}
+
+function previewImage(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const imgElement = document.getElementById("avatarPreview");
+        imgElement.src = e.target.result;
+    }
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
 }
