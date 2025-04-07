@@ -23,7 +23,7 @@
             <input type="hidden" th:if="${user.id != null}" th:field="*{id}">
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                     <div class="mb-3">
                         <label for="username" class="form-label">Tên tài khoản <span
                                 class="text-danger">*</span></label>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                     <div class="mb-3">
                         <label for="avatar" class="form-label d-block">Ảnh đại diện</label>
 
@@ -163,20 +163,6 @@
 
         document.addEventListener("DOMContentLoaded", toggleFields);
         document.getElementById("role").addEventListener("change", toggleFields);
-
-        function previewImage(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                const imgElement = document.getElementById("avatarPreview");
-                imgElement.src = e.target.result;
-            }
-
-            if (file) {
-                reader.readAsDataURL(file);
-            }
-        }
     </script>
     <script th:inline="javascript">
         function deleteUser() {

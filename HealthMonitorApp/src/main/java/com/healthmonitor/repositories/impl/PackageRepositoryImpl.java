@@ -1,6 +1,7 @@
 package com.healthmonitor.repositories.impl;
 
 import com.healthmonitor.pojo.Package;
+import com.healthmonitor.pojo.Package.PackageStatus;
 import com.healthmonitor.repositories.PackageRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -34,8 +35,9 @@ public class PackageRepositoryImpl implements PackageRepository {
         q.orderBy(b.desc(root.get("createdAt")));
         q.select(root);
 
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(b.equal(root.get("status"), PackageStatus.ACTIVE));
         if (params != null) {
-            List<Predicate> predicates = new ArrayList<>();
             String kw = params.get("kw");
 
             if (kw != null && !kw.isEmpty()) {
@@ -45,9 +47,10 @@ public class PackageRepositoryImpl implements PackageRepository {
                 Predicate durationPredicate = b.like(root.get("duration"), "%" + kw + "%");
                 predicates.add(b.or(namePredicate, sessionsPredicate, pricePredicate, durationPredicate));
             }
-            if (!predicates.isEmpty()) {
-                q.where(predicates.toArray(new Predicate[0]));
-            }
+        }
+
+        if (!predicates.isEmpty()) {
+            q.where(predicates.toArray(new Predicate[0]));
         }
 
         Query query = s.createQuery(q);

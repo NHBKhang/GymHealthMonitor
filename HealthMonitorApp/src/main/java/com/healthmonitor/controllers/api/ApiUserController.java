@@ -2,11 +2,10 @@ package com.healthmonitor.controllers.api;
 
 import com.healthmonitor.components.JwtService;
 import com.healthmonitor.pojo.User;
-import com.healthmonitor.repositories.impl.UserRepositoryImpl;
 import com.healthmonitor.serializers.UserSerializer;
 import com.healthmonitor.services.UserService;
+import com.healthmonitor.utils.Pagination;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,33 +44,55 @@ public class ApiUserController {
 
     @PostMapping(path = "/users", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
-    public ResponseEntity<User> create(@ModelAttribute("user") User user) {
-        return new ResponseEntity<>(this.userService.createOrUpdateUser(user), HttpStatus.CREATED);
+    public ResponseEntity<UserSerializer> create(@ModelAttribute("user") User user) {
+        return new ResponseEntity<>(
+                new UserSerializer(this.userService.createOrUpdateUser(user)), 
+                HttpStatus.CREATED
+        );
     }
 
     @GetMapping(path = "/users")
     @CrossOrigin
     public ResponseEntity<Map<String, Object>> list(@RequestParam Map<String, String> params) {
         try {
-            int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-            int pageSize = UserRepositoryImpl.getPageSize();
-
-            long totalUsers = userService.countUsers(params);
-            int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
-
-            List<User> users = userService.getUsers(params);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("results", UserSerializer.fromUsers(users));
-            response.put("totalUsers", totalUsers);
-            response.put("totalPages", totalPages);
-            response.put("currentPage", page);
-
-            return ResponseEntity.ok(response);
+            return Pagination.handlePagination(
+                    params,
+                    userService::countUsers,
+                    UserSerializer.fromUsers(userService.getUsers(params))
+            );
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Có lỗi xảy ra khi tải danh sách người dùng!");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
+    }
+
+    @GetMapping(path = "/current-user")
+    @CrossOrigin
+    public ResponseEntity<Object> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader != null && authorizationHeader.startsWith("Bearer ")
+                ? authorizationHeader.substring(7)
+                : null;
+
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ hoặc không tồn tại.");
+        }
+
+        String username = jwtService.getUsernameFromToken(token);
+
+        if (username == null || jwtService.isTokenExpired(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token hết hạn hoặc không hợp lệ.");
+        }
+
+        User user = userService.getUserByUsername(username);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User không tồn tại.");
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", new UserSerializer(user));
+
+        return ResponseEntity.ok(response);
     }
 }

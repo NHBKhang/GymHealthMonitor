@@ -74,13 +74,13 @@
                     <label for="type" class="form-label">Bộ môn</label>
                     <input type="text" id="type" th:field="*{type}" class="form-control">
                 </div>
+            </div>
                 
-<!--                <div class="col-md-6 mb-3">
-                    <label for="subscription" class="form-label">Gói đăng ký</label>
-                    <div id="subscription-dropdown">
-                        <input id="subscription" th:field="*{subscription.id}"/>
-                    </div>
-                </div>-->
+            <div class="col-md-6 mb-3">
+                <label for="subscription" class="form-label">Gói đăng ký</label>
+                <div id="subscription-dropdown">
+                    <input id="subscription" th:field="*{subscription.id}"/>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -128,6 +128,7 @@
         renderDynamicDropdown({
             containerId: 'member-dropdown',
             apiUrl: [[@{/api/users}]],
+            params: { is_member: true },
             buildOptionText: item => {
                 const text = `${item.first_name || ''} ${item.last_name || ''}`.trim();
                 return text !== '' ? text : (item.username || '');
@@ -141,6 +142,7 @@
         renderDynamicDropdown({
             containerId: 'trainer-dropdown',
             apiUrl: [[@{/api/users}]],
+            params: { is_trainer: true },
             buildOptionText: item => {
                 const text = `${item.first_name || ''} ${item.last_name || ''}`.trim();
                 return text !== '' ? text : (item.username || '');
@@ -150,14 +152,14 @@
                 last_name: [[${schedule.trainer.lastName}]]
             }
         });
-//        renderDynamicDropdown({
-//            containerId: 'subscription-dropdown',
-//            apiUrl: [[@{/api/subscriptions}]],
-//            buildOptionText: item => item.code,
-//            value: {
-//                code: [[${schedule.subscription.code}]]
-//            }
-//        });
+        renderDynamicDropdown({
+            containerId: 'subscription-dropdown',
+            apiUrl: [[@{/api/subscriptions}]],
+            buildOptionText: item => item.code,
+            value: {
+                code: [[${schedule.subscription.code}]]
+            }
+        });
     </script>
     
 </body>

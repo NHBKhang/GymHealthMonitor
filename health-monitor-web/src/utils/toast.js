@@ -94,7 +94,7 @@ const useNotification = () => {
         type = '',
         config = {}
     ) => {
-        const resolvedTitle = title || t(type, { defaultValue: null });
+        const resolvedTitle = title || (type, { defaultValue: null });
         const resolvedContent = { message: message, title: resolvedTitle, icon: icon };
 
         switch (type) {

@@ -4,6 +4,7 @@ import com.healthmonitor.pojo.Member;
 import com.healthmonitor.pojo.Trainer;
 import com.healthmonitor.pojo.User;
 import com.healthmonitor.pojo.User.Role;
+import com.healthmonitor.pojo.User.UserStatus;
 import com.healthmonitor.repositories.UserRepository;
 import jakarta.data.repository.Param;
 import jakarta.persistence.NoResultException;
@@ -45,8 +46,9 @@ public class UserRepositoryImpl implements UserRepository {
         q.orderBy(b.desc(root.get("createdAt")));
         q.select(root);
 
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(b.equal(root.get("status"), UserStatus.ACTIVE));
         if (params != null) {
-            List<Predicate> predicates = new ArrayList<>();
             String kw = params.get("kw");
 
             if (kw != null && !kw.isEmpty()) {
@@ -59,9 +61,21 @@ public class UserRepositoryImpl implements UserRepository {
                 Predicate phonePredicate = b.like(root.get("phone"), "%" + kw + "%");
                 predicates.add(b.or(fullNamePredicate, usernamePredicate, emailPredicate, phonePredicate));
             }
-            if (!predicates.isEmpty()) {
-                q.where(predicates.toArray(new Predicate[0]));
+
+            String isMember = params.get("is_member");
+            String isTrainer = params.get("is_trainer");
+
+            if ("true".equalsIgnoreCase(isMember) || "1".equals(isMember)) {
+                predicates.add(b.equal(root.get("role"), Role.MEMBER));
             }
+
+            if ("true".equalsIgnoreCase(isTrainer) || "1".equals(isTrainer)) {
+                predicates.add(b.equal(root.get("role"), Role.TRAINER));
+            }
+        }
+
+        if (!predicates.isEmpty()) {
+            q.where(predicates.toArray(new Predicate[0]));
         }
 
         Query query = s.createQuery(q);
@@ -137,11 +151,16 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } else {
             User existingUser = s.get(User.class, user.getId());
-            BeanUtils.copyProperties(user, existingUser, "id", "member", "trainer");
 
             if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
                 user.setPassword(existingUser.getPassword());
             }
+
+            if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
+                user.setAvatar(existingUser.getAvatar());
+            }
+
+            BeanUtils.copyProperties(user, existingUser, "id", "member", "trainer");
 
             if (user.getRole() == Role.MEMBER) {
                 if (existingUser.getMember() == null) {

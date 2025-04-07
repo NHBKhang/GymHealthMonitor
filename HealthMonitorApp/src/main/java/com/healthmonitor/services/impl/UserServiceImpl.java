@@ -71,11 +71,11 @@ public class UserServiceImpl implements UserService {
                 throw new RuntimeException("Error uploading file to Cloudinary", ex);
             }
         }
-        
+
         if (user.getRole() == null || user.getRoleName().isEmpty()) {
             user.setRole(Role.MEMBER);
         }
-        
+
         if (user.getStatus() == null || user.getStatusName().isEmpty()) {
             user.setStatus(UserStatus.ACTIVE);
         }
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
     public boolean authUser(String username, String password) {
         return this.userRepository.authUser(username, password);
     }
-    
+
     @Override
     public Map<String, Object> getUserStats(LocalDate fromDate, LocalDate toDate) {
         List<Object[]> results = this.userRepository.getUserStats(fromDate, toDate);

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "packages")
@@ -100,6 +101,12 @@ public class Package implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private PackageStatus status;
 
+    @Column(name = "image", nullable = true)
+    private String image;
+
+    @Transient
+    private MultipartFile file;
+
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private String createdAt;
@@ -115,7 +122,7 @@ public class Package implements Serializable {
     }
 
     public Package(Integer id, String code, String name, PackageDuration duration, Double price,
-            String description, Integer ptSessions, PackageStatus status, String createdAt) {
+            String description, Integer ptSessions, PackageStatus status, String createdAt, String image) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -125,6 +132,7 @@ public class Package implements Serializable {
         this.ptSessions = ptSessions;
         this.status = status;
         this.createdAt = createdAt;
+        this.image = image;
     }
 
     public Integer getId() {
@@ -197,6 +205,22 @@ public class Package implements Serializable {
 
     public void setStatus(PackageStatus status) {
         this.status = status;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 
     public String getCreatedAt() {
