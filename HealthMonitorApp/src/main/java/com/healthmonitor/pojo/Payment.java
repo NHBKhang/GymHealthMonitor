@@ -8,14 +8,38 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name = "payments")
 @NamedQueries({
-        @NamedQuery(name = "Payment.findAll", query = "SELECT p FROM Payment p"),
-        @NamedQuery(name = "Payment.findById", query = "SELECT p FROM Payment p WHERE p.id = :id"),
-        @NamedQuery(name = "Payment.findBySubscription",
-                query = "SELECT p FROM Payment p WHERE p.subscription.id = :subscriptionId"),
-        @NamedQuery(name = "Payment.findByStatus", query = "SELECT p FROM Payment p WHERE p.status = :status"),
-        @NamedQuery(name = "Payment.findByMethod", query = "SELECT p FROM Payment p WHERE p.method = :method")
+    @NamedQuery(name = "Payment.findAll", query = "SELECT p FROM Payment p"),
+    @NamedQuery(name = "Payment.findById", query = "SELECT p FROM Payment p WHERE p.id = :id"),
+    @NamedQuery(name = "Payment.findBySubscription",
+            query = "SELECT p FROM Payment p WHERE p.subscription.id = :subscriptionId"),
+    @NamedQuery(name = "Payment.findByStatus", query = "SELECT p FROM Payment p WHERE p.status = :status"),
+    @NamedQuery(name = "Payment.findByMethod", query = "SELECT p FROM Payment p WHERE p.method = :method")
 })
 public class Payment implements Serializable {
+
+    public enum PaymentStatus {
+        PENDING("Đang xử lý", "badge-warning"),
+        SUCCESS("Thành công", "badge-success"),
+        FAILED("Thất bại", "badge-danger"),
+        CANCELLED("Đã huỷ", "badge-secondary"),
+        REFUNDED("Đã hoàn tiền", "badge-info");
+
+        private final String label;
+        private final String badgeClass;
+
+        private PaymentStatus(String label, String badgeClass) {
+            this.label = label;
+            this.badgeClass = badgeClass;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public String getBadgeClass() {
+            return badgeClass;
+        }
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -46,7 +70,8 @@ public class Payment implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
 
     @Column(name = "description", nullable = true)
     private String description;
@@ -63,7 +88,7 @@ public class Payment implements Serializable {
     }
 
     public Payment(Integer id, String code, Subscription subscription, Double amount,
-                   String method, String status, Date createdAt, String description) {
+            String method, PaymentStatus status, Date createdAt, String description) {
         this.id = id;
         this.code = code;
         this.subscription = subscription;
@@ -123,11 +148,11 @@ public class Payment implements Serializable {
         this.receiptImage = receiptImage;
     }
 
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 

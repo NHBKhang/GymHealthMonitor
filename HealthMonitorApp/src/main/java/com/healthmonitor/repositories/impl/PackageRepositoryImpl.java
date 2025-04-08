@@ -41,11 +41,11 @@ public class PackageRepositoryImpl implements PackageRepository {
             String kw = params.get("kw");
 
             if (kw != null && !kw.isEmpty()) {
+                Predicate codePredicate = b.like(root.get("code"), "%" + kw + "%");
                 Predicate namePredicate = b.like(root.get("name"), "%" + kw + "%");
-                Predicate sessionsPredicate = b.like(root.get("ptSessions"), "%" + kw + "%");
-                Predicate pricePredicate = b.like(root.get("price"), "%" + kw + "%");
+                Predicate pricePredicate = b.equal(root.get("price"), "%" + kw + "%");
                 Predicate durationPredicate = b.like(root.get("duration"), "%" + kw + "%");
-                predicates.add(b.or(namePredicate, sessionsPredicate, pricePredicate, durationPredicate));
+                predicates.add(b.or(codePredicate, namePredicate, pricePredicate, durationPredicate));
             }
         }
 
@@ -107,21 +107,22 @@ public class PackageRepositoryImpl implements PackageRepository {
         Root<Package> root = q.from(Package.class);
         q.select(b.count(root));
 
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(b.equal(root.get("status"), PackageStatus.ACTIVE));
         if (params != null) {
-            List<Predicate> predicates = new ArrayList<>();
             String kw = params.get("kw");
 
             if (kw != null && !kw.isEmpty()) {
+                Predicate codePredicate = b.like(root.get("code"), "%" + kw + "%");
                 Predicate namePredicate = b.like(root.get("name"), "%" + kw + "%");
-                Predicate sessionsPredicate = b.like(root.get("ptSessions"), "%" + kw + "%");
-                Predicate pricePredicate = b.like(root.get("price"), "%" + kw + "%");
+                Predicate pricePredicate = b.equal(root.get("price"), "%" + kw + "%");
                 Predicate durationPredicate = b.like(root.get("duration"), "%" + kw + "%");
-                predicates.add(b.or(namePredicate, sessionsPredicate, pricePredicate, durationPredicate));
+                predicates.add(b.or(codePredicate, namePredicate, pricePredicate, durationPredicate));
             }
+        }
 
-            if (!predicates.isEmpty()) {
-                q.where(predicates.toArray(new Predicate[0]));
-            }
+        if (!predicates.isEmpty()) {
+            q.where(predicates.toArray(new Predicate[0]));
         }
 
         return s.createQuery(q).getSingleResult();

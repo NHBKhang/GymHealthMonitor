@@ -133,15 +133,13 @@ const Header = () => {
                     </li>
 
                     {/* Group Menu - Schedule */}
-                    <li>
-                        {state.currentUser && <li>
-                            <strong>Lịch tập</strong>
-                            <ul className={styles.groupMenu}>
-                                <li><a href="/schedule">Lịch tập của bạn</a></li>
-                                <li><a href="/">Đặt lịch</a></li>
-                            </ul>
-                        </li>}
-                    </li>
+                    {state.currentUser && <li>
+                        <strong>Lịch tập</strong>
+                        <ul className={styles.groupMenu}>
+                            <li><a href="/schedule">Lịch tập của bạn</a></li>
+                            <li><a href="/">Đặt lịch</a></li>
+                        </ul>
+                    </li>}
 
                     {/* Group Menu - Support */}
                     <li>

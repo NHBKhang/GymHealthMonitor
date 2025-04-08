@@ -1,62 +1,101 @@
-import React, { useState } from 'react';
-import styles from '../styles/ContactPage.module.css';
+import React, { useState } from "react";
+import styles from "../styles/ContactPage.module.css";
 
 const Contact = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        message: "",
+    });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        console.log("Submitted:", formData);
+        // TODO: Gửi dữ liệu đến backend (nếu cần)
     };
 
     return (
-        <div className={styles.container}>
-            <h2 className={styles.title}>Contact Us</h2>
+        <section className={styles.contactPage}>
+            <h2 className={styles.title}>Liên hệ với chúng tôi</h2>
 
-            {/* Thông tin liên hệ và bản đồ */}
-            <div className={styles.contactInfo}>
-                <div className={styles.contactDetails}>
-                    <p><strong>📍 Address:</strong> 123 Main Street, City, Country</p>
-                    <p><strong>📞 Phone:</strong> +123 456 7890</p>
+            <div className={styles.contentWrapper}>
+                {/* Thông tin liên hệ và bản đồ */}
+                <article className={styles.contactDetails}>
+                    <h3>Thông tin liên hệ</h3>
+                    <p><strong>📍 Địa chỉ:</strong> 123 Main Street, Hanoi, Vietnam</p>
+                    <p><strong>📞 Điện thoại:</strong> +84 123 456 789</p>
                     <p><strong>📧 Email:</strong> contact@example.com</p>
-                    <p><strong>🕒 Hours:</strong> Mon - Fri: 9AM - 5PM</p>
-                </div>
-                <div className={styles.map}>
-                    <iframe
-                        title="Google Map"
-                        src="https://maps.google.com/maps?q=Hanoi&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                    ></iframe>
-                </div>
+                    <p><strong>🕒 Giờ làm việc:</strong> Thứ 2 - Thứ 6: 9:00 - 17:00</p>
+
+                    <div className={styles.mapContainer}>
+                        <iframe
+                            title="Bản đồ Google"
+                            src="https://maps.google.com/maps?q=Hanoi&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                            loading="lazy"
+                            allowFullScreen
+                        ></iframe>
+                    </div>
+                </article>
+
+                {/* Form liên hệ */}
+                <article className={styles.contactForm}>
+                    <h3>Gửi tin nhắn</h3>
+                    <form onSubmit={handleSubmit}>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="name">Tên của bạn</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="message">Tin nhắn</label>
+                            <textarea
+                                id="message"
+                                name="message"
+                                value={formData.message}
+                                onChange={handleChange}
+                                rows="5"
+                                required
+                            />
+                        </div>
+
+                        <button type="submit" className={styles.button}>Gửi</button>
+                    </form>
+                </article>
             </div>
 
-            {/* Form liên hệ */}
-            <form onSubmit={handleSubmit}>
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Name:</label>
-                    <input type="text" className={styles.input} name="name" value={formData.name} onChange={handleChange} required />
+            <div className={styles.socialSection}>
+                <h4>Theo dõi chúng tôi</h4>
+                <div className={styles.socialLinks}>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">🌐 Facebook</a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">🐦 Twitter</a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
                 </div>
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Email:</label>
-                    <input type="email" className={styles.input} name="email" value={formData.email} onChange={handleChange} required />
-                </div>
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Message:</label>
-                    <textarea className={styles.textarea} name="message" value={formData.message} onChange={handleChange} required />
-                </div>
-                <button type="submit" className={styles.button}>Submit</button>
-            </form>
-
-            {/* Biểu tượng mạng xã hội */}
-            <div className={styles.socialIcons}>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>🌐 Facebook</a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>🐦 Twitter</a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>📸 Instagram</a>
             </div>
-        </div>
+        </section>
     );
 };
 

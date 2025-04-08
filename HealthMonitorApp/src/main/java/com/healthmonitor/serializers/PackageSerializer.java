@@ -24,10 +24,6 @@ public class PackageSerializer extends Serializer<PackageSerializer> {
 
     @JsonProperty("description")
     private final String description;
-    
-    @JsonProperty("image")
-    private final String image;
-
 
     public PackageSerializer(Package pkg) {
         this.id = pkg.getId();
@@ -37,7 +33,6 @@ public class PackageSerializer extends Serializer<PackageSerializer> {
         this.price = pkg.getPrice();
         this.ptSessions = pkg.getPtSessions();
         this.description = pkg.getDescription();
-        this.image = pkg.getImage();
     }
 
     public static List<PackageSerializer> fromPackages(List<Package> packages) {
@@ -68,10 +63,6 @@ public class PackageSerializer extends Serializer<PackageSerializer> {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getImage() {
-        return image;
     }
     
 }

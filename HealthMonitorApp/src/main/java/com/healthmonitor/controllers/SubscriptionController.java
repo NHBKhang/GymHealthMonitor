@@ -42,7 +42,7 @@ public class SubscriptionController {
         } catch (NumberFormatException e) {
             redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra, vui lòng thử lại!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi tải danh sách thành viên!");
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi tải đăng ký gói tập!");
         }
         return "subscriptions";
     }

@@ -219,8 +219,9 @@ public class UserRepositoryImpl implements UserRepository {
         Root<User> root = q.from(User.class);
         q.select(b.count(root));
 
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(b.equal(root.get("status"), UserStatus.ACTIVE));
         if (params != null) {
-            List<Predicate> predicates = new ArrayList<>();
             String kw = params.get("kw");
 
             if (kw != null && !kw.isEmpty()) {
@@ -233,10 +234,10 @@ public class UserRepositoryImpl implements UserRepository {
                 Predicate phonePredicate = b.like(root.get("phone"), "%" + kw + "%");
                 predicates.add(b.or(fullNamePredicate, usernamePredicate, emailPredicate, phonePredicate));
             }
+        }
 
-            if (!predicates.isEmpty()) {
-                q.where(predicates.toArray(new Predicate[0]));
-            }
+        if (!predicates.isEmpty()) {
+            q.where(predicates.toArray(new Predicate[0]));
         }
 
         return s.createQuery(q).getSingleResult();

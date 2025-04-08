@@ -39,11 +39,8 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
             String kw = params.get("kw");
 
             if (kw != null && !kw.isEmpty()) {
-                Predicate namePredicate = b.like(root.get("name"), "%" + kw + "%");
-                Predicate sessionsPredicate = b.like(root.get("ptSessions"), "%" + kw + "%");
-                Predicate pricePredicate = b.like(root.get("price"), "%" + kw + "%");
-                Predicate durationPredicate = b.like(root.get("duration"), "%" + kw + "%");
-                predicates.add(b.or(namePredicate, sessionsPredicate, pricePredicate, durationPredicate));
+                Predicate codePredicate = b.like(root.get("code"), "%" + kw + "%");
+                predicates.add(b.or(codePredicate));
             }
             if (!predicates.isEmpty()) {
                 q.where(predicates.toArray(new Predicate[0]));
@@ -100,11 +97,8 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
             String kw = params.get("kw");
 
             if (kw != null && !kw.isEmpty()) {
-                Predicate namePredicate = b.like(root.get("name"), "%" + kw + "%");
-                Predicate sessionsPredicate = b.like(root.get("ptSessions"), "%" + kw + "%");
-                Predicate pricePredicate = b.like(root.get("price"), "%" + kw + "%");
-                Predicate durationPredicate = b.like(root.get("duration"), "%" + kw + "%");
-                predicates.add(b.or(namePredicate, sessionsPredicate, pricePredicate, durationPredicate));
+                Predicate codePredicate = b.like(root.get("code"), "%" + kw + "%");
+                predicates.add(b.or(codePredicate));
             }
 
             if (!predicates.isEmpty()) {
