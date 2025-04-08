@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,6 +12,13 @@ const defaultConfig = {
     progress: undefined,          // Giá trị tiến trình (0 - 1), undefined sẽ tự động
     theme: "dark",                // Giao diện (light, dark, colored)
 };
+
+const defaultValue = {
+    info: "Thông báo",
+    error: "Lỗi",
+    success: "Thành công",
+    warning: "Cảnh báo"
+}
 
 const ToastContent = ({ message, title = null, icon = null }) => (
     title ? (
@@ -89,12 +97,12 @@ const notify = {
 };
 
 const useNotification = () => {
-    const sendNotification = (
+    const sendNotification = useCallback((
         { message = "", title = null, icon = null },
         type = '',
         config = {}
     ) => {
-        const resolvedTitle = title || (type, { defaultValue: null });
+        const resolvedTitle = title || defaultValue[type];
         const resolvedContent = { message: message, title: resolvedTitle, icon: icon };
 
         switch (type) {
@@ -116,7 +124,7 @@ const useNotification = () => {
                 else
                     notify.default(resolvedContent, config);
         }
-    };
+    }, []);
 
     return sendNotification;
 };

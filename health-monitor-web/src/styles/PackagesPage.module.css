@@ -1,5 +1,5 @@
 .container {
-    padding: 2rem;
+    padding: 0 1rem;
     max-width: 1200px;
     margin: auto;
 }
@@ -13,7 +13,7 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
 }
 
@@ -21,7 +21,6 @@
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
     text-align: center;
     transition: transform 0.2s;
 }
@@ -43,20 +42,47 @@
     font-weight: bold;
 }
 
-.description {
+.duration {
     font-size: 0.95rem;
-    color: #666;
+    margin: 0;
+    color: #444;
+}
+
+.ptSessions {
+    font-size: 0.95rem;
     margin-bottom: 0.5rem;
+    color: #444;
 }
 
 .price {
     font-size: 1.1rem;
     color: #e53935;
     font-weight: bold;
+    border-top: 1px solid gainsboro;
+    margin: 0.5rem;
+    padding: 0.25rem;
 }
 
 .loading {
     text-align: center;
     padding: 2rem;
     font-size: 1.5rem;
+}
+
+.colorBox {
+    width: 100%;
+    height: 40px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.initial {
+    opacity: 0.9;
+    font-size: 1.25rem;
 }

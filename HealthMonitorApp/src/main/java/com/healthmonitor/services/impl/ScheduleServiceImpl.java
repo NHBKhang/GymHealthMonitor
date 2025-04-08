@@ -25,6 +25,10 @@ public class ScheduleServiceImpl implements ScheduleService {
             schedule.setSubscription(null);
         }
         
+        if (schedule.getCode() == null || schedule.getCode().isEmpty()) {
+            schedule.setCode(this.generateNextCode());
+        }
+        
         return this.scheduleRepository.createOrUpdateSchedule(schedule);
     }
 

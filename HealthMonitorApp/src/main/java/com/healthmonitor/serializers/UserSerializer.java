@@ -2,7 +2,6 @@ package com.healthmonitor.serializers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.healthmonitor.pojo.User;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,9 @@ public class UserSerializer extends Serializer<UserSerializer> {
     @JsonProperty("email")
     private final String email;
 
+    @JsonProperty("phone")
+    private final String phone;
+
     @JsonProperty("role")
     private final String role;
 
@@ -36,6 +38,7 @@ public class UserSerializer extends Serializer<UserSerializer> {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.phone = user.getPhone();
         this.role = user.getRoleName();
         this.avatar = user.getAvatar() == null
                 ? "http://localhost:8080/HealthMonitorApp/images/default_avatar.svg"
@@ -66,6 +69,10 @@ public class UserSerializer extends Serializer<UserSerializer> {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     public String getRole() {

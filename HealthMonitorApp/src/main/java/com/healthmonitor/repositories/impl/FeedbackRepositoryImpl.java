@@ -1,7 +1,7 @@
 package com.healthmonitor.repositories.impl;
 
-import com.healthmonitor.pojo.Schedule;
-import com.healthmonitor.repositories.ScheduleRepository;
+import com.healthmonitor.pojo.Feedback;
+import com.healthmonitor.repositories.FeedbackRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class ScheduleRepositoryImpl implements ScheduleRepository {
+public class FeedbackRepositoryImpl implements FeedbackRepository {
 
     private static final int PAGE_SIZE = 10;
 
@@ -26,22 +26,25 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<Schedule> getSchedules(Map<String, String> params) {
+    public List<Feedback> getFeedbackList(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
-        CriteriaQuery<Schedule> q = b.createQuery(Schedule.class);
-        Root<Schedule> root = q.from(Schedule.class);
+        CriteriaQuery<Feedback> q = b.createQuery(Feedback.class);
+        Root<Feedback> root = q.from(Feedback.class);
         q.orderBy(b.desc(root.get("createdAt")));
         q.select(root);
 
         if (params != null) {
-            List<Predicate> predicates = new ArrayList<>();
+        List<Predicate> predicates = new ArrayList<>();
             String kw = params.get("kw");
 
             if (kw != null && !kw.isEmpty()) {
                 Predicate codePredicate = b.like(root.get("code"), "%" + kw + "%");
-                predicates.add(b.or(codePredicate));
+                Predicate ratingPredicate = b.equal(root.get("rating"), "%" + kw + "%");
+                Predicate commentPredicate = b.equal(root.get("comment"), "%" + kw + "%");
+                predicates.add(b.or(codePredicate, ratingPredicate, commentPredicate));
             }
+
             if (!predicates.isEmpty()) {
                 q.where(predicates.toArray(new Predicate[0]));
             }
@@ -65,40 +68,40 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public Schedule createOrUpdateSchedule(Schedule schedule) {
+    public Feedback createOrUpdateFeedback(Feedback pkg) {
         Session s = factory.getObject().getCurrentSession();
 
-        if (schedule.getId() == null) {
-            s.persist(schedule);
+        if (pkg.getId() == null) {
+            s.persist(pkg);
         } else {
-            schedule = s.merge(schedule);
+            pkg = s.merge(pkg);
         }
 
-        return schedule;
+        return pkg;
     }
 
     @Override
-    public void deleteSchedule(int id) {
+    public void deleteFeedback(int id) {
         Session s = this.factory.getObject().getCurrentSession();
-        Schedule scd = this.getScheduleById(id);
-        if (scd != null) {
-            s.remove(scd);
+        Feedback p = this.getFeedbackById(id);
+        if (p != null) {
+            s.remove(p);
         }
     }
 
     @Override
-    public void deleteSchedules(List<Integer> ids) {
+    public void deleteFeedbackList(List<Integer> ids) {
         for (Integer id : ids) {
-            this.deleteSchedule(id);
+            this.deleteFeedback(id);
         }
     }
 
     @Override
-    public long countSchedules(Map<String, String> params) {
+    public long countFeedbackList(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery<Long> q = b.createQuery(Long.class);
-        Root<Schedule> root = q.from(Schedule.class);
+        Root<Feedback> root = q.from(Feedback.class);
         q.select(b.count(root));
 
         if (params != null) {
@@ -107,7 +110,9 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
             if (kw != null && !kw.isEmpty()) {
                 Predicate codePredicate = b.like(root.get("code"), "%" + kw + "%");
-                predicates.add(b.or(codePredicate));
+                Predicate ratingPredicate = b.equal(root.get("rating"), "%" + kw + "%");
+                Predicate commentPredicate = b.equal(root.get("comment"), "%" + kw + "%");
+                predicates.add(b.or(codePredicate, ratingPredicate, commentPredicate));
             }
 
             if (!predicates.isEmpty()) {
@@ -119,23 +124,23 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public Schedule getScheduleById(int id) {
+    public Feedback getFeedbackById(int id) {
         Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Schedule.class, id);
+        return s.get(Feedback.class, id);
     }
 
     @Override
     public String generateNextCode() {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("SELECT MAX(s.id) FROM Schedule s", Integer.class);
+        Query q = s.createQuery("SELECT MAX(s.id) FROM Feedback s", Integer.class);
         Integer maxId = (Integer) q.getSingleResult();
 
         int nextId = (maxId != null) ? maxId + 1 : 1;
-        return "SCD" + String.format("%05d", nextId);
+        return "FBK" + String.format("%05d", nextId);
     }
 
     public static final int getPageSize() {
-        return ScheduleRepositoryImpl.PAGE_SIZE;
+        return FeedbackRepositoryImpl.PAGE_SIZE;
     }
-
+    
 }

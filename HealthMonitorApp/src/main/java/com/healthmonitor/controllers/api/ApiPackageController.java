@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,22 +22,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/packages")
+@CrossOrigin
 public class ApiPackageController {
-    
+
     @Autowired
     private PackageService packageService;
-    
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin
     public ResponseEntity<PackageSerializer> create(@ModelAttribute("package") Package pkg) {
         return new ResponseEntity<>(
-                new PackageSerializer(this.packageService.createOrUpdatePackage(pkg)), 
+                new PackageSerializer(this.packageService.createOrUpdatePackage(pkg)),
                 HttpStatus.CREATED
         );
     }
-    
+
     @GetMapping
-    @CrossOrigin
     public ResponseEntity<Map<String, Object>> list(@RequestParam Map<String, String> params) {
         try {
             return Pagination.handlePagination(
@@ -48,6 +48,25 @@ public class ApiPackageController {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Có lỗi xảy ra khi tải danh sách người dùng!");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> retrieve(@PathVariable("id") int id) {
+        try {
+            Package pkg = packageService.getPackageById(id);
+
+            if (pkg == null) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("error", "Không tìm thấy gói tập với ID: " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            }
+
+            return ResponseEntity.ok(new PackageSerializer(pkg));
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Đã xảy ra lỗi khi lấy gói tập!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 }

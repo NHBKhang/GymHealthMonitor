@@ -19,8 +19,9 @@ const Profile = () => {
                     className={styles.avatar}
                 />
                 <div className={styles.info}>
-                    <p><strong>Họ tên:</strong> {user.name}</p>
+                    <p><strong>Họ tên:</strong> {user.full_name}</p>
                     <p><strong>Email:</strong> {user.email}</p>
+                    <p><strong>Số điện thoại:</strong> {user.phone}</p>
                     <p><strong>Vai trò:</strong> {user.role}</p>
                 </div>
                 <button className={styles.editBtn}>Chỉnh sửa</button>

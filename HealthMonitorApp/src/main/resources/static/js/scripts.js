@@ -171,7 +171,6 @@ containerId,
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         if (dropdown.style.display === 'block') {
             keyword = '';
-            searchInput.value = '';
             loadData(true);
             dropdown.style.width = `${tempBtn.offsetWidth}px`;
             searchInput.style.width = `calc(${tempBtn.offsetWidth}px - 30px)`;

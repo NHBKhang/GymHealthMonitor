@@ -11,6 +11,9 @@ import Login from "./pages/Login";
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import Packages from './pages/Packages';
+import Package from './pages/Package';
+import PackageConfirm from './pages/PackageConfirm';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -24,12 +27,15 @@ function App() {
               <Route path="contact" element={<Contact />} />
               <Route path="profile" element={<Profile />} />
               <Route path="packages" element={<Packages />} />
+              <Route path="packages/:id" element={<Package />} />
+              <Route path="packages/:id/confirm" element={<PackageConfirm />} />
             </Route>
             <Route path="*" element={<NotFound />} />
             <Route path='login' element={<Login />} />
             <Route path='signup' element={<Signup />} />
           </Routes>
         </Router>
+        <ToastContainer />
       </UserProvider>
     </CookiesProvider>
   );

@@ -1,8 +1,11 @@
 .container {
-    padding: 2rem;
-    max-width: 600px;
+    padding: 0.5rem 1.5rem;
     margin: auto;
     text-align: center;
+}
+
+.container h2 {
+    margin-bottom: 1rem;
 }
 
 .card {
@@ -13,17 +16,17 @@
 }
 
 .avatar {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #007bff;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .info {
     text-align: left;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .info p {

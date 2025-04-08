@@ -1,6 +1,7 @@
 package com.healthmonitor.services.impl;
 
 import com.healthmonitor.pojo.Subscription;
+import com.healthmonitor.pojo.Subscription.SubscriptionStatus;
 import com.healthmonitor.repositories.SubscriptionRepository;
 import com.healthmonitor.services.SubscriptionService;
 import java.util.List;
@@ -21,6 +22,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Subscription createOrUpdateSubscription(Subscription subscription) {
+        if (subscription.getStatus() == null || subscription.getStatus().getDescription().isEmpty()) {
+            subscription.setStatus(SubscriptionStatus.ACTIVE);
+        }
+
+        if (subscription.getCode() == null || subscription.getCode().isEmpty()) {
+            subscription.setCode(this.generateNextCode());
+        }
+        
         return this.subscriptionRepository.createOrUpdateSubscription(subscription);
     }
 

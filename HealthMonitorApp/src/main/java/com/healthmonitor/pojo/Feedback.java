@@ -27,6 +27,10 @@ public class Feedback implements Serializable {
     @Column(name = "id")
     private Integer id;
 
+    @Basic(optional = false)
+    @Column(name = "code", nullable = false, unique = true)
+    private String code;
+
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User user;
@@ -49,8 +53,9 @@ public class Feedback implements Serializable {
         this.id = id;
     }
 
-    public Feedback(Integer id, User user, Integer rating, Date createdAt) {
+    public Feedback(Integer id, String code, User user, Integer rating, Date createdAt) {
         this.id = id;
+        this.code = code;
         this.user = user;
         this.rating = rating;
         this.createdAt = createdAt;
@@ -63,6 +68,14 @@ public class Feedback implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+    
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public User geUser() {
