@@ -10,7 +10,7 @@ const defaultConfig = {
     pauseOnHover: true,           // Tạm dừng khi di chuột qua
     draggable: true,              // Có thể kéo
     progress: undefined,          // Giá trị tiến trình (0 - 1), undefined sẽ tự động
-    theme: "dark",                // Giao diện (light, dark, colored)
+    theme: "colored",             // Giao diện (light, dark, colored)
 };
 
 const defaultValue = {

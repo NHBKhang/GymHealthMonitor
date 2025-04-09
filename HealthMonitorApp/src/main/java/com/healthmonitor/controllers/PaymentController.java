@@ -47,16 +47,6 @@ public class PaymentController {
         return "payments";
     }
 
-    @GetMapping("/add")
-    public String showAddPaymentForm(Model model) {
-        Payment s = new Payment();
-        String generatedCode = paymentService.generateNextCode();
-        s.setCode(generatedCode);
-
-        model.addAttribute("payment", s);
-        return "payment_form";
-    }
-
     @PostMapping("/save")
     public String savePayment(@Valid @ModelAttribute("payment") Payment payment,
             BindingResult result, Model model, RedirectAttributes redirectAttributes) {

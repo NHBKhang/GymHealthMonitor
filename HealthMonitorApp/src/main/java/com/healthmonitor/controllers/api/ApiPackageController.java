@@ -5,7 +5,6 @@ import com.healthmonitor.serializers.PackageSerializer;
 import com.healthmonitor.services.PackageService;
 import com.healthmonitor.utils.Pagination;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

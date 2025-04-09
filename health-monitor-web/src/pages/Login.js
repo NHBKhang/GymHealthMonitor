@@ -30,7 +30,7 @@ const Login = () => {
             saveToken(res.data);
 
             if (res.status === 200) {
-                let res = await authAPI.get(endpoints['current-user']);
+                let res = await authAPI().get(endpoints['current-user']);
                 dispatch({ type: 'SET_USER', payload: res.data.user });
 
                 navigate('/');

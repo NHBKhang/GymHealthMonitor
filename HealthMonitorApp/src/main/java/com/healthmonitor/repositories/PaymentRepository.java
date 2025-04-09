@@ -14,6 +14,4 @@ public interface PaymentRepository {
 
     long countPayments(Map<String, String> params);
     
-    String generateNextCode();
-    
 }

@@ -110,16 +110,6 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     }
 
-    @Override
-    public String generateNextCode() {
-        Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("SELECT MAX(s.id) FROM Payment s", Integer.class);
-        Integer maxId = (Integer) q.getSingleResult();
-
-        int nextId = (maxId != null) ? maxId + 1 : 1;
-        return "PMT" + String.format("%05d", nextId);
-    }
-
     public static final int getPageSize() {
         return PaymentRepositoryImpl.PAGE_SIZE;
     }
