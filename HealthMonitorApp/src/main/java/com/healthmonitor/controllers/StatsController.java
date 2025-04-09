@@ -1,6 +1,6 @@
 package com.healthmonitor.controllers;
 
-import com.healthmonitor.services.UserService;
+import com.healthmonitor.services.StatsService;
 import java.time.LocalDate;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class StatsController {
 
     @Autowired
-    private UserService userService;
+    private StatsService statsService;
     
     @GetMapping("/users")
     public ResponseEntity<Map<String, Object>> getUserStats(
@@ -30,7 +30,7 @@ public class StatsController {
             toDate = LocalDate.now();
         }
 
-        Map<String, Object> stats = userService.getUserStats(fromDate, toDate);
+        Map<String, Object> stats = statsService.getUserStats(fromDate, toDate);
         return ResponseEntity.ok(stats);
     }
 }

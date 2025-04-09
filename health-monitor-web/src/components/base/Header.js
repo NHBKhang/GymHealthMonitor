@@ -91,14 +91,16 @@ const Header = () => {
                                 </a>
                             )}
                             {dropdown === "account" && (
-                                <ul className={styles.dropdownMenu}>
+                                <ul className={`${styles.dropdownMenu} ${styles.profile}`}>
                                     {state.currentUser ? (
                                         <>
                                             <li><a href="/profile">Trang cá nhân</a></li>
+                                            <li><a href="/message">Nhắn tin</a></li>
+                                            <li><a href="/settings">Cài đặt</a></li>
                                             <li onClick={(e) => {
                                                 e.preventDefault();
                                                 logout();
-                                            }}><a href="">Đăng xuất</a></li>
+                                            }}><a href="/">Đăng xuất</a></li>
                                         </>
                                     ) : (
                                         <>
@@ -158,6 +160,8 @@ const Header = () => {
                             {state.currentUser ? (
                                 <>
                                     <li><a href="/profile">Trang cá nhân</a></li>
+                                    <li><a href="/message">Nhắn tin</a></li>
+                                    <li><a href="/settings">Cài đặt</a></li>
                                     <li><a href="/logout">Đăng xuất</a></li>
                                 </>
                             ) : (

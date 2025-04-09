@@ -37,22 +37,37 @@ public class SpringSecurityConfigs {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(c -> c.disable())
-                .authorizeHttpRequests(requests -> requests
-                .requestMatchers("/").hasAnyRole("TRAINER", "ADMIN")
-                .requestMatchers("/users").hasAnyRole("ADMIN")
-                .requestMatchers("/api/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/packages/**").hasAnyRole("TRAINER", "ADMIN")
+            .authorizeHttpRequests(requests -> requests
+                .requestMatchers("/").hasAnyRole("ADMIN", "TRAINER")
+                .requestMatchers("/users", "/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/packages", "/packages/**").hasAnyRole("ADMIN", "TRAINER")
+                .requestMatchers(HttpMethod.POST, "/packages/**").hasAnyRole("ADMIN", "TRAINER")
+                .requestMatchers(HttpMethod.PUT, "/packages/**").hasAnyRole("ADMIN", "TRAINER")
+                .requestMatchers(HttpMethod.PATCH, "/packages/**").hasAnyRole("ADMIN", "TRAINER")
+                .requestMatchers(HttpMethod.DELETE, "/packages/**").hasRole("ADMIN")
+                .requestMatchers("/schedules", "/schedules/**").hasAnyRole("ADMIN", "TRAINER")
+                .requestMatchers("/progress", "/progress/**").hasAnyRole("ADMIN", "TRAINER")
+                .requestMatchers("/payments", "/payments/**").hasAnyRole("ADMIN")
+                .requestMatchers("/subcriptions", "/subcriptions/**").hasAnyRole("ADMIN")
+                .requestMatchers("/stats", "/stats/**").hasAnyRole("ADMIN", "TRAINER")
                 .requestMatchers("/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
-                .anyRequest().authenticated())
-                .formLogin(form -> form
+                .requestMatchers("/login", "/signup", "/error").permitAll()
+                .requestMatchers("/api/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error=true").permitAll())
-                .logout(logout -> logout
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
                 .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID").permitAll());
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            );
 
         return http.build();
     }

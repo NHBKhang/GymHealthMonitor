@@ -26,10 +26,6 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setStatus(PaymentStatus.PENDING);
         }
 
-        if (payment.getCode() == null || payment.getCode().isEmpty()) {
-            payment.setCode(this.generateNextCode());
-        }
-
         return this.paymentRepository.createOrUpdatePayment(payment);
     }
 
@@ -41,11 +37,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment getPaymentById(int id) {
         return this.paymentRepository.getPaymentById(id);
-    }
-
-    @Override
-    public String generateNextCode() {
-        return paymentRepository.generateNextCode();
     }
 
 }

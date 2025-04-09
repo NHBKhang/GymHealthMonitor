@@ -13,8 +13,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -264,26 +262,5 @@ public class UserRepositoryImpl implements UserRepository {
         User u = this.getUserByUsername(username);
 
         return this.passwordEncoder.matches(password, u.getPassword());
-    }
-
-    @Override
-    public List<Object[]> getUserStats(@Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate) {
-        Session s = this.factory.getObject().getCurrentSession();
-
-        Query q = s.createQuery(
-                "SELECT DATE(u.createdAt), COUNT(u) "
-                + "FROM User u "
-                + "WHERE u.createdAt BETWEEN :fromDate AND :toDate "
-                + "GROUP BY DATE(u.createdAt)",
-                Object[].class
-        );
-
-        LocalDateTime fromDateTime = fromDate.atStartOfDay();
-        LocalDateTime toDateTime = toDate.atTime(23, 59, 59);
-
-        q.setParameter("fromDate", fromDateTime);
-        q.setParameter("toDate", toDateTime);
-
-        return q.getResultList();
     }
 }
