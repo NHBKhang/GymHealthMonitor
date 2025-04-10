@@ -1,6 +1,6 @@
 .container {
     margin: 0 1.5rem;
-    padding: 1.5rem;
+    padding: 0 1.5rem;
     background-color: #ffffff;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
@@ -8,8 +8,7 @@
 }
 
 .container h2 {
-    font-size: 27px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .packageInfo {
@@ -37,23 +36,29 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 24px;
+    text-align: start;
 }
 
 .paymentOption {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 12px;
     margin-bottom: 12px;
-    padding: 10px 15px;
+    padding: 7px 15px;
     border: 2px solid transparent;
     border-radius: 10px;
     cursor: pointer;
-    background-color: #f5f5f5;
+    background-color: #f5faff;
     transition: all 0.3s ease;
 }
 
 .paymentOption:hover {
     border-color: #007bff;
+}
+
+.paymentOption input[type="radio"] {
+    flex: 0;
 }
 
 .paymentOption img {

@@ -89,6 +89,14 @@
     </main>
 
     <div th:replace="base :: footer"></div>
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#description'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
     
     <script th:inline="javascript">
         function deletePackage() {

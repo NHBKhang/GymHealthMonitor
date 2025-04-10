@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FeedbackRepositoryImpl implements FeedbackRepository {
 
-    private static final int PAGE_SIZE = 10;
-
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -137,10 +135,6 @@ public class FeedbackRepositoryImpl implements FeedbackRepository {
 
         int nextId = (maxId != null) ? maxId + 1 : 1;
         return "FBK" + String.format("%05d", nextId);
-    }
-
-    public static final int getPageSize() {
-        return FeedbackRepositoryImpl.PAGE_SIZE;
     }
     
 }

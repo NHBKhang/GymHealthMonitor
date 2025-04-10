@@ -6,7 +6,6 @@ import com.healthmonitor.pojo.User;
 import com.healthmonitor.pojo.User.Role;
 import com.healthmonitor.pojo.User.UserStatus;
 import com.healthmonitor.repositories.UserRepository;
-import jakarta.data.repository.Param;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -27,8 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class UserRepositoryImpl implements UserRepository {
-
-    private static final int PAGE_SIZE = 10;
 
     @Autowired
     private LocalSessionFactoryBean factory;
@@ -232,6 +229,17 @@ public class UserRepositoryImpl implements UserRepository {
                 Predicate phonePredicate = b.like(root.get("phone"), "%" + kw + "%");
                 predicates.add(b.or(fullNamePredicate, usernamePredicate, emailPredicate, phonePredicate));
             }
+
+            String isMember = params.get("is_member");
+            String isTrainer = params.get("is_trainer");
+
+            if ("true".equalsIgnoreCase(isMember) || "1".equals(isMember)) {
+                predicates.add(b.equal(root.get("role"), Role.MEMBER));
+            }
+
+            if ("true".equalsIgnoreCase(isTrainer) || "1".equals(isTrainer)) {
+                predicates.add(b.equal(root.get("role"), Role.TRAINER));
+            }
         }
 
         if (!predicates.isEmpty()) {
@@ -239,10 +247,6 @@ public class UserRepositoryImpl implements UserRepository {
         }
 
         return s.createQuery(q).getSingleResult();
-    }
-
-    public static final int getPageSize() {
-        return UserRepositoryImpl.PAGE_SIZE;
     }
 
     @Override

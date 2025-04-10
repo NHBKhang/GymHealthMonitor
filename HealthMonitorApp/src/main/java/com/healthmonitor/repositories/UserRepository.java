@@ -3,12 +3,12 @@ package com.healthmonitor.repositories;
 import com.healthmonitor.pojo.Member;
 import com.healthmonitor.pojo.Trainer;
 import com.healthmonitor.pojo.User;
-import jakarta.data.repository.Param;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 public interface UserRepository {
+
+    static final int PAGE_SIZE = 10;
 
     List<User> getUsers(Map<String, String> params);
 
@@ -29,5 +29,9 @@ public interface UserRepository {
     User getUserByUsername(String username);
 
     boolean authUser(String username, String password);
+
+    public static int getPageSize() {
+        return UserRepository.PAGE_SIZE;
+    }
 
 }

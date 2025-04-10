@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Đánh giá & Phản hồi | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-4">
+        <h2 class="text-center mb-3 w-100">🌟 Đánh giá & Phản hồi</h2>
+
+        <div class="d-flex justify-content-end align-items-center mb-1">
+            <form th:action="@{/feedbackList}" method="get" class="mb-1 d-flex">
+                <input type="text" name="kw" th:value="${kw}" class="form-control me-2 w-auto"
+                       placeholder="🔍 Tìm kiếm...">
+                <button type="submit" class="btn btn-primary w-auto">Tìm kiếm</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                        <th>Mã đánh giá</th>
+                        <th>Nội dung</th>
+                        <th>Xếp hạng</th>
+                        <th>Người dùng</th>
+                        <th>Ngày tạo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="f : ${feedbackList}">
+                        <td><input type="checkbox" th:value="${sub.id}"></td>
+                        <td th:text="${f.code}"></td>
+                        <td th:text="${f.content}"></td>
+                        <td>
+                            <span th:each="i : ${#numbers.sequence(1, T(java.lang.Math).floor(f.rating))}">
+                                ⭐
+                            </span>
+                            <span th:if="${f.rating % 1 >= 0.5}">✩</span>
+                            <span th:each="i : ${#numbers.sequence(1, 5 - T(java.lang.Math).ceil(f.rating))}">
+                                ☆
+                            </span>
+                        </td>
+                        <td th:text="${f.user.firstName + ' ' + f.user.lastName}"></td>
+                        <td th:text="${#dates.format(f.createdaAt, 'dd/MM/yyyy')}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(feedbackList)}">
+                        <td colspan="6">Không có đánh giá & phản hồi nào.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end fw-bold mb-1">
+            Tổng số đánh giá & phản hồi: <span th:text="${totalFeedbackList}"></span>
+        </div>
+
+        <div th:replace="base :: pagination"></div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script th:inline="javascript">
+
+    </script>
+</body>
+
+</html>

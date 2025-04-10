@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PaymentRepositoryImpl implements PaymentRepository {
 
-    private static final int PAGE_SIZE = 10;
-
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -107,11 +105,5 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         }
 
         return s.createQuery(q).getSingleResult();
-
     }
-
-    public static final int getPageSize() {
-        return PaymentRepositoryImpl.PAGE_SIZE;
-    }
-    
 }

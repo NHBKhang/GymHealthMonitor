@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../../styles/Notifications.module.css";
+import styles from "../../styles/components/Notifications.module.css";
 
 const Notifications = () => {
     const [isOpen, setIsOpen] = useState(true);

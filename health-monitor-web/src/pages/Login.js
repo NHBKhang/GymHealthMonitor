@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from '../styles/Login.module.css';
+import styles from '../styles/pages/Login.module.css';
 import API, { useAuthAPI, endpoints } from '../configs/API';
 import { useUserContext } from '../configs/UserContext';
 

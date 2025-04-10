@@ -19,7 +19,7 @@ public class PackageSerializer extends Serializer<PackageSerializer> {
     @JsonProperty("price")
     private final Double price;
 
-    @JsonProperty("ptSessions")
+    @JsonProperty("pt_sessions")
     private final Integer ptSessions;
 
     @JsonProperty("description")

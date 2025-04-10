@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../styles/PaymentResultPopup.module.css';
+import styles from '../../styles/components/PaymentResultPopup.module.css';
 import { CheckCircle } from 'lucide-react';
 
 const PaymentResultPopup = ({ transactionId, onClose }) => {

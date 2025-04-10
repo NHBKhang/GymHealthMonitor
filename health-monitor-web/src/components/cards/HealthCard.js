@@ -1,4 +1,4 @@
-import styles from "../../styles/HealthCard.module.css";
+import styles from "../../styles/components/HealthCard.module.css";
 import { ProgressBar } from "react-bootstrap";
 import { motion } from "framer-motion";
 

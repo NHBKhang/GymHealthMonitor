@@ -6,6 +6,8 @@ import java.util.Map;
 
 public interface FeedbackRepository {
 
+    static final int PAGE_SIZE = 10;
+
     List<Feedback> getFeedbackList(Map<String, String> params);
 
     Feedback getFeedbackById(int id);
@@ -19,5 +21,9 @@ public interface FeedbackRepository {
     long countFeedbackList(Map<String, String> params);
     
     String generateNextCode();
+
+    public static int getPageSize() {
+        return FeedbackRepository.PAGE_SIZE;
+    }
     
 }

@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
-    private static final int PAGE_SIZE = 10;
-
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -120,7 +118,12 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
         return "SUB" + String.format("%05d", nextId);
     }
 
-    public static final int getPageSize() {
-        return SubscriptionRepositoryImpl.PAGE_SIZE;
+    @Override
+    public List<Subscription> getSubscriptionsByUsername(String username) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM Subscription s WHERE s.member.username = :username", Subscription.class);
+        q.setParameter("username", username);
+        return q.getResultList();
     }
+
 }

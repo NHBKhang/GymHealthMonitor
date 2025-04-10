@@ -1,7 +1,7 @@
 package com.healthmonitor.controllers;
 
 import com.healthmonitor.pojo.Subscription;
-import com.healthmonitor.repositories.impl.SubscriptionRepositoryImpl;
+import com.healthmonitor.repositories.SubscriptionRepository;
 import com.healthmonitor.services.SubscriptionService;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class SubscriptionController {
     public String subscriptions(Model model, @RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
         try {
             int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-            int pageSize = SubscriptionRepositoryImpl.getPageSize();
+            int pageSize = SubscriptionRepository.getPageSize();
 
             long totalSubscriptions = subscriptionService.countSubscriptions(params);
             int totalPages = (int) Math.ceil((double) totalSubscriptions / pageSize);

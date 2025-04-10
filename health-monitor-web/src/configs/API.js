@@ -13,6 +13,10 @@ export const endpoints = {
     'package': (packageId) => `packages/${packageId}`,
     'vnpay-payment': 'payments/vnpay',
     'vnpay-return': 'payments/vnpay-return',
+    'trainers': 'users?is_trainer=1',
+    'members': 'users?is_member=1',
+    'my-subscriptions': 'my-subscriptions',
+    'my-schedules': 'my-schedules',
 }
 
 export const useAuthAPI = () => {

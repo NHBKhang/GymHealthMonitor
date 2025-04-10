@@ -14,6 +14,8 @@ public interface SubscriptionService {
 
     long countSubscriptions(Map<String, String> params);
     
+    List<Subscription> getSubscriptionsByUsername(String username);
+    
     String generateNextCode();
     
 }

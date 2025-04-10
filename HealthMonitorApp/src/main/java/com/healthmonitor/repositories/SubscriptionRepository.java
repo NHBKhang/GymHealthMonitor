@@ -6,6 +6,8 @@ import java.util.Map;
 
 public interface SubscriptionRepository {
 
+    static final int PAGE_SIZE = 10;
+
     List<Subscription> getSubscriptions(Map<String, String> params);
 
     Subscription getSubscriptionById(int id);
@@ -14,6 +16,12 @@ public interface SubscriptionRepository {
 
     long countSubscriptions(Map<String, String> params);
     
+    List<Subscription> getSubscriptionsByUsername(String username);
+    
     String generateNextCode();
+
+    public static int getPageSize() {
+        return SubscriptionRepository.PAGE_SIZE;
+    }
     
 }

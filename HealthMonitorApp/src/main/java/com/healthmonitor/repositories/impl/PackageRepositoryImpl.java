@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PackageRepositoryImpl implements PackageRepository {
 
-    private static final int PAGE_SIZE = 10;
-
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -142,9 +140,5 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         int nextId = (maxId != null) ? maxId + 1 : 1;
         return "PKG" + String.format("%05d", nextId);
-    }
-
-    public static final int getPageSize() {
-        return PackageRepositoryImpl.PAGE_SIZE;
     }
 }

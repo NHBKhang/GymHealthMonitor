@@ -1,7 +1,7 @@
 package com.healthmonitor.controllers;
 
 import com.healthmonitor.pojo.Package;
-import com.healthmonitor.repositories.impl.PackageRepositoryImpl;
+import com.healthmonitor.repositories.PackageRepository;
 import com.healthmonitor.services.PackageService;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class PackageController {
     public String packages(Model model, @RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
         try {
             int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-            int pageSize = PackageRepositoryImpl.getPageSize();
+            int pageSize = PackageRepository.getPageSize();
 
             long totalPackages = packageService.countPackages(params);
             int totalPages = (int) Math.ceil((double) totalPackages / pageSize);

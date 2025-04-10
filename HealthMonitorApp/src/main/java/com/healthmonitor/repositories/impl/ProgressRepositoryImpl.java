@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProgressRepositoryImpl implements ProgressRepository {
 
-    private static final int PAGE_SIZE = 10;
-
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -36,10 +34,6 @@ public class ProgressRepositoryImpl implements ProgressRepository {
     @Override
     public long countProgress(Map<String, String> params) {
         return 1;
-    }
-
-    public static final int getPageSize() {
-        return ProgressRepositoryImpl.PAGE_SIZE;
     }
 
     @Override
