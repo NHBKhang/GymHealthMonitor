@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import styles from '../styles/PackagePage.module.css';
+import styles from '../styles/pages/Package.module.css';
 import API, { endpoints, useAuthAPI } from '../configs/API';
 import { useNotification } from '../utils/toast';
 import PaymentResultPopup from '../components/cards/PaymentResultPopup';
@@ -82,7 +82,7 @@ const Package = () => {
 
                     <div className={styles.section}>
                         <h3>Mô tả</h3>
-                        <p>{pkg.description}</p>
+                        <p><div dangerouslySetInnerHTML={{ __html: pkg?.description }} /></p>
                     </div>
 
                     <div className={styles.actions}>

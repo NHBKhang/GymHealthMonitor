@@ -2,7 +2,6 @@ package com.healthmonitor.components;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
@@ -31,12 +30,12 @@ public class VNPayService {
     public String createPayment(@RequestBody Map<String, Object> bodyData) {
         int amount = (int) bodyData.get("amount");
         Long packageId = Long.valueOf(bodyData.get("package").toString());
-        String vnp_BankCode = (String) bodyData.get("bankCode");
-        String vnp_Locale = (String) bodyData.get("locale");
+        String vnp_BankCode = bodyData.get("bankCode").toString();
+        String vnp_Locale = bodyData.get("locale").toString();
 
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
-        String vnp_TxnRef = getRandomCode(8);
+        String vnp_TxnRef = getRandomCode(10);
         String vnp_IpAddr = "127.0.0.1";
         String vnp_OrderInfo = "Dang ky goi tap #" + packageId;
         String vnp_OrderType = (String) bodyData.get("orderType");
@@ -232,6 +231,6 @@ public class VNPayService {
         for (int i = 0; i < len; i++) {
             sb.append(chars.charAt(rnd.nextInt(chars.length())));
         }
-        return "P-" + sb.toString();
+        return "P" + sb.toString();
     }
 }

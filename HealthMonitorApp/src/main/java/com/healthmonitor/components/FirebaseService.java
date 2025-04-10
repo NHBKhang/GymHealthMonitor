@@ -1,4 +1,4 @@
-package com.healthmonitor.services.impl;
+package com.healthmonitor.components;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -6,11 +6,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.healthmonitor.pojo.Message;
-import com.healthmonitor.services.FirebaseService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FirebaseServiceImpl implements FirebaseService {
+public class FirebaseService {
 
     public void sendMessage(String chatRoomId, Message message) {
         DatabaseReference ref = FirebaseDatabase.getInstance()

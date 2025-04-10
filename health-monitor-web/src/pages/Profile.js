@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import styles from '../styles/Profile.module.css';
+import styles from '../styles/pages/Profile.module.css';
 import { useUserContext } from '../configs/UserContext';
 
 const Profile = () => {

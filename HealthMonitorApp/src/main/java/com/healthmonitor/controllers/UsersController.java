@@ -1,7 +1,7 @@
 package com.healthmonitor.controllers;
 
 import com.healthmonitor.pojo.User;
-import com.healthmonitor.repositories.impl.UserRepositoryImpl;
+import com.healthmonitor.repositories.UserRepository;
 import com.healthmonitor.services.UserService;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class UsersController {
             RedirectAttributes redirectAttributes) {
         try {
             int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-            int pageSize = UserRepositoryImpl.getPageSize();
+            int pageSize = UserRepository.getPageSize();
 
             long totalUsers = userService.countUsers(params);
             int totalPages = (int) Math.ceil((double) totalUsers / pageSize);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import styles from '../styles/PackageRegisterPage.module.css';
+import styles from '../styles/pages/PackageRegister.module.css';
 import { useNotification } from '../utils/toast';
 import API, { endpoints, useAuthAPI } from '../configs/API';
 
@@ -20,12 +20,14 @@ const VNPayBody = ({ method, body, updateBody }) => {
         { code: "en", name: "English" }
     ];
 
+    const update = (field, value) => updateBody('vnpay', field, value)
+
     return (
         <div className={`${styles.vnpayBodyWrapper} ${method === "vnpay" ? styles.show : ""}`}>
             <div className={styles.vnpayOptions}>
                 <div className={styles.selectGroup}>
                     <label>Ngân hàng:</label>
-                    <select value={body.bankCode} onChange={(e) => updateBody('bankCode', e.target.value)}>
+                    <select value={body.bankCode} onChange={(e) => update('bankCode', e.target.value)}>
                         {banks.map(bank => (
                             <option key={bank.code} value={bank.code}>{bank.name}</option>
                         ))}
@@ -34,7 +36,7 @@ const VNPayBody = ({ method, body, updateBody }) => {
 
                 <div className={styles.selectGroup}>
                     <label>Ngôn ngữ:</label>
-                    <select value={body.locale} onChange={(e) => updateBody('locale', e.target.value)}>
+                    <select value={body.locale} onChange={(e) => update('locale', e.target.value)}>
                         {locales.map(l => (
                             <option key={l.code} value={l.code}>{l.name}</option>
                         ))}
@@ -79,8 +81,8 @@ const paymentOptions = [
         name: "Thanh toán qua VNPAY",
         logo: "https://vinadesign.vn/uploads/images/2023/05/vnpay-logo-vinadesign-25-12-57-55.jpg",
         disabled: false,
-        body: (paymentMethod, vnpayBody, updateVnpayBody) =>
-            <VNPayBody method={paymentMethod} body={vnpayBody} updateBody={updateVnpayBody} />
+        body: (method, body, updateBody) =>
+            <VNPayBody method={method} body={body} updateBody={updateBody} />
     },
     {
         value: "momo",
@@ -97,10 +99,10 @@ const paymentOptions = [
     {
         value: "transfer",
         name: "Chuyển khoản & Upload biên lai",
-        logo: "https://png.pngtree.com/png-vector/20221022/ourmid/pngtree-mobile-bank-users-transferring-money-png-image_6339062.png",
+        logo: "https://png.pngtree.com/png-vector/20230413/ourmid/pngtree-money-transfer-flat-icon-vector-png-image_6703406.png",
         disabled: false,
-        body: (paymentMethod, transferInfo, updateTransferInfo) =>
-            <TransferBody method={paymentMethod} transferInfo={transferInfo} updateBody={updateTransferInfo} />
+        body: (method, body, updateBody) =>
+            <TransferBody method={method} body={body} updateBody={updateBody}/>
     }
 ];
 

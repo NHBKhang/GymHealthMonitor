@@ -48,4 +48,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return subscriptionRepository.generateNextCode();
     }
 
+    @Override
+    public List<Subscription> getSubscriptionsByUsername(String username) {
+        return subscriptionRepository.getSubscriptionsByUsername(username);
+    }
+
 }

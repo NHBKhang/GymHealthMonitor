@@ -1,7 +1,7 @@
 package com.healthmonitor.controllers;
 
 import com.healthmonitor.pojo.Payment;
-import com.healthmonitor.repositories.impl.PaymentRepositoryImpl;
+import com.healthmonitor.repositories.PaymentRepository;
 import com.healthmonitor.services.PaymentService;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class PaymentController {
     public String payments(Model model, @RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
         try {
             int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-            int pageSize = PaymentRepositoryImpl.getPageSize();
+            int pageSize = PaymentRepository.getPageSize();
 
             long totalPayments = paymentService.countPayments(params);
             int totalPages = (int) Math.ceil((double) totalPayments / pageSize);

@@ -57,4 +57,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.generateNextCode();
     }
 
+    @Override
+    public List<Schedule> getSchedulesByUsername(String username) {
+        return scheduleRepository.getSchedulesByUsername(username);
+    }
+
 }

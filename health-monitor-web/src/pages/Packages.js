@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from '../styles/PackagesPage.module.css';
+import styles from '../styles/pages/Packages.module.css';
 import API, { endpoints } from '../configs/API';
 import { useNotification } from '../utils/toast';
 import { useNavigate } from 'react-router-dom';

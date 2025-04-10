@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ScheduleRepositoryImpl implements ScheduleRepository {
 
-    private static final int PAGE_SIZE = 10;
-
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -134,8 +132,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         return "SCD" + String.format("%05d", nextId);
     }
 
-    public static final int getPageSize() {
-        return ScheduleRepositoryImpl.PAGE_SIZE;
+    @Override
+    public List<Schedule> getSchedulesByUsername(String username) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM Schedule s WHERE s.member.username = :username", Schedule.class);
+        q.setParameter("username", username);
+        return q.getResultList();
     }
-
 }

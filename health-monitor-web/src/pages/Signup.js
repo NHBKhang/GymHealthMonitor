@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from '../styles/Signup.module.css';
+import styles from '../styles/pages/Signup.module.css';
 import API, { endpoints } from '../configs/API';
 import { useUserContext } from '../configs/UserContext';
 

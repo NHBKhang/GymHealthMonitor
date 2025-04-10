@@ -1,7 +1,7 @@
 package com.healthmonitor.controllers;
 
 import com.healthmonitor.pojo.Schedule;
-import com.healthmonitor.repositories.impl.ScheduleRepositoryImpl;
+import com.healthmonitor.repositories.ScheduleRepository;
 import com.healthmonitor.services.ScheduleService;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class ScheduleController {
     public String packages(Model model, @RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
         try {
             int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-            int pageSize = ScheduleRepositoryImpl.getPageSize();
+            int pageSize = ScheduleRepository.getPageSize();
 
             long totalSchedules = scheduleService.countSchedules(params);
             int totalPages = (int) Math.ceil((double) totalSchedules / pageSize);

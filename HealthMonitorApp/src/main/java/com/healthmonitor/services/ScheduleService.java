@@ -17,6 +17,8 @@ public interface ScheduleService {
     void deleteSchedules(List<Integer> ids);
 
     long countSchedules(Map<String, String> params);
+    
+    List<Schedule> getSchedulesByUsername(String username);
 
     String generateNextCode();
 

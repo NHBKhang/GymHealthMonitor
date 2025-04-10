@@ -1,4 +1,4 @@
-import styles from "../../styles/Header.module.css";
+import styles from "../../styles/components/Header.module.css";
 import { useState } from "react";
 import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +25,7 @@ const Header = () => {
                 {/* Logo */}
                 <div className={styles.logo} onClick={() => navigate('/')}>
                     <img src="/logo.png" alt="Gym Health Monitor Logo" />
-                    <h1>Gym Health Monitor</h1>
+                    <h1>Health Monitor</h1>
                 </div>
 
                 {/* Navigation */}
@@ -42,7 +42,7 @@ const Header = () => {
                                 <ul className={styles.dropdownMenu}>
                                     <li><a href="/packages">Tất cả gói tập</a></li>
                                     {state.currentUser &&
-                                        <li><a href="/subcriptions">Gói tập đã đăng ký</a></li>
+                                        <li><a href="/my-subscription">Gói tập đã đăng ký</a></li>
                                     }
                                 </ul>
                             )}
@@ -55,8 +55,8 @@ const Header = () => {
                             </a>
                             {dropdown === "schedule" && (
                                 <ul className={styles.dropdownMenu}>
-                                    <li><a href="/schedule">Lịch tập của bạn</a></li>
-                                    <li><a href="/">Đặt lịch</a></li>
+                                    <li><a href="/my-schedule">Lịch tập của bạn</a></li>
+                                    <li><a href="/booking-schedule">Đặt lịch</a></li>
                                 </ul>
                             )}
                         </li>}
@@ -129,7 +129,7 @@ const Header = () => {
                         <ul className={styles.groupMenu}>
                             <li><a href="/packages">Tất cả gói tập</a></li>
                             {state.currentUser &&
-                                <li><a href="/subcriptions">Gói tập đã đăng ký</a></li>
+                                <li><a href="/my-subscription">Gói tập đã đăng ký</a></li>
                             }
                         </ul>
                     </li>
@@ -138,8 +138,8 @@ const Header = () => {
                     {state.currentUser && <li>
                         <strong>Lịch tập</strong>
                         <ul className={styles.groupMenu}>
-                            <li><a href="/schedule">Lịch tập của bạn</a></li>
-                            <li><a href="/">Đặt lịch</a></li>
+                            <li><a href="/my-schedule">Lịch tập của bạn</a></li>
+                            <li><a href="/book-schedule">Đặt lịch</a></li>
                         </ul>
                     </li>}
 

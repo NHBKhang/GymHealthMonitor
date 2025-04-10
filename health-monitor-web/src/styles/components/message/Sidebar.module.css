@@ -1,0 +1,22 @@
+.sidebar {
+    width: 300px;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.conversation {
+    display: flex;
+    gap: 10px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.name {
+    font-weight: bold;
+}
+
+.lastMessage {
+    font-size: 12px;
+    color: gray;
+}

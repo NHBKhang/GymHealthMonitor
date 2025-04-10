@@ -1,7 +1,7 @@
 package com.healthmonitor.controllers;
 
 import com.healthmonitor.pojo.Progress;
-import com.healthmonitor.repositories.impl.ProgressRepositoryImpl;
+import com.healthmonitor.repositories.ProgressRepository;
 import com.healthmonitor.services.ProgressService;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class ProgressController {
     @GetMapping
     public String users(Model model, @RequestParam Map<String, String> params) {
         int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
-        int pageSize = ProgressRepositoryImpl.getPageSize();
+        int pageSize = ProgressRepository.getPageSize();
 
         long totalUsers = progressService.countProgress(params);
         int totalPages = (int) Math.ceil((double) totalUsers / pageSize);

@@ -37,7 +37,7 @@ public class Feedback implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "rating")
-    private Integer rating;
+    private Double rating;
 
     @Column(name = "comment")
     private String comment;
@@ -53,7 +53,7 @@ public class Feedback implements Serializable {
         this.id = id;
     }
 
-    public Feedback(Integer id, String code, User user, Integer rating, Date createdAt) {
+    public Feedback(Integer id, String code, User user, Double rating, Date createdAt) {
         this.id = id;
         this.code = code;
         this.user = user;
@@ -86,11 +86,11 @@ public class Feedback implements Serializable {
         this.user = user;
     }
 
-    public Integer getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 

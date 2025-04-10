@@ -37,7 +37,6 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 0;
-    gap: 7px;
 }
 
 .nav a {
@@ -66,6 +65,8 @@
     font-size: 24px;
     cursor: pointer;
     display: none;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 /* Drawer (Sidebar) */

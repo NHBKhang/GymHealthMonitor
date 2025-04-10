@@ -1,4 +1,4 @@
-import styles from "../styles/HomePage.module.css";
+import styles from "../styles/pages/Home.module.css";
 import { HeartPulse, Flame, Footprints } from "lucide-react";
 import { motion } from "framer-motion";
 import { HealthCard, PageHead } from "../components";
