@@ -9,7 +9,7 @@ const Calendar = () => {
     return (
         <div className={styles.calendarBox}>
             <div className={styles.header}>
-                <h3>Lịch</h3>
+                <h4>Lịch</h4>
             </div>
             <ReactCalendar onChange={setDate} value={date} />
         </div>

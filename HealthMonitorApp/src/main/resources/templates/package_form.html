@@ -46,7 +46,7 @@
 
                 <div class="col-md-6 mb-3">
                     <label for="ptSessions" class="form-label">Số buổi tập</label>
-                    <input type="number" id="ptSessions" th:field="*{ptSessions}" class="form-control" min="1"
+                    <input type="number" id="ptSessions" th:field="*{ptSessions}" class="form-control" min="0"
                         max="1000" step="1">
                     <p class="text-danger" th:if="${#fields.hasErrors('ptSessions')}" th:errors="*{ptSessions}"></p>
                 </div>

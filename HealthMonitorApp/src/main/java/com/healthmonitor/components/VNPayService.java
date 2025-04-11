@@ -1,5 +1,6 @@
 package com.healthmonitor.components;
 
+import com.healthmonitor.services.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
@@ -12,11 +13,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Component
 public class VNPayService {
+    
+    @Autowired
+    private PaymentService paymentService;
 
     @Value("${vnpay.tmnCode}")
     private String vnp_TmnCode;
@@ -35,7 +40,7 @@ public class VNPayService {
 
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
-        String vnp_TxnRef = getRandomCode(10);
+        String vnp_TxnRef = paymentService.getRandomCode(10);
         String vnp_IpAddr = "127.0.0.1";
         String vnp_OrderInfo = "Dang ky goi tap #" + packageId;
         String vnp_OrderType = (String) bodyData.get("orderType");
@@ -222,15 +227,5 @@ public class VNPayService {
             ipAdress = "Invalid IP:" + e.getMessage();
         }
         return ipAdress;
-    }
-
-    public static String getRandomCode(int len) {
-        Random rnd = new Random();
-        String chars = "0123456789";
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            sb.append(chars.charAt(rnd.nextInt(chars.length())));
-        }
-        return "P" + sb.toString();
     }
 }

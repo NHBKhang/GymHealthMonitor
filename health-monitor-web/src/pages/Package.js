@@ -75,7 +75,7 @@ const Package = () => {
                         <h3>Chi tiết gói tập</h3>
                         <ul>
                             <li><strong>Thời gian:</strong> {pkg.duration}</li>
-                            <li><strong>Số buổi PT:</strong> {pkg.ptSessions}</li>
+                            <li><strong>Số buổi PT:</strong> {pkg.pt_sessions}</li>
                             <li><strong>Giá:</strong> {Number(pkg.price).toLocaleString('vi-VN')} VNĐ</li>
                         </ul>
                     </div>

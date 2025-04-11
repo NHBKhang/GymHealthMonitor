@@ -61,5 +61,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<Schedule> getSchedulesByUsername(String username) {
         return scheduleRepository.getSchedulesByUsername(username);
     }
-
+    
+    @Override
+    public Schedule createScheduleByUsername(Schedule schedule, String username) {
+        return scheduleRepository.createScheduleByUsername(schedule, username);
+    }
 }

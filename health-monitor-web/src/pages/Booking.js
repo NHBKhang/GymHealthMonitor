@@ -5,7 +5,7 @@ import { useNotification } from '../utils/toast';
 
 const Booking = () => {
     const [bookings, setBookings] = useState([]);
-    const [packageInfo, setPackageInfo] = useState(null);
+    const [subscription, setSubscription] = useState(null);
     const [trainers, setTrainers] = useState([]);
     const [loading, setLoading] = useState(true);
     const sendNotification = useNotification();
@@ -14,12 +14,12 @@ const Booking = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [pkgRes, trainerRes] = await Promise.all([
-                    // authAPI().get(endpoints['my-package']),
+                const [subRes, trainerRes] = await Promise.all([
+                    authAPI().get(endpoints['my-subscriptions']),
                     authAPI().get(endpoints['trainers'])
                 ]);
-                setPackageInfo(pkgRes.data);
-                setTrainers(trainerRes.data);
+                setSubscription(subRes.data);
+                setTrainers(trainerRes.data.results);
             } catch (err) {
                 sendNotification({ message: 'Không thể tải dữ liệu' }, 'error');
             } finally {
@@ -30,11 +30,7 @@ const Booking = () => {
     }, [authAPI, sendNotification]);
 
     const addBooking = () => {
-        setBookings(prev => [...prev, {
-            date: '',
-            time: '',
-            trainerId: ''
-        }]);
+        setBookings(prev => [...prev, { date: '', time: '', trainerId: '' }]);
     };
 
     const updateBooking = (index, field, value) => {
@@ -50,7 +46,7 @@ const Booking = () => {
         }
 
         try {
-            await authAPI.post(endpoints['booking'], { bookings });
+            await authAPI().post(endpoints['booking-schedule'], { bookings });
             sendNotification({ message: 'Đặt lịch thành công' });
             setBookings([]);
         } catch (err) {
@@ -62,12 +58,12 @@ const Booking = () => {
 
     return (
         <div className={styles.container}>
-            <h1>Đặt lịch tập</h1>
+            <h2 className={styles.title}>Đặt lịch tập</h2>
 
-            {packageInfo && (
-                <div className={styles.packageInfo}>
-                    <p><strong>Gói tập:</strong> {packageInfo.name}</p>
-                    <p><strong>Số buổi còn lại:</strong> {packageInfo.remainingSessions}</p>
+            {subscription && (
+                <div className={styles.subscription}>
+                    <p><strong>Gói tập:</strong> {subscription.name}</p>
+                    <p><strong>Số buổi còn lại:</strong> {subscription.remainingSessions}</p>
                 </div>
             )}
 
@@ -77,27 +73,30 @@ const Booking = () => {
                         type="date"
                         value={b.date}
                         onChange={e => updateBooking(i, 'date', e.target.value)}
+                        className={styles.input}
                     />
                     <input
                         type="time"
                         value={b.time}
                         onChange={e => updateBooking(i, 'time', e.target.value)}
+                        className={styles.input}
                     />
                     <select
                         value={b.trainerId}
                         onChange={e => updateBooking(i, 'trainerId', e.target.value)}
+                        className={styles.select}
                     >
                         <option value="">-- Chọn PT --</option>
                         {trainers.map(tr => (
-                            <option key={tr.id} value={tr.id}>{tr.name}</option>
+                            <option key={tr.id} value={tr.id}>{tr.full_name}</option>
                         ))}
                     </select>
                 </div>
             ))}
 
             <div className={styles.actions}>
-                <button onClick={addBooking}>+ Thêm buổi tập</button>
-                <button onClick={handleSubmit}>📝 Xác nhận đặt lịch</button>
+                <button className={styles.button} onClick={addBooking}>+ Thêm buổi tập</button>
+                <button className={`${styles.button} ${styles.submit}`} onClick={handleSubmit}>📝 Xác nhận đặt lịch</button>
             </div>
         </div>
     );

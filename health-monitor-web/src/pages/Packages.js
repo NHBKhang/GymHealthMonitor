@@ -51,7 +51,7 @@ const Packages = () => {
                         </div>
                         <h3 className={styles.name}>{pkg.name}</h3>
                         <p className={styles.duration}>⏳ {pkg.duration}</p>
-                        <p className={styles.ptSessions}>💪 {pkg.ptSessions} buổi PT</p>
+                        <p className={styles.ptSessions}>💪 {pkg.pt_sessions} buổi PT</p>
                         <p className={styles.price}>{formatCurrency(pkg.price)}</p>
                     </div>
                 ))}

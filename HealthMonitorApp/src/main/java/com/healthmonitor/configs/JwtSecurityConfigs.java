@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     "com.healthmonitor.services",
     "com.healthmonitor.components"
 })
-@Order(1)
+@Order(2)
 class JwtSecurityConfigs {
 
     @Autowired

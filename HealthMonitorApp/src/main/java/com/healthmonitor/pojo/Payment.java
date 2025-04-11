@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "payments")
@@ -41,6 +42,10 @@ public class Payment implements Serializable {
         }
     }
 
+    public enum Method {
+        VNPAY, MOMO, PAYPAL, TRANSFER
+    }
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -53,6 +58,9 @@ public class Payment implements Serializable {
     @Column(name = "code", nullable = false, unique = true)
     private String code;
 
+    @Column(name = "transaction_no", nullable = true)
+    private String transactionNo;
+
     @JoinColumn(name = "subscription_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Subscription subscription;
@@ -63,10 +71,17 @@ public class Payment implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "method")
-    private String method;
+    @Enumerated(EnumType.STRING)
+    private Method method;
 
     @Column(name = "receipt_image", nullable = true)
     private String receiptImage;
+    
+    @Column(name = "bank_code", nullable = true)
+    private String bankCode;
+
+    @Transient
+    private MultipartFile file;
 
     @Basic(optional = false)
     @Column(name = "status")
@@ -88,7 +103,8 @@ public class Payment implements Serializable {
     }
 
     public Payment(Integer id, String code, Subscription subscription, Double amount,
-            String method, PaymentStatus status, Date createdAt, String description) {
+            Method method, PaymentStatus status, Date createdAt, String description,
+            String bankCode) {
         this.id = id;
         this.code = code;
         this.subscription = subscription;
@@ -97,6 +113,7 @@ public class Payment implements Serializable {
         this.status = status;
         this.createdAt = createdAt;
         this.description = description;
+        this.bankCode = bankCode;
     }
 
     // Getters and setters
@@ -116,6 +133,14 @@ public class Payment implements Serializable {
         this.code = code;
     }
 
+    public String getTransactionNo() {
+        return transactionNo;
+    }
+
+    public void setTransactionNo(String transactionNo) {
+        this.transactionNo = transactionNo;
+    }
+
     public Subscription getSubscription() {
         return subscription;
     }
@@ -132,11 +157,11 @@ public class Payment implements Serializable {
         this.amount = amount;
     }
 
-    public String getMethod() {
+    public Method getMethod() {
         return method;
     }
 
-    public void setMethod(String method) {
+    public void setMethod(Method method) {
         this.method = method;
     }
 
@@ -148,12 +173,28 @@ public class Payment implements Serializable {
         this.receiptImage = receiptImage;
     }
 
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
     public PaymentStatus getStatus() {
         return status;
     }
 
     public void setStatus(PaymentStatus status) {
         this.status = status;
+    }
+
+    public String getBankCode() {
+        return bankCode;
+    }
+
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
     }
 
     public String getDescription() {

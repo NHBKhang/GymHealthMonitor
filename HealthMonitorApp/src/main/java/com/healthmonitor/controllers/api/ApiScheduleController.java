@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,6 +43,30 @@ public class ApiScheduleController {
 
             List<Schedule> schedules = scheduleService.getSchedulesByUsername(username);
             return ResponseEntity.ok(ScheduleSerializer.fromSchedules(schedules));
+        } catch (Exception ex) {
+            System.out.print(ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lấy danh sách gói tập");
+        }
+    }
+
+    @PostMapping("/booking-schedule")
+    public ResponseEntity<?> bookingSchedule(@ModelAttribute("schedule") Schedule schedule, 
+            HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Thiếu token xác thực");
+            }
+
+            String username = jwtService.getUsernameFromToken(token);
+            if (username == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ");
+            }
+
+            Schedule s = scheduleService.createScheduleByUsername(schedule, username);
+            return ResponseEntity.ok(new ScheduleSerializer(s));
         } catch (Exception ex) {
             System.out.print(ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lấy danh sách gói tập");

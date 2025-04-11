@@ -55,8 +55,8 @@ const Header = () => {
                             </a>
                             {dropdown === "schedule" && (
                                 <ul className={styles.dropdownMenu}>
-                                    <li><a href="/my-schedule">Lịch tập của bạn</a></li>
                                     <li><a href="/booking-schedule">Đặt lịch</a></li>
+                                    <li><a href="/my-schedule">Lịch tập của bạn</a></li>
                                 </ul>
                             )}
                         </li>}
@@ -138,8 +138,8 @@ const Header = () => {
                     {state.currentUser && <li>
                         <strong>Lịch tập</strong>
                         <ul className={styles.groupMenu}>
+                        <li><a href="/booking-schedule">Đặt lịch</a></li>
                             <li><a href="/my-schedule">Lịch tập của bạn</a></li>
-                            <li><a href="/book-schedule">Đặt lịch</a></li>
                         </ul>
                     </li>}
 
