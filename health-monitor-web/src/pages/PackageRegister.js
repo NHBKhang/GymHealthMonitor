@@ -68,7 +68,7 @@ const TransferBody = ({ method, body, updateBody }) => {
                 <input
                     type="file"
                     accept="image/*,application/pdf"
-                    onChange={(e) => updateBody("receipt", e.target.files[0])}
+                    onChange={(e) => updateBody("file", e.target.files[0])}
                 />
             </div>
         </div>
@@ -117,7 +117,7 @@ const PackageRegister = () => {
             notes: ""
         },
         transfer: {
-            receipt: null
+            file: null
         }
     });
     const [loading, setLoading] = useState(true);
@@ -173,7 +173,11 @@ const PackageRegister = () => {
                 return;
                 // res = await authAPI().get(`/payments/paypal?packageId=${pkg.id}`);
             } else if (paymentMethod === 'transfer') {
-                res = await authAPI().get(`/payments/paypal?packageId=${pkg.id}`);
+                res = await authAPI().post(endpoints['transfer-payment'], {
+                    file: body.transfer.file,
+                    amount: pkg.price,
+                    package: pkg.id,
+                });
             }
 
             if (res.data && res.data.payUrl) {

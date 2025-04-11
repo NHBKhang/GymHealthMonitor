@@ -19,9 +19,9 @@ public class Pagination {
 
         Map<String, Object> response = new HashMap<>();
         response.put("results", records);
-        response.put("totalRecords", totalRecords);
-        response.put("totalPages", totalPages);
-        response.put("currentPage", page);
+        response.put("total_records", totalRecords);
+        response.put("total_pages", totalPages);
+        response.put("current_page", page);
 
         return ResponseEntity.ok(response);
     }

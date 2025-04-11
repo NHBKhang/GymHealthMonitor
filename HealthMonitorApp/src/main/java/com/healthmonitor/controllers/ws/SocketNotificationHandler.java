@@ -3,9 +3,17 @@ package com.healthmonitor.controllers.ws;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SocketNotificationHandler extends TextWebSocketHandler {
+
     private static final Set<WebSocketSession> sessions = new HashSet<>();
+
+    @Override
+    public void handleTextMessage(WebSocketSession session, TextMessage message) {
+        
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {

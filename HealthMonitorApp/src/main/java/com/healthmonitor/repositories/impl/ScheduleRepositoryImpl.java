@@ -2,6 +2,7 @@ package com.healthmonitor.repositories.impl;
 
 import com.healthmonitor.pojo.Schedule;
 import com.healthmonitor.repositories.ScheduleRepository;
+import com.healthmonitor.repositories.UserRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -22,6 +23,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Autowired
     private LocalSessionFactoryBean factory;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Schedule> getSchedules(Map<String, String> params) {
@@ -138,5 +141,13 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         Query q = s.createQuery("FROM Schedule s WHERE s.member.username = :username", Schedule.class);
         q.setParameter("username", username);
         return q.getResultList();
+    }
+
+    @Override
+    public Schedule createScheduleByUsername(Schedule schedule, String username) {
+        Session s = this.factory.getObject().getCurrentSession();
+        schedule.setMember(this.userRepository.getUserByUsername(username));
+        s.persist(schedule);
+        return schedule;
     }
 }

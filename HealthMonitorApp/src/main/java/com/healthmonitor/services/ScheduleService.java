@@ -20,6 +20,8 @@ public interface ScheduleService {
     
     List<Schedule> getSchedulesByUsername(String username);
 
+    Schedule createScheduleByUsername(Schedule schedule, String username);
+
     String generateNextCode();
 
 }

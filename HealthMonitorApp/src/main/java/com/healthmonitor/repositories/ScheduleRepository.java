@@ -22,6 +22,8 @@ public interface ScheduleRepository {
     
     List<Schedule> getSchedulesByUsername(String username);
 
+    Schedule createScheduleByUsername(Schedule schedule, String username);
+
     String generateNextCode();
 
     public static int getPageSize() {

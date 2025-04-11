@@ -13,5 +13,9 @@ public interface PaymentService {
     Payment createOrUpdatePayment(Payment payment);
 
     long countPayments(Map<String, String> params);
-    
+
+    String getRandomCode(int len);
+
+    int createTransferPayment(Map<String, Object> bodyData, String username);
+
 }

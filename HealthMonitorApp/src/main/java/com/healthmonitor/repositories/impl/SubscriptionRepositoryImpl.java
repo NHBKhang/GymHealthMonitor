@@ -1,7 +1,9 @@
 package com.healthmonitor.repositories.impl;
 
 import com.healthmonitor.pojo.Subscription;
+import com.healthmonitor.repositories.PackageRepository;
 import com.healthmonitor.repositories.SubscriptionRepository;
+import com.healthmonitor.repositories.UserRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -22,6 +24,12 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
     @Autowired
     private LocalSessionFactoryBean factory;
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PackageRepository packageRepository;
 
     @Override
     public List<Subscription> getSubscriptions(Map<String, String> params) {
@@ -80,6 +88,18 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
         }
 
         return subscription;
+    }
+
+    @Override
+    public Subscription createByPackageIdAndUsername(int packageId, String username){
+        Subscription s = new Subscription();
+        
+        s.setCode(this.subscriptionRepository.generateNextCode());
+        s.setGymPackage(this.packageRepository.getPackageById(packageId));
+        s.setMember(this.userRepository.getUserByUsername(username));
+        s.setStatus(Subscription.SubscriptionStatus.PENDING);
+        
+        return createOrUpdateSubscription(s);
     }
 
     @Override
