@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Xem đánh giá & phản hồi | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-3">
+        <h2 class="text-center mb-4">
+            Đánh giá & phản hồi
+        </h2>
+        
+        <form th:object="${package}" class="p-4 border rounded shadow-sm bg-light">
+            <input type="hidden" th:if="${feedback.id != null}" th:field="*{id}" />
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="code" class="form-label">Mã đánh giá<span class="text-danger">*</span></label>
+                    <input type="text" id="code" th:field="*{code}" class="form-control" required readonly>
+                    <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="user" class="form-label">Người dùng <span class="text-danger">*</span></label>
+                    <input type="text" id="user" th:field="*{feedback.user}" class="form-control" required readonly>
+                    <p class="text-danger" th:if="${#fields.hasErrors('user')}" th:errors="*{user}"></p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="comment" class="form-label">Nội dung</label>
+                <textarea id="comment" th:field="*{comment}" class="form-control" readonly></textarea>
+            </div>
+                    
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="rating" class="form-label">Xếp hạng</label>
+                    <input type="number" id="rating" th:field="*{rating}" class="form-control" min="1" max="5" readonly>
+                    <p class="text-danger" th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="createdAt" class="form-label">Ngày tạo</label>
+                    <input type="datetime-local" id="createdAt" th:field="*{createdAt}" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="text-end my-2">
+                <button type="button" class="btn btn-danger px-4 me-1" onclick="deleteFeedback()">🗑️ Xóa
+                </button>
+                <a th:href="@{/feedback}" class="btn btn-secondary px-4">❌ Hủy</a>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    
+    <script th:inline="javascript">
+        function deleteFeedback() {
+            if (confirm('Bạn có chắc chắn muốn xóa đánh giá & phản hồi này?')) {
+                fetch([[@{/feedback/delete/{id}(id=${feedback.id})}]], {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            showMessage('success', 'Xóa đánh giá & phản hồi thành công!');
+                            setTimeout(() => {
+                                window.location.href = [[@{/feedback}]];
+                            }, 1000);
+                        } else {
+                            showMessage('danger', 'Đã xảy ra lỗi khi xóa đánh giá & phản hồi!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -17,6 +17,11 @@ public class StatsController {
 
     @Autowired
     private StatsService statsService;
+
+    @GetMapping
+    public String stats() {
+        return "stats";
+    }
     
     @GetMapping("/users")
     public ResponseEntity<Map<String, Object>> getUserStats(
