@@ -28,7 +28,7 @@
 
                 <div class="col-md-6 mb-3">
                     <label for="user" class="form-label">Người dùng <span class="text-danger">*</span></label>
-                    <input type="text" id="user" th:field="*{feedback.user}" class="form-control" required readonly>
+                    <input type="text" id="user" th:field="*{user}" class="form-control" required readonly>
                     <p class="text-danger" th:if="${#fields.hasErrors('user')}" th:errors="*{user}"></p>
                 </div>
             </div>

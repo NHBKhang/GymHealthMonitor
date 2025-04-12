@@ -16,6 +16,6 @@ public interface PaymentService {
 
     String getRandomCode(int len);
 
-    int createTransferPayment(Map<String, Object> bodyData, String username);
+    Payment createTransferPayment(Map<String, Object> bodyData, String username);
 
 }

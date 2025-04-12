@@ -88,10 +88,16 @@ public class ApiUserController {
 
     @PostMapping(path = "/users", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@ModelAttribute("user") User user) {
-        return new ResponseEntity<>(
-                new UserSerializer(this.userService.createOrUpdateUser(user)),
-                HttpStatus.CREATED
-        );
+        try {
+            return new ResponseEntity<>(
+                    new UserSerializer(this.userService.createOrUpdateUser(user)),
+                    HttpStatus.CREATED
+            );
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Có lỗi xảy ra khi tạo mới người dùng!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @PatchMapping(path = "/users", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

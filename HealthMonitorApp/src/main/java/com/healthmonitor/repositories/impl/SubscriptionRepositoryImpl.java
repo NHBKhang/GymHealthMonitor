@@ -10,6 +10,8 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -82,23 +84,40 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
         Session s = factory.getObject().getCurrentSession();
 
         if (subscription.getId() == null) {
-            s.persist(subscription);
-        } else {
-            subscription = s.merge(subscription);
-        }
+            String hql = "FROM Subscription WHERE member.id = :memberId AND status = 'ACTIVE'";
+            Subscription existingSub = s.createQuery(hql, Subscription.class)
+                    .setParameter("memberId", subscription.getMember().getId())
+                    .uniqueResult();
 
-        return subscription;
+            if (existingSub != null) {
+                Date currentEndDate = existingSub.getEndDate();
+                int daysToExtend = subscription.getGymPackage().getDuration().getDurationInDays();
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(currentEndDate);
+                cal.add(Calendar.DAY_OF_MONTH, daysToExtend);
+                existingSub.setEndDate(cal.getTime());
+
+                s.merge(existingSub);
+                return existingSub;
+            } else {
+                s.persist(subscription);
+                return subscription;
+            }
+        } else {
+            return s.merge(subscription);
+        }
     }
 
     @Override
-    public Subscription createByPackageIdAndUsername(int packageId, String username){
+    public Subscription createByPackageIdAndUsername(int packageId, String username) {
         Subscription s = new Subscription();
-        
+
         s.setCode(this.subscriptionRepository.generateNextCode());
         s.setGymPackage(this.packageRepository.getPackageById(packageId));
         s.setMember(this.userRepository.getUserByUsername(username));
         s.setStatus(Subscription.SubscriptionStatus.PENDING);
-        
+
         return createOrUpdateSubscription(s);
     }
 

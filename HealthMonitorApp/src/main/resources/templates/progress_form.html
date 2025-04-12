@@ -1,15 +1,142 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title
+        th:text="${progress.id != null} ? 'Chỉnh Sửa Tiến độ | Gym Health Monitor' : ('Thêm Tiến độ | Gym Health Monitor')">
+    </title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-3">
+        <h2 class="text-center mb-4">
+            <span th:text="${progress.id != null} ? '✏️ Chỉnh Sửa Tiến độ' : '➕ Thêm Tiến độ'"></span>
+        </h2>
+
+        <form th:action="@{/progress/save}" method="post" th:object="${progress}"
+            class="p-4 border rounded shadow-sm bg-light" enctype="multipart/form-data">
+            <input type="hidden" th:if="${progress.id != null}" th:field="*{id}" />
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="code" class="form-label">Mã <span class="text-danger">*</span></label>
+                    <input type="text" id="code" th:field="*{code}" class="form-control" required readonly>
+                    <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="member" class="form-label">Thành viên <span class="text-danger">*</span></label>
+                    <div id="member-dropdown">
+                        <input id="member" th:field="*{member.id}" required/>
+                    </div>
+                </div>
+            </div>
+                    
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="weight" class="form-label">Cân nặng</label>
+                    <input type="number" id="weight" th:field="*{weight}" class="form-control" min="1" max="10000"
+                        step="1">
+                    <p class="text-danger" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="bodyFat" class="form-label">Mỡ cơ thể</label>
+                    <input type="number" id="bodyFat" th:field="*{bodyFat}" class="form-control" min="0"
+                        max="10000000" step="1">
+                    <p class="text-danger" th:if="${#fields.hasErrors('bodyFat')}" th:errors="*{bodyFat}"></p>
+                </div>
+            </div>
+                    
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="muscleMass" class="form-label">Cơ bắp</label>
+                    <input type="number" id="muscleMass" th:field="*{muscleMass}" class="form-control" min="1" max="10000000"
+                        step="1">
+                    <p class="text-danger" th:if="${#fields.hasErrors('muscleMass')}" th:errors="*{muscleMass}"></p>
+                </div>
+            </div>
+
+            <div class="row" th:if="${progress.id}">
+                <div class="col-md-6 mb-3">
+                    <label for="trainer" class="form-label">Người tạo <span class="text-danger">*</span></label>
+                    <input type="text" id="trainer" th:field="*{trainer}" class="form-control" required readonly>
+                    <p class="text-danger" th:if="${#fields.hasErrors('trainer')}" th:errors="*{trainer}"></p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="date" class="form-label">Ngày tạo</label>
+                    <input type="datetime-local" id="date" th:field="*{date}" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="notes" class="form-label">Ghi chú</label>
+                <textarea id="notes" th:field="*{notes}" class="form-control"
+                    rows="3"></textarea>
+            </div>
+
+            <div class="text-end my-2">
+                <button type="submit" class="btn btn-success px-4 me-1">
+                    <span th:text="${progress.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
+                </button>
+                <button type="button" class="btn btn-danger px-4 me-1" onclick="deletePackage()">🗑️ Xóa
+                </button>
+                <a th:href="@{/progress}" class="btn btn-secondary px-4">❌ Hủy</a>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#notes'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+    
+    <script th:inline="javascript">
+        function deletePackage() {
+            if (confirm('Bạn có chắc chắn muốn xóa gói tập này?')) {
+                fetch([[@{/progress/delete/{id}(id=${progress.id})}]], {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            showMessage('success', 'Xóa gói tập thành công!');
+                            setTimeout(() => {
+                                window.location.href = [[@{/progress}]];
+                            }, 1000);
+                        } else {
+                            showMessage('danger', 'Đã xảy ra lỗi khi xóa gói tập!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                    });
+            }
+        }
+        renderDynamicDropdown({
+            containerId: 'member-dropdown',
+            apiUrl: [[@{/api/users}]],
+            buildOptionText: item => {
+                const text = `${item.first_name || ''} ${item.last_name || ''}`.trim();
+                return text !== '' ? text : (item.username || '');
+            },
+            value: {
+                first_name: [[${progress.member.firstName}]],
+                last_name: [[${progress.member.lastName}]]
+            }
+        });
+    </script>
+</body>
+
 </html>

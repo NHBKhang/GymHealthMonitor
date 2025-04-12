@@ -55,7 +55,7 @@ public class FeedbackController {
 
     @DeleteMapping("/delete/{id}")
     @ResponseBody
-    public ResponseEntity<?> deleteSchedule(@PathVariable(value = "id") int id) {
+    public ResponseEntity<?> deleteFeedback(@PathVariable(value = "id") int id) {
         try {
             feedbackService.deleteFeedback(id);
             return ResponseEntity.ok().body(Map.of("message", "Xóa đánh giá & phản hồi thành công!"));

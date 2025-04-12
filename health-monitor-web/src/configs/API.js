@@ -18,7 +18,8 @@ export const endpoints = {
     'members': 'users?is_member=1',
     'my-subscriptions': 'my-subscriptions',
     'my-schedules': 'my-schedules',
-    'booking-schedule': 'booking-schedule'
+    'booking-schedule': 'booking-schedule',
+    'messages': 'messages',
 }
 
 export const useAuthAPI = () => {

@@ -30,7 +30,7 @@ public class ScheduleController {
     private ScheduleService scheduleService;
 
     @GetMapping
-    public String packages(Model model, @RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
+    public String schedule(Model model, @RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
         try {
             int page = params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
             int pageSize = ScheduleRepository.getPageSize();

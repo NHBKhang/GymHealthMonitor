@@ -31,18 +31,20 @@
                         <th>Mã đăng ký</th>
                         <th>Giá tiền</th>
                         <th>Phương thức</th>
-                        <th>Thời gian thanh toán</th>
+                        <th>Thời gian</th>
+                        <th>Người đăng ký</th>
                         <th>Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="p : ${payments}">
+                    <tr th:each="p: ${payments}">
                         <td><input type="checkbox" th:value="${p.id}"></td>
                         <td><a th:href="@{/payments/edit/{id}(id=${p.id})}" th:text="${p.code}"></a></td>
                         <td><a th:href="@{/subscriptions/edit/{id}(id=${p.subscription.id})}" th:text="${p.subscription.code}"></a></td>
+                        <td th:text="${#numbers.formatDecimal(p.amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                         <td th:text="${p.method}"></td>
-                        <td th:text="${#numbers.formatDecimal(p.amout, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
-                        <td th:text="${#dates.format(s.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                        <td th:text="${#dates.format(p.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                        <td th:text="${p.subscription.member.firstName + ' ' + p.subscription.member.lastName}"></td>
                         <td>
                             <span th:text="${p.status.label}" 
                                   th:class="${p.status.badgeClass}"></span>

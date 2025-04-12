@@ -13,7 +13,11 @@ public interface ProgressService {
     Progress createOrUpdateProgress(Progress progress);
 
     void deleteProgress(int id);
+    
+    void deleteProgressList(List<Integer> ids);
 
     long countProgress(Map<String, String> params);
+    
+    String generateNextCode();
 
 }

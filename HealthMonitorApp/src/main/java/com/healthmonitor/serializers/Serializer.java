@@ -10,4 +10,5 @@ public abstract class Serializer<T> {
     public int getId() {
         return id;
     }
+    
 }

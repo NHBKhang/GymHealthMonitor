@@ -1,15 +1,38 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Báo cáo | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-3">
+        <h2 class="text-center mb-3 w-100">📈 Báo cáo</h2>
+        
+        <div class="filter-container mb-3">
+            <label for="fromDate">Từ ngày:</label>
+            <input type="date" id="fromDate">
+
+            <label for="toDate">Đến ngày:</label>
+            <input type="date" id="toDate">
+
+            <button class="btn btn-success" onclick="loadChart()">Lọc</button>
+        </div>
+        
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    
+    <script th:inline="javascript">
+        function loadChart() {
+            
+        }
+    </script>
+</body>
+
 </html>

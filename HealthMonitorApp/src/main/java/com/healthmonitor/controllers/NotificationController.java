@@ -50,7 +50,7 @@ public class NotificationController {
 
     @PostMapping("/seen")
     @ResponseBody
-    public ResponseEntity<?> deletePackages(@RequestBody Map<String, List<Integer>> request,
+    public ResponseEntity<?> seenNotifications(@RequestBody Map<String, List<Integer>> request,
             RedirectAttributes redirectAttributes) {
         List<Integer> ids = request.get("ids");
         if (ids == null || ids.isEmpty()) {

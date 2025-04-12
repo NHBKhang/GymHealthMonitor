@@ -12,14 +12,99 @@
     <div th:replace="base :: message"></div>
 
     <main class="container mt-4">
-        <h2 class="text-center mb-3">Tiến độ tập luyện</h2>
+        <h2 class="text-center mb-3">📊 Tiến độ tập luyện</h2>
 
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <div>
+                <a th:href="@{/progress/add}" class="btn btn-success me-1">➕ Thêm</a>
 
+                <button type="submit" id="deleteButton" class="btn btn-danger"
+                    onclick="deleteProgressList()" disabled>
+                    🗑️ Xóa
+                </button>
+            </div>
+
+            <form th:action="@{/progress}" method="get" class="mb-1 d-flex">
+                <input type="text" name="kw" th:value="${kw}" class="form-control me-2 w-auto"
+                    placeholder="🔍 Tìm kiếm...">
+                <button type="submit" class="btn btn-primary w-auto">Tìm kiếm</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                        <th>Mã</th>
+                        <th>Thành viên</th>
+                        <th>Cân nặng</th>
+                        <th>Mỡ cơ thể</th>
+                        <th>Cơ bắp</th>
+                        <th>Ngày tạo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${progressList}">
+                        <td><input type="checkbox" th:value="${.id}"></td>
+                        <td><a th:href="@{/progress/edit/{id}(id=${.id})}" th:text="${pkg.code}"></a></td>
+                        <td th:text="${p.firstName + ' ' + p.lastName}"></td>
+                        <td th:text="${p.weight}"></td>
+                        <td th:text="${p.bodyFat}"></td>
+                        <td th:text="${p.muscleMass}"></td>
+                        <td th:text="${#dates.format(s.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(progressList)}">
+                        <td colspan="7">Không có tiến độ nào.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end fw-bold mb-1">
+            Tổng: <span th:text="${totalProgressList}"></span>
+        </div>
 
         <div th:replace="base :: pagination"></div>
     </main>
 
     <div th:replace="base :: footer"></div>
+
+    <script th:inline="javascript">
+        function deleteProgressList() {
+            if (confirm('Bạn có chắc chắn muốn xóa các tiến độ đã chọn?')) {
+                const ids = Array.from(document.querySelectorAll("tbody input[type='checkbox']:checked"))
+                    .map(checkbox => Number(checkbox.value));
+
+                if (ids.length === 0) {
+                    showMessage('warning', 'Vui lòng chọn ít nhất một tiến độ để xóa.');
+                    return;
+                }
+
+                fetch([[@{/progress/delete}]], {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ids: ids })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        showMessage('success', 'Đã xóa các tiến độ thành công!');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        showMessage('danger', 'Đã xảy ra lỗi khi xóa gói tập!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('danger', 'Đã xảy ra lỗi khi gửi yêu cầu!');
+                });
+            }
+        }
+    </script>
 </body>
 
 </html>
