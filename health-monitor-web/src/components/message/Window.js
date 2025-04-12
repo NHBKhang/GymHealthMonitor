@@ -1,20 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import MessageBubble from './MessageBubble';
 import styles from '../../styles/components/message/Window.module.css';
-import API from '../../configs/API';
+import { endpoints, useAuthAPI } from '../../configs/API';
+import { useNotification } from '../../utils/toast';
 
 const Window = ({ chat }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const chatRef = useRef(null);
+    const authAPI = useAuthAPI();
+    const sendNotification = useNotification();
 
     useEffect(() => {
         if (chat) {
-            API.get(`/chat/messages/${chat.id}`).then((res) => {
+            authAPI().get(endpoints.messages).then((res) => {
                 setMessages(res.data);
+            }).catch((err) => {
+                console.error(err);
+                sendNotification({message: "Lỗi khi tải tin nhắn"}, 'error')
             });
         }
-    }, [chat]);
+    }, [chat, authAPI, sendNotification]);
 
     useEffect(() => {
         if (chatRef.current) {
@@ -28,7 +34,7 @@ const Window = ({ chat }) => {
             chatId: chat.id,
             content: newMessage,
         };
-        const res = await API.post('/chat/send', message);
+        const res = await authAPI().post(endpoints.messages, message);
         setMessages([...messages, res.data]);
         setNewMessage('');
     };

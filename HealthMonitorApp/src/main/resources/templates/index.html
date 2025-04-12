@@ -12,11 +12,10 @@
     <div th:replace="base :: header"></div>
     <div th:replace="base :: message"></div>
 
-    <!-- Nội dung chính -->
     <main class="container mt-4">
         <h5 class="text-center">Chào mừng <strong bsec:authentication="name"></strong> đến với hệ thống của chúng tôi!
         </h5>
-        <!-- Bộ lọc thống kê -->
+      
         <div class="filter-container mb-3">
             <label for="fromDate">Từ ngày:</label>
             <input type="date" id="fromDate">
@@ -76,12 +75,12 @@
     <!-- Footer -->
     <div th:replace="base :: footer"></div>
 
-    <script>
+    <script th:inline="javascript">
         async function loadChart() {
             const fromDate = document.getElementById("fromDate").value;
             const toDate = document.getElementById("toDate").value;
 
-            const url = new URL("/HealthMonitorApp/stats/users", window.location.origin);
+            const url = new URL([[@{/stats/users}]], window.location.origin);
             if (fromDate)
                 url.searchParams.append("fromDate", fromDate);
             if (toDate)

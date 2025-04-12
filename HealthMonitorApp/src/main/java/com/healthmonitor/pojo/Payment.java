@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.web.multipart.MultipartFile;
 
 @Entity
@@ -19,11 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class Payment implements Serializable {
 
     public enum PaymentStatus {
-        PENDING("Đang xử lý", "badge-warning"),
-        SUCCESS("Thành công", "badge-success"),
-        FAILED("Thất bại", "badge-danger"),
-        CANCELLED("Đã huỷ", "badge-secondary"),
-        REFUNDED("Đã hoàn tiền", "badge-info");
+        PENDING("Đang xử lý", "badge bg-info"),
+        SUCCESS("Thành công", "badge bg-success"),
+        FAILED("Thất bại", "badge bg-danger"),
+        CANCELLED("Đã huỷ", "badge bg-secondary"),
+        REFUNDED("Đã hoàn tiền", "badge bg-warning");
 
         private final String label;
         private final String badgeClass;
@@ -95,6 +96,10 @@ public class Payment implements Serializable {
     @CreationTimestamp
     private Date createdAt;
 
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Date updatedAt;
+
     public Payment() {
     }
 
@@ -104,7 +109,7 @@ public class Payment implements Serializable {
 
     public Payment(Integer id, String code, Subscription subscription, Double amount,
             Method method, PaymentStatus status, Date createdAt, String description,
-            String bankCode) {
+            String bankCode, Date updatedAt) {
         this.id = id;
         this.code = code;
         this.subscription = subscription;
@@ -112,6 +117,7 @@ public class Payment implements Serializable {
         this.method = method;
         this.status = status;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.description = description;
         this.bankCode = bankCode;
     }
@@ -211,6 +217,14 @@ public class Payment implements Serializable {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

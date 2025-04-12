@@ -13,7 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
         @NamedQuery(name = "Progress.findByMember",
                 query = "SELECT p FROM Progress p WHERE p.member.id = :memberId"),
         @NamedQuery(name = "Progress.findByPT",
-                query = "SELECT p FROM Progress p WHERE p.pt.id = :ptId"),
+                query = "SELECT p FROM Progress p WHERE p.trainer.id = :trainerId"),
         @NamedQuery(name = "Progress.findByDateRange",
                 query = "SELECT p FROM Progress p WHERE p.date BETWEEN :startDate AND :endDate"),
         @NamedQuery(name = "Progress.findLatestByMember",
@@ -29,13 +29,18 @@ public class Progress implements Serializable {
     @Column(name = "id")
     private Integer id;
 
+    @Basic(optional = false)
+    @Column(name = "code", nullable = false, unique = true)
+    private String code;
+
+
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User member;
 
     @JoinColumn(name = "pt_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private User pt;
+    private User trainer;
 
     @Column(name = "date")
     @CreationTimestamp
@@ -60,11 +65,12 @@ public class Progress implements Serializable {
         this.id = id;
     }
 
-    public Progress(Integer id, User member, User pt, Date date,
+    public Progress(Integer id, String code, User member, User trainer, Date date,
                     Float weight, Float bodyFat, Float muscleMass) {
         this.id = id;
+        this.code = code;
         this.member = member;
-        this.pt = pt;
+        this.trainer = trainer;
         this.date = date;
         this.weight = weight;
         this.bodyFat = bodyFat;
@@ -80,6 +86,14 @@ public class Progress implements Serializable {
         this.id = id;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public User getMember() {
         return member;
     }
@@ -88,12 +102,12 @@ public class Progress implements Serializable {
         this.member = member;
     }
 
-    public User getPt() {
-        return pt;
+    public User getTrainer() {
+        return trainer;
     }
 
-    public void setPt(User pt) {
-        this.pt = pt;
+    public void setTrainer(User trainer) {
+        this.trainer = trainer;
     }
 
     public Date getDate() {

@@ -64,35 +64,38 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public int createTransferPayment(Map<String, Object> bodyData, String username) {
+    public Payment createTransferPayment(Map<String, Object> bodyData, String username) {
         try {
             Subscription sub = this.subscriptionRepository.createByPackageIdAndUsername(
-                    (int) bodyData.get("packageId"), username);
-            
+                    (int) bodyData.get("package"), username);
+
             Payment payment = new Payment();
             MultipartFile file = (MultipartFile) bodyData.get("file");
             if (file != null) {
+                String contentType = file.getContentType();
+                String resourceType = "auto";
+
+                if ("application/pdf".equalsIgnoreCase(contentType)) {
+                    resourceType = "raw";
+                }
+
                 Map res = cloudinary.uploader().upload(file.getBytes(),
-                        ObjectUtils.asMap("resource_type", "auto"));
+                        ObjectUtils.asMap("resource_type", resourceType));
                 payment.setReceiptImage(res.get("secure_url").toString());
             }
-            
+
             payment.setSubscription(sub);
-            payment.setAmount((Double) bodyData.get("price"));
+            payment.setAmount((Double) bodyData.get("amount"));
             payment.setStatus(PaymentStatus.PENDING);
             payment.setCode(this.getRandomCode(10));
             payment.setMethod(Payment.Method.TRANSFER);
-            payment.setDescription("Đã chuyển khoản vào ngày " + 
-                    LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            payment.setDescription("Đã chuyển khoản vào ngày "
+                    + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
-            if (this.createOrUpdatePayment(payment) == null) {
-                return 0;
-            } else {
-                return 1;
-            }
+            return this.createOrUpdatePayment(payment);
         } catch (IOException e) {
             System.out.print(e);
-            return -1;
+            return null;
         }
     }
 

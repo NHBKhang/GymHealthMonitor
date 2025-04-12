@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../styles/pages/PackageRegister.module.css';
 import { useNotification } from '../utils/toast';
 import API, { endpoints, useAuthAPI } from '../configs/API';
+import { useGlobalContext } from '../configs/GlobalContext';
 
 const VNPayBody = ({ method, body, updateBody }) => {
     const banks = [
@@ -54,6 +55,8 @@ const VNPayBody = ({ method, body, updateBody }) => {
 };
 
 const TransferBody = ({ method, body, updateBody }) => {
+    const update = (field, value) => updateBody('transfer', field, value)
+
     return (
         <div className={`${styles.transferOptions} ${method === "transfer" ? styles.show : ""}`}>
             <div className={styles.transferDetails}>
@@ -68,7 +71,7 @@ const TransferBody = ({ method, body, updateBody }) => {
                 <input
                     type="file"
                     accept="image/*,application/pdf"
-                    onChange={(e) => updateBody("file", e.target.files[0])}
+                    onChange={(e) => update("file", e.target.files[0])}
                 />
             </div>
         </div>
@@ -102,7 +105,7 @@ const paymentOptions = [
         logo: "https://png.pngtree.com/png-vector/20230413/ourmid/pngtree-money-transfer-flat-icon-vector-png-image_6703406.png",
         disabled: false,
         body: (method, body, updateBody) =>
-            <TransferBody method={method} body={body} updateBody={updateBody}/>
+            <TransferBody method={method} body={body} updateBody={updateBody} />
     }
 ];
 
@@ -124,6 +127,7 @@ const PackageRegister = () => {
     const navigate = useNavigate();
     const sendNotification = useNotification();
     const authAPI = useAuthAPI();
+    const { setPopupVisible, updatePopupData } = useGlobalContext();
 
     const updateBody = (method, field, value) => {
         setBody(prev => ({
@@ -173,15 +177,25 @@ const PackageRegister = () => {
                 return;
                 // res = await authAPI().get(`/payments/paypal?packageId=${pkg.id}`);
             } else if (paymentMethod === 'transfer') {
-                res = await authAPI().post(endpoints['transfer-payment'], {
-                    file: body.transfer.file,
-                    amount: pkg.price,
-                    package: pkg.id,
+                let formData = new FormData();
+                formData.append('file', body.transfer.file);
+                formData.append('amount', pkg.price);
+                formData.append('package', pkg.id);
+
+                res = await authAPI().post(endpoints['transfer-payment'],
+                    formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
                 });
             }
 
             if (res.data && res.data.payUrl) {
                 window.location.href = res.data.payUrl;
+            } else if (res.data && res.data.code === 1) {
+                updatePopupData('paymentCode', res.data.paymentCode);
+                updatePopupData('paymentText', "Yêu cầu thanh toán đã được gửi. Vui lòng đợi hệ thống xét duyệt.");
+                setPopupVisible(true);
             } else {
                 sendNotification({ message: "Không thể lấy được link thanh toán" }, 'error');
             }

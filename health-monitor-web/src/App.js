@@ -19,34 +19,66 @@ import Booking from './pages/Booking';
 import MySubscription from './pages/MySubscription';
 import Settings from './pages/Settings';
 import Message from './pages/Message';
+import PrivateRoute from './components/base/PrivateRoute';
+import { GlobalProvider } from './configs/GlobalContext';
 
 function App() {
   return (
     <CookiesProvider defaultSetOptions={{ path: '/' }}>
-      <UserProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="about" element={<About />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="packages" element={<Packages />} />
-              <Route path="packages/:id" element={<Package />} />
-              <Route path="packages/:id/register" element={<PackageRegister />} />
-              <Route path="my-schedule" element={<MySchedule />} />
-              <Route path="booking-schedule" element={<Booking />} />
-              <Route path="my-subscription" element={<MySubscription />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="message" element={<Message />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-            <Route path='login' element={<Login />} />
-            <Route path='signup' element={<Signup />} />
-          </Routes>
-        </Router>
-        <ToastContainer />
-      </UserProvider>
+      <GlobalProvider>
+        <UserProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="about" element={<About />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="profile" element={
+                  <PrivateRoute>
+                    <Profile />
+                  </PrivateRoute>
+                } />
+                <Route path="packages" element={<Packages />} />
+                <Route path="packages/:id" element={<Package />} />
+                <Route path="packages/:id/register" element={
+                  <PrivateRoute>
+                    <PackageRegister />
+                  </PrivateRoute>
+                } />
+                <Route path="my-schedule" element={
+                  <PrivateRoute>
+                    <MySchedule />
+                  </PrivateRoute>
+                } />
+                <Route path="booking-schedule" element={
+                  <PrivateRoute>
+                    <Booking />
+                  </PrivateRoute>
+                } />
+                <Route path="my-subscription" element={
+                  <PrivateRoute>
+                    <MySubscription />
+                  </PrivateRoute>
+                } />
+                <Route path="settings" element={
+                  <PrivateRoute>
+                    <Settings />
+                  </PrivateRoute>
+                } />
+                <Route path="message" element={
+                  <PrivateRoute>
+                    <Message />
+                  </PrivateRoute>
+                } />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+              <Route path='login' element={<Login />} />
+              <Route path='signup' element={<Signup />} />
+            </Routes>
+          </Router>
+          <ToastContainer />
+        </UserProvider>
+      </GlobalProvider>
     </CookiesProvider>
   );
 }

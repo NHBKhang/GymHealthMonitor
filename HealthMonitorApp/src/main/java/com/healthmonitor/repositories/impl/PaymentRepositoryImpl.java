@@ -76,7 +76,16 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         if (payment.getId() == null) {
             s.persist(payment);
         } else {
-            payment = s.merge(payment);
+            Payment existing = s.get(Payment.class, payment.getId());
+            if (existing != null) {
+                existing.setStatus(payment.getStatus());
+                existing.setReceiptImage(payment.getReceiptImage());
+                existing.setDescription(payment.getDescription());
+
+                payment = s.merge(existing);
+            } else {
+                return null;
+            }
         }
 
         return payment;
@@ -86,8 +95,10 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     public long countPayments(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
-        CriteriaQuery<Long> q = b.createQuery(Long.class);
-        Root<Payment> root = q.from(Payment.class);
+        CriteriaQuery<Long> q = b.createQuery(Long.class
+        );
+        Root<Payment> root = q.from(Payment.class
+        );
         q.select(b.count(root));
 
         if (params != null) {

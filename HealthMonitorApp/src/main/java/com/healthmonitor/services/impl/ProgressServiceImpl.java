@@ -12,31 +12,41 @@ import org.springframework.stereotype.Service;
 public class ProgressServiceImpl implements ProgressService {
     
     @Autowired
-    private ProgressRepository userRepository;
+    private ProgressRepository progressRepository;
     
     @Override
     public List<Progress> getProgress(Map<String, String> params) {
-        return this.userRepository.getProgress(params);
+        return this.progressRepository.getProgress(params);
     }
     
     @Override
     public Progress createOrUpdateProgress(Progress progress) {
-        return this.userRepository.createOrUpdateProgress(progress);
+        return this.progressRepository.createOrUpdateProgress(progress);
     }
     
     @Override
     public void deleteProgress(int id) {
-        this.userRepository.deleteProgress(id);
+        this.progressRepository.deleteProgress(id);
+    }
+    
+    @Override
+    public void deleteProgressList(List<Integer> ids) {
+        this.progressRepository.deleteProgressList(ids);
     }
     
     @Override
     public long countProgress(Map<String, String> params) {
-        return this.userRepository.countProgress(params);
+        return this.progressRepository.countProgress(params);
     }
 
     @Override
     public Progress getProgressById(int id) {
-        return this.userRepository.getProgressById(id);
+        return this.progressRepository.getProgressById(id);
+    }
+
+    @Override
+    public String generateNextCode() {
+        return progressRepository.generateNextCode();
     }
     
 }

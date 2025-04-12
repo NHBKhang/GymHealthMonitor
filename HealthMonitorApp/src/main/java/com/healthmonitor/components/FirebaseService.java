@@ -11,17 +11,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class FirebaseService {
 
-    public void sendMessage(String chatRoomId, Message message) {
+    public void sendMessage(int senderId, Message message) {
+        String conversationId = generateConversationId(
+                String.valueOf(senderId), 
+                String.valueOf(message.getRecieverId())
+        );
         DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("messages/" + chatRoomId)
+                .getReference("messages/" + conversationId)
                 .push();
-
         ref.setValueAsync(message);
     }
 
-    public void listenForMessages(String chatRoomId) {
+    private String generateConversationId(String userA, String userB) {
+        return userA.compareTo(userB) < 0 ? userA + "_" + userB : userB + "_" + userA;
+    }
+
+    public void listenForMessages(String userIdA, String userIdB) {
+        String conversationId = generateConversationId(userIdA, userIdB);
         DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("messages/" + chatRoomId);
+                .getReference("messages/" + conversationId);
 
         ref.addChildEventListener(new ChildEventListener() {
             @Override

@@ -15,8 +15,12 @@ public interface ProgressRepository {
     Progress createOrUpdateProgress(Progress progress);
 
     void deleteProgress(int id);
+    
+    void deleteProgressList(List<Integer> ids);
 
     long countProgress(Map<String, String> params);
+    
+    String generateNextCode();
 
     public static int getPageSize() {
         return ProgressRepository.PAGE_SIZE;

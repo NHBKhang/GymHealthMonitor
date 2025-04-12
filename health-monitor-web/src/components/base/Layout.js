@@ -5,9 +5,10 @@ import { Outlet } from "react-router-dom";
 import Calendar from "../boxes/Calendar";
 import Notifications from "../boxes/Notifications";
 import { useUserContext } from "../../configs/UserContext";
+import PaymentResultPopup from "./PaymentResultPopup";
 
 const Layout = () => {
-    const { currentUser } = useUserContext();
+    const { state } = useUserContext();
 
     return (
         <div className={styles.layout}>
@@ -17,7 +18,7 @@ const Layout = () => {
                     <Outlet />
                 </section>
 
-                {!currentUser &&
+                {state.currentUser &&
                     <aside className={styles.sidebar}>
                         <section>
                             <Notifications />
@@ -29,6 +30,7 @@ const Layout = () => {
                 }
             </main>
             <Footer />
+            <PaymentResultPopup />
         </div>
     );
 };

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "packages")

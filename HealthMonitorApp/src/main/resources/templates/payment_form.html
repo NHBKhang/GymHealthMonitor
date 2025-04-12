@@ -1,15 +1,113 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Xem lịch sử giao dịch | Gym Health Monitor</title>
+
+    <th:block th:replace="base :: head"></th:block>
+</head>
+
+<body>
+    <div th:replace="base :: header"></div>
+    <div th:replace="base :: message"></div>
+
+    <main class="container mt-3">
+        <h2 class="text-center mb-4">
+            Lịch sử giao dịch
+        </h2>
+        
+        <form  th:action="@{/payments/save}" method="post" th:object="${payment}"
+               class="p-4 border rounded shadow-sm bg-light">
+            <input type="hidden" th:if="${payment.id != null}" th:field="*{id}" />
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="code" class="form-label">Mã thanh toán<span class="text-danger">*</span></label>
+                    <input type="text" id="code" th:field="*{code}" class="form-control" required readonly>
+                    <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="method" class="form-label">Phương thức thanh toán<span class="text-danger">*</span></label>
+                    <input type="text" id="method" th:field="*{method}" class="form-control" required readonly>
+                    <p class="text-danger" th:if="${#fields.hasErrors('method')}" th:errors="*{method}"></p>
+                </div>
+            </div>
+            
+            <div class="row" th:if="${payment.transactionNo != null}">
+                <div class="col-md-6 mb-3">
+                    <label for="transactionNo" class="form-label">Mã giao dịch</label>
+                    <input type="text" id="transactionNo" th:field="*{transactionNo}" class="form-control" required readonly>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="bankCode" class="form-label">Mã ngân hàng</label>
+                    <input type="text" id="bankCode" th:field="*{bankCode}" class="form-control" required readonly>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="subscription" class="form-label">Mã đăng ký</label>
+                    <input type="text" id="subscription" th:field="*{subscription.code}" class="form-control" required readonly>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="amount" class="form-label">Giá</label>
+                    <input type="text" id="amount" th:field="*{amount}" class="form-control" required readonly>
+                </div>
+            </div>
+
+<!--            <div class="mb-3">
+                <label for="description" class="form-label">Nội dung</label>
+                <textarea id="description" th:field="*{description}" class="form-control" readonly></textarea>
+            </div>-->
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="subscriptionMember" class="form-label">Người đăng ký <span class="text-danger">*</span></label>
+                    <input type="text" id="subscriptionMember" 
+                        th:value="${payment.subscription.member.firstName + ' ' + payment.subscription.member.lastName}" 
+                        class="form-control" readonly>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">Trạng thái</label>
+                    <select id="status" th:field="*{status}" class="form-select">
+                        <option th:each="status : ${T(com.healthmonitor.pojo.Payment.PaymentStatus).values()}" 
+                                th:value="${status}" 
+                                th:text="${status.label}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Nội dung</label>
+                <textarea id="description" th:field="*{description}" class="form-control"></textarea>
+            </div>
+                    
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="updatedAt" class="form-label">Ngày tạo</label>
+                    <input type="datetime-local" id="updatedAt" th:field="*{updatedAt}" class="form-control" readonly>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="createdAt" class="form-label">Ngày tạo</label>
+                    <input type="datetime-local" id="createdAt" th:field="*{createdAt}" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="text-end my-2">
+                <button type="submit" class="btn btn-success px-4 me-1">
+                    <span th:text="${payment.id != null} ? '💾 Cập Nhật' : '✅ Lưu'"></span>
+                </button>
+                <a th:href="@{/payments}" class="btn btn-secondary px-4">❌ Hủy</a>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+</body>
+
 </html>

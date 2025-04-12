@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../styles/pages/Package.module.css';
-import API, { endpoints, useAuthAPI } from '../configs/API';
+import API, { endpoints } from '../configs/API';
 import { useNotification } from '../utils/toast';
-import PaymentResultPopup from '../components/cards/PaymentResultPopup';
 
 const Package = () => {
     const { id } = useParams();
     const [pkg, setPkg] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [popupVisible, setPopupVisible] = useState(false);
-    const [transactionId, setTransactionId] = useState(null);
     const sendNotification = useNotification();
     const navigate = useNavigate();
-    const authAPI = useAuthAPI();
-    const location = useLocation();
 
     useEffect(() => {
         const loadPackage = async () => {
@@ -30,32 +25,6 @@ const Package = () => {
 
         loadPackage();
     }, [id, sendNotification]);
-
-    useEffect(() => {
-        const checkVnpayReturn = async () => {
-            const query = location.search;
-            const params = new URLSearchParams(query);
-            if (query.includes("vnp_")) {
-                try {
-                    const res = await authAPI().get(endpoints["vnpay-return"] + query);
-                    if (res.data.code === 1) {
-                        setTransactionId(params.get("vnp_TransactionNo"));
-                        setPopupVisible(true);
-                    }
-                } catch (err) {
-                    console.error("Lỗi kiểm tra thanh toán:", err);
-                }
-            }
-        };
-
-        checkVnpayReturn();
-    }, [location.search, authAPI]);
-
-    useEffect(() => {
-        if (popupVisible) {
-            navigate(`/packages/${id}`, { replace: true });
-        }
-    }, [popupVisible, id, navigate]);
 
     if (loading) return <div className={styles.loading}>Đang tải...</div>;
     if (!pkg) return <div className={styles.error}>Không tìm thấy gói tập</div>;
@@ -93,12 +62,6 @@ const Package = () => {
                     </div>
                 </div>
             </div>
-            {popupVisible && (
-                <PaymentResultPopup
-                    transactionId={transactionId}
-                    onClose={() => setPopupVisible(false)}
-                />
-            )}
         </>
     );
 };
