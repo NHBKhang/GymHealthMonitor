@@ -42,10 +42,41 @@ public class ApiPaymentController {
     }
 
     @GetMapping("/vnpay-return")
-    public ResponseEntity<Map<String, Object>> vnpayReturn(HttpServletRequest request) {
-        int result = vnpayService.paymentReturn(request);
-
+    public ResponseEntity<?> vnpayReturn(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
         Map<String, Object> res = new HashMap<>();
+
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Thiếu token xác thực");
+        }
+
+        String username = jwtService.getUsernameFromToken(token);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ");
+        }
+
+        Map<String, Object> bodyData = new HashMap<>();
+
+        String vnp_Amount = request.getParameter("vnp_Amount");
+        String vnp_OrderInfo = request.getParameter("vnp_OrderInfo");
+        String vnp_TransactionNo = request.getParameter("vnp_TransactionNo");
+        String vnp_BankCode = request.getParameter("vnp_BankCode");
+        String[] parts = vnp_OrderInfo.split("#");
+        if (parts.length == 2) {
+            bodyData.put("package", parts[1]);
+        }
+
+        bodyData.put("amount", vnp_Amount);
+        bodyData.put("transactionNo", vnp_TransactionNo);
+        bodyData.put("bankCode", vnp_BankCode);
+
+        if (this.paymentService.createVNPayPayment(bodyData, username) == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tạo đơn hàng thất bại");
+        }
+
+        int result = vnpayService.paymentReturn(request);
         switch (result) {
             case 1:
                 res.put("code", 1);

@@ -84,12 +84,16 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
         Session s = factory.getObject().getCurrentSession();
 
         if (subscription.getId() == null) {
-            String hql = "FROM Subscription WHERE member.id = :memberId AND status = 'ACTIVE'";
+            String hql = "FROM Subscription s WHERE s.member.id = :memberId AND s.status = 'ACTIVE'";
             Subscription existingSub = s.createQuery(hql, Subscription.class)
                     .setParameter("memberId", subscription.getMember().getId())
                     .uniqueResult();
 
             if (existingSub != null) {
+                if (existingSub.getStartDate() == null) {
+                    existingSub.setStartDate(new Date());
+                }
+                
                 Date currentEndDate = existingSub.getEndDate();
                 int daysToExtend = subscription.getGymPackage().getDuration().getDurationInDays();
 
@@ -98,8 +102,7 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
                 cal.add(Calendar.DAY_OF_MONTH, daysToExtend);
                 existingSub.setEndDate(cal.getTime());
 
-                s.merge(existingSub);
-                return existingSub;
+                return s.merge(existingSub);
             } else {
                 s.persist(subscription);
                 return subscription;

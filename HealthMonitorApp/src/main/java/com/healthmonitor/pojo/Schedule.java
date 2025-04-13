@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -99,6 +100,10 @@ public class Schedule implements Serializable {
     @CreationTimestamp
     private Date createdAt;
 
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Date updatedAt;
+
     public Schedule() {
     }
 
@@ -108,7 +113,7 @@ public class Schedule implements Serializable {
 
     public Schedule(Integer id, String code, Subscription subscription, User member, User trainer,
             Date startTime, Date endTime, String type, ScheduleStatus status, Date createdAt,
-            String description) {
+            String description, Date updatedAt) {
         this.id = id;
         this.code = code;
         this.subscription = subscription;
@@ -120,6 +125,7 @@ public class Schedule implements Serializable {
         this.status = status;
         this.description = description;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     // Getters and setters
@@ -209,6 +215,14 @@ public class Schedule implements Serializable {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

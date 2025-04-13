@@ -25,6 +25,10 @@ public class Package implements Serializable {
         ACTIVE, INACTIVE
     }
 
+    public enum PackageType {
+        BASIC, ADVANCED, VIP
+    }
+
     public enum PackageDuration {
         MONTHLY(1, "Gói tập tháng", 30),
         QUARTERLY(3, "Gói tập quý", 90),
@@ -100,6 +104,11 @@ public class Package implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private PackageStatus status;
 
+    @Basic(optional = false)
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private PackageType type;
+
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private String createdAt;
@@ -115,7 +124,8 @@ public class Package implements Serializable {
     }
 
     public Package(Integer id, String code, String name, PackageDuration duration, Double price,
-            String description, Integer ptSessions, PackageStatus status, String createdAt) {
+            String description, Integer ptSessions, PackageStatus status, PackageType type,
+            String createdAt) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -124,6 +134,7 @@ public class Package implements Serializable {
         this.description = description;
         this.ptSessions = ptSessions;
         this.status = status;
+        this.type = type;
         this.createdAt = createdAt;
     }
 
@@ -197,6 +208,18 @@ public class Package implements Serializable {
 
     public void setStatus(PackageStatus status) {
         this.status = status;
+    }
+
+    public PackageType getType() {
+        return type;
+    }
+
+    public String getTypeName() {
+        return type.name();
+    }
+
+    public void setType(PackageType type) {
+        this.type = type;
     }
 
     public String getCreatedAt() {

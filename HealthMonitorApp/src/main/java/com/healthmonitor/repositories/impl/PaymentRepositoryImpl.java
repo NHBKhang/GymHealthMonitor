@@ -1,12 +1,22 @@
 package com.healthmonitor.repositories.impl;
 
 import com.healthmonitor.pojo.Payment;
+import com.healthmonitor.pojo.Payment.PaymentStatus;
+import static com.healthmonitor.pojo.Payment.PaymentStatus.CANCELLED;
+import static com.healthmonitor.pojo.Payment.PaymentStatus.FAILED;
+import static com.healthmonitor.pojo.Payment.PaymentStatus.PENDING;
+import static com.healthmonitor.pojo.Payment.PaymentStatus.SUCCESS;
+import com.healthmonitor.pojo.Subscription;
+import com.healthmonitor.pojo.Subscription.SubscriptionStatus;
 import com.healthmonitor.repositories.PaymentRepository;
+import com.healthmonitor.services.SubscriptionService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -22,6 +32,8 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     @Autowired
     private LocalSessionFactoryBean factory;
+    @Autowired
+    private SubscriptionService subscriptionService;
 
     @Override
     public List<Payment> getPayments(Map<String, String> params) {
@@ -76,15 +88,45 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         if (payment.getId() == null) {
             s.persist(payment);
         } else {
-            Payment existing = s.get(Payment.class, payment.getId());
+            Payment existing = this.getPaymentById(payment.getId());
             if (existing != null) {
-                existing.setStatus(payment.getStatus());
-                existing.setReceiptImage(payment.getReceiptImage());
+                Subscription sub = existing.getSubscription();
+
+                PaymentStatus status = payment.getStatus();
+                SubscriptionStatus subStatus = sub.getStatus();
+                switch (status) {
+                    case PENDING ->
+                        subStatus = SubscriptionStatus.PENDING;
+                    case SUCCESS -> {
+                        subStatus = SubscriptionStatus.ACTIVE;
+
+                        if (sub.getStartDate() == null) {
+                            sub.setStartDate(new Date());
+                        }
+                        if (sub.getEndDate() == null) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(sub.getStartDate());
+                            cal.add(Calendar.DATE, sub.getGymPackage().getDuration().getDurationInDays());
+                            sub.setEndDate(cal.getTime());
+                        }
+                    }
+                    case FAILED ->
+                        subStatus = SubscriptionStatus.INACTIVE;
+                    case CANCELLED ->
+                        subStatus = SubscriptionStatus.CANCELLED;
+                    default -> {
+                    }
+                }
+
+                sub.setStatus(subStatus);
+                subscriptionService.createOrUpdateSubscription(sub);
+
+                existing.setStatus(status);
                 existing.setDescription(payment.getDescription());
 
                 payment = s.merge(existing);
             } else {
-                return null;
+                payment = s.merge(payment);
             }
         }
 

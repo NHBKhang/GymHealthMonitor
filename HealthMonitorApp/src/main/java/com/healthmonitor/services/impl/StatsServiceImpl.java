@@ -33,4 +33,22 @@ public class StatsServiceImpl implements StatsService {
         data.put("values", values);
         return data;
     }
+
+    @Override
+    public Map<String, Object> getRevenueStats(LocalDate fromDate, LocalDate toDate) {
+        List<Object[]> results = this.statsRepository.getRevenueStats(fromDate, toDate);
+
+        Map<String, Object> data = new HashMap<>();
+        List<String> labels = new ArrayList<>();
+        List<Double> values = new ArrayList<>();
+
+        for (Object[] row : results) {
+            labels.add(row[0].toString());
+            values.add((Double) row[1]);
+        }
+
+        data.put("labels", labels);
+        data.put("values", values);
+        return data;
+    }
 }

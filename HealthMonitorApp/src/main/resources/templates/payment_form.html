@@ -23,45 +23,57 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="code" class="form-label">Mã thanh toán<span class="text-danger">*</span></label>
-                    <input type="text" id="code" th:field="*{code}" class="form-control" required readonly>
-                    <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+                    <input type="text" id="code" th:value="${payment.code}" class="form-control" required readonly>
                 </div>
                 
                 <div class="col-md-6 mb-3">
                     <label for="method" class="form-label">Phương thức thanh toán<span class="text-danger">*</span></label>
-                    <input type="text" id="method" th:field="*{method}" class="form-control" required readonly>
-                    <p class="text-danger" th:if="${#fields.hasErrors('method')}" th:errors="*{method}"></p>
+                    <input type="text" id="method" th:value="${payment.method}" class="form-control" required readonly>
                 </div>
             </div>
             
             <div class="row" th:if="${payment.transactionNo != null}">
                 <div class="col-md-6 mb-3">
                     <label for="transactionNo" class="form-label">Mã giao dịch</label>
-                    <input type="text" id="transactionNo" th:field="*{transactionNo}" class="form-control" required readonly>
+                    <input type="text" id="transactionNo" th:value="${payment.transactionNo}" class="form-control" required readonly>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="bankCode" class="form-label">Mã ngân hàng</label>
-                    <input type="text" id="bankCode" th:field="*{bankCode}" class="form-control" required readonly>
+                    <input type="text" id="bankCode" th:value="${payment.bankCode}" class="form-control" required readonly>
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="subscription" class="form-label">Mã đăng ký</label>
-                    <input type="text" id="subscription" th:field="*{subscription.code}" class="form-control" required readonly>
+                    <input type="text" id="subscription" th:value="${payment.subscription.code}" class="form-control" required readonly>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="amount" class="form-label">Giá</label>
-                    <input type="text" id="amount" th:field="*{amount}" class="form-control" required readonly>
+                    <input type="text" id="amount" th:value="${payment.amount}" class="form-control" required readonly>
                 </div>
             </div>
 
-<!--            <div class="mb-3">
-                <label for="description" class="form-label">Nội dung</label>
-                <textarea id="description" th:field="*{description}" class="form-control" readonly></textarea>
-            </div>-->
+            <div class="mb-3" th:if="${payment.receiptImage != null}">
+                <label>Biên nhận thanh toán</label>
+                <div>
+                    <div th:if="${#strings.endsWith(payment.receiptImage.toLowerCase(), '.pdf') or #strings.contains(payment.receiptImage.toLowerCase(), '/raw/')}">
+                        <!-- Hiển thị PDF -->
+                        <embed th:src="${payment.receiptImage}" type="application/pdf" width="100%" height="500px" />
+                        <br/>
+                        <a th:href="${payment.receiptImage}" target="_blank">Xem toàn màn hình</a>
+                    </div>
+
+                    <div th:unless="${#strings.endsWith(payment.receiptImage.toLowerCase(), '.pdf') or #strings.contains(payment.receiptImage.toLowerCase(), '/raw/')}">
+                        <!-- Hiển thị ảnh -->
+                        <a th:href="${payment.receiptImage}" target="_blank">
+                            <img th:src="${payment.receiptImage}" alt="Receipt Image" class="img-thumbnail" style="max-height: 200px;" />
+                        </a>
+                    </div>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -89,12 +101,12 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="updatedAt" class="form-label">Ngày tạo</label>
-                    <input type="datetime-local" id="updatedAt" th:field="*{updatedAt}" class="form-control" readonly>
+                    <input type="datetime-local" id="updatedAt" th:value="${payment.updatedAt}" class="form-control" readonly>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="createdAt" class="form-label">Ngày tạo</label>
-                    <input type="datetime-local" id="createdAt" th:field="*{createdAt}" class="form-control" readonly>
+                    <input type="datetime-local" id="createdAt" th:value="${payment.createdAt}" class="form-control" readonly>
                 </div>
             </div>
 

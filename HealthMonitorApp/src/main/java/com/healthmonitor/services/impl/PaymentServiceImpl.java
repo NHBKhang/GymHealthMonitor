@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,7 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment createTransferPayment(Map<String, Object> bodyData, String username) {
         try {
             Subscription sub = this.subscriptionRepository.createByPackageIdAndUsername(
-                    (int) bodyData.get("package"), username);
+                    Integer.parseInt((String) bodyData.get("package")), username);
 
             Payment payment = new Payment();
             MultipartFile file = (MultipartFile) bodyData.get("file");
@@ -75,25 +76,55 @@ public class PaymentServiceImpl implements PaymentService {
                 String contentType = file.getContentType();
                 String resourceType = "auto";
 
+                String publicId = "receipt_" + UUID.randomUUID();
                 if ("application/pdf".equalsIgnoreCase(contentType)) {
+                    publicId += ".pdf";
                     resourceType = "raw";
                 }
 
                 Map res = cloudinary.uploader().upload(file.getBytes(),
-                        ObjectUtils.asMap("resource_type", resourceType));
+                        ObjectUtils.asMap(
+                                "resource_type", resourceType,
+                                "public_id", publicId
+                        ));
                 payment.setReceiptImage(res.get("secure_url").toString());
             }
 
             payment.setSubscription(sub);
-            payment.setAmount((Double) bodyData.get("amount"));
+            payment.setAmount(Double.valueOf(bodyData.get("amount").toString()));
+            payment.setBankCode(bodyData.get("bankCode").toString());
+            payment.setTransactionNo(bodyData.get("transactionNo").toString());
             payment.setStatus(PaymentStatus.PENDING);
             payment.setCode(this.getRandomCode(10));
             payment.setMethod(Payment.Method.TRANSFER);
+            payment.setDescription("Đã gửi biên lai chuyển khoản vào ngày "
+                    + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
+            return this.createOrUpdatePayment(payment);
+        } catch (IOException | NumberFormatException e) {
+            System.out.print(e);
+            return null;
+        }
+    }
+
+    @Override
+    public Payment createVNPayPayment(Map<String, Object> bodyData, String username) {
+        try {
+            Subscription sub = this.subscriptionRepository.createByPackageIdAndUsername(
+                    Integer.parseInt((String) bodyData.get("package")), username);
+
+            Payment payment = new Payment();
+
+            payment.setSubscription(sub);
+            payment.setAmount(Double.parseDouble(bodyData.get("amount").toString()) / 100);
+            payment.setStatus(PaymentStatus.SUCCESS);
+            payment.setCode(this.getRandomCode(10));
+            payment.setMethod(Payment.Method.VNPAY);
             payment.setDescription("Đã chuyển khoản vào ngày "
                     + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
             return this.createOrUpdatePayment(payment);
-        } catch (IOException e) {
+        } catch (NumberFormatException e) {
             System.out.print(e);
             return null;
         }

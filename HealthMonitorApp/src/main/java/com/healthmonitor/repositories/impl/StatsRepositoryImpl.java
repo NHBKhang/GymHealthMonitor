@@ -39,5 +39,26 @@ public class StatsRepositoryImpl implements StatsRepository {
 
         return q.getResultList();
     }
+
+    @Override
+    public List<Object[]> getRevenueStats(@Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate) {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        Query q = s.createQuery(
+                "SELECT DATE(p.updatedAt), SUM(p.amount) "
+                + "FROM Payment p "
+                + "WHERE p.updatedAt BETWEEN :fromDate AND :toDate and p.status = 'SUCCESS'"
+                + "GROUP BY DATE(p.updatedAt)",
+                Object[].class
+        );
+
+        LocalDateTime fromDateTime = fromDate.atStartOfDay();
+        LocalDateTime toDateTime = toDate.atTime(23, 59, 59);
+
+        q.setParameter("fromDate", fromDateTime);
+        q.setParameter("toDate", toDateTime);
+
+        return q.getResultList();
+    }
     
 }
