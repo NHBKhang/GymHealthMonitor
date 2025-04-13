@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -87,6 +88,10 @@ public class Subscription implements Serializable {
     @CreationTimestamp
     private Date createdAt;
 
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Date updatedAt;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subscription")
     private Set<Payment> paymentSet;
 
@@ -101,7 +106,8 @@ public class Subscription implements Serializable {
     }
 
     public Subscription(Integer id, String code, User member, Package gymPackage, Date startDate,
-            Date endDate, SubscriptionStatus status, Date createdAt, String description) {
+            Date endDate, SubscriptionStatus status, Date createdAt, String description,
+            Date updatedAt) {
         this.id = id;
         this.code = code;
         this.member = member;
@@ -110,6 +116,7 @@ public class Subscription implements Serializable {
         this.endDate = endDate;
         this.status = status;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.description = description;
     }
 
@@ -176,6 +183,14 @@ public class Subscription implements Serializable {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getDescription() {

@@ -21,17 +21,45 @@
             <label for="toDate">Đến ngày:</label>
             <input type="date" id="toDate">
 
-            <button class="btn btn-success" onclick="loadChart()">Lọc</button>
+            <button class="btn btn-success" onclick="loadRevenueChart()">Lọc</button>
         </div>
+        
+        <canvas id="chart" class="mb-4"></canvas>
         
     </main>
 
     <div th:replace="base :: footer"></div>
-    
+
     <script th:inline="javascript">
-        function loadChart() {
-            
+        async function loadRevenueChart() {
+            const fromDate = document.getElementById("fromDate").value;
+            const toDate = document.getElementById("toDate").value;
+
+            const url = new URL([[@{/stats/revenue}]], window.location.origin);
+            if (fromDate)
+                url.searchParams.append("fromDate", fromDate);
+            if (toDate)
+                url.searchParams.append("toDate", toDate);
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            const ctx = document.getElementById('chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Tổng doanh thu',
+                        data: data.values,
+                        backgroundColor: 'red',
+                        fill: false
+                    }]
+                }
+            });
         }
+
+        window.onload = loadRevenueChart;
     </script>
 </body>
 

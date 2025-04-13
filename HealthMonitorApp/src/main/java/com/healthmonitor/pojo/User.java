@@ -7,6 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.web.multipart.MultipartFile;
 
 @Entity
@@ -89,6 +90,10 @@ public class User implements Serializable {
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Date updatedAt;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Member member;
 
@@ -116,7 +121,7 @@ public class User implements Serializable {
 
     public User(Integer id, String username, String password, Role role,
             String firstName, String lastName, String email, String phone,
-            String avatar, UserStatus status) {
+            String avatar, UserStatus status, Date updatedAt, Date createdAt) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -127,6 +132,8 @@ public class User implements Serializable {
         this.phone = phone;
         this.avatar = avatar;
         this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -228,6 +235,14 @@ public class User implements Serializable {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Member getMember() {

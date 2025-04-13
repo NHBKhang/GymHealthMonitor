@@ -18,4 +18,6 @@ public interface PaymentService {
 
     Payment createTransferPayment(Map<String, Object> bodyData, String username);
 
+    Payment createVNPayPayment(Map<String, Object> bodyData, String username);
+
 }

@@ -7,4 +7,6 @@ public interface StatsService {
 
     Map<String, Object> getUserStats(LocalDate fromDate, LocalDate toDate);
 
+    Map<String, Object> getRevenueStats(LocalDate fromDate, LocalDate toDate);
+
 }

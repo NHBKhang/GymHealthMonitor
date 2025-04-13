@@ -56,7 +56,6 @@ public class NotificationController {
         if (ids == null || ids.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("info", "Không tìm thấy thông báo nào!"));
         } else {
-
             return ResponseEntity.ok().body(Map.of("success", "Cập nhật trạng thái thông báo thành công!"));
         }
     }

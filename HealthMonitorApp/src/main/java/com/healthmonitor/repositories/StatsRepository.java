@@ -8,4 +8,6 @@ public interface StatsRepository {
 
     List<Object[]> getUserStats(@Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate);
 
+    List<Object[]> getRevenueStats(@Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate);
+
 }
