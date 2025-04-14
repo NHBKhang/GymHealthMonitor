@@ -177,6 +177,11 @@ const PackageRegister = () => {
                 return;
                 // res = await authAPI().get(`/payments/paypal?packageId=${pkg.id}`);
             } else if (paymentMethod === 'transfer') {
+                if (body.transfer.file == null) {
+                    sendNotification({ message: "Vui lòng chọn file biên lai!" }, 'info');
+                    return;
+                }
+
                 let formData = new FormData();
                 formData.append('file', body.transfer.file);
                 formData.append('amount', pkg.price);

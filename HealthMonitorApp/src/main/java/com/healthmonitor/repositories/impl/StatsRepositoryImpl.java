@@ -45,10 +45,10 @@ public class StatsRepositoryImpl implements StatsRepository {
         Session s = this.factory.getObject().getCurrentSession();
 
         Query q = s.createQuery(
-                "SELECT DATE(p.updatedAt), SUM(p.amount) "
+                "SELECT DATE(p.createdAt), SUM(p.amount) "
                 + "FROM Payment p "
-                + "WHERE p.updatedAt BETWEEN :fromDate AND :toDate and p.status = 'SUCCESS'"
-                + "GROUP BY DATE(p.updatedAt)",
+                + "WHERE p.createdAt BETWEEN :fromDate AND :toDate and p.status = 'SUCCESS'"
+                + "GROUP BY DATE(p.createdAt)",
                 Object[].class
         );
 

@@ -1,5 +1,6 @@
 package com.healthmonitor.repositories.impl;
 
+import com.healthmonitor.pojo.Package;
 import com.healthmonitor.pojo.Subscription;
 import com.healthmonitor.repositories.PackageRepository;
 import com.healthmonitor.repositories.SubscriptionRepository;
@@ -93,7 +94,7 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
                 if (existingSub.getStartDate() == null) {
                     existingSub.setStartDate(new Date());
                 }
-                
+
                 Date currentEndDate = existingSub.getEndDate();
                 int daysToExtend = subscription.getGymPackage().getDuration().getDurationInDays();
 
@@ -113,13 +114,28 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
     }
 
     @Override
-    public Subscription createByPackageIdAndUsername(int packageId, String username) {
+    public Subscription createByPackageIdAndUsername(int packageId, String username,
+            Boolean isTransfer) {
         Subscription s = new Subscription();
+        Package pkg = this.packageRepository.getPackageById(packageId);
 
         s.setCode(this.subscriptionRepository.generateNextCode());
-        s.setGymPackage(this.packageRepository.getPackageById(packageId));
         s.setMember(this.userRepository.getUserByUsername(username));
-        s.setStatus(Subscription.SubscriptionStatus.PENDING);
+        s.setGymPackage(pkg);
+        
+        if (isTransfer) {
+            s.setStatus(Subscription.SubscriptionStatus.PENDING);
+        } else {
+            Date now = new Date();
+            s.setStartDate(now);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(now);
+            cal.add(Calendar.DAY_OF_MONTH, pkg.getDuration().getDurationInDays());
+            s.setEndDate(cal.getTime());
+
+            s.setStatus(Subscription.SubscriptionStatus.ACTIVE);
+        }
 
         return createOrUpdateSubscription(s);
     }

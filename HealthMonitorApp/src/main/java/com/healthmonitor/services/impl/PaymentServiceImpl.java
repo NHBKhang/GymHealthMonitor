@@ -68,7 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment createTransferPayment(Map<String, Object> bodyData, String username) {
         try {
             Subscription sub = this.subscriptionRepository.createByPackageIdAndUsername(
-                    Integer.parseInt((String) bodyData.get("package")), username);
+                    Integer.parseInt(bodyData.get("package").toString()), username, true);
 
             Payment payment = new Payment();
             MultipartFile file = (MultipartFile) bodyData.get("file");
@@ -92,8 +92,6 @@ public class PaymentServiceImpl implements PaymentService {
 
             payment.setSubscription(sub);
             payment.setAmount(Double.valueOf(bodyData.get("amount").toString()));
-            payment.setBankCode(bodyData.get("bankCode").toString());
-            payment.setTransactionNo(bodyData.get("transactionNo").toString());
             payment.setStatus(PaymentStatus.PENDING);
             payment.setCode(this.getRandomCode(10));
             payment.setMethod(Payment.Method.TRANSFER);
@@ -111,7 +109,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment createVNPayPayment(Map<String, Object> bodyData, String username) {
         try {
             Subscription sub = this.subscriptionRepository.createByPackageIdAndUsername(
-                    Integer.parseInt((String) bodyData.get("package")), username);
+                    Integer.parseInt(bodyData.get("package").toString()), username, false);
 
             Payment payment = new Payment();
 
@@ -120,6 +118,8 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setStatus(PaymentStatus.SUCCESS);
             payment.setCode(this.getRandomCode(10));
             payment.setMethod(Payment.Method.VNPAY);
+            payment.setBankCode(bodyData.get("bankCode").toString());
+            payment.setTransactionNo(bodyData.get("transactionNo").toString());
             payment.setDescription("Đã chuyển khoản vào ngày "
                     + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
