@@ -34,8 +34,8 @@ export const UserProvider = ({ children }) => {
 
     const saveToken = (token) => {
         setCookie('access-token', token, {
-            path: '/',          // cần thiết để cookie áp dụng cho toàn bộ site
-            maxAge: 86400,      // thời gian sống cookie: 1 ngày (giây)
+            path: '/', // cần thiết để cookie áp dụng cho toàn bộ site
+            maxAge: 86400, // thời gian sống cookie: 1 ngày (giây)
             sameSite: 'strict', // bảo mật hơn, tránh CSRF
         });
     };

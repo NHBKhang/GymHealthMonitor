@@ -7,9 +7,9 @@ import { useGlobalContext } from '../../configs/GlobalContext';
 
 const PaymentResultPopup = () => {
     const { popupVisible, setPopupVisible, popupData } = useGlobalContext();
-    const [transactionId, setTransactionId] = useState(popupData?.transactionId);
-    const [paymentCode, setPaymentCode] = useState(popupData?.paymentCode);
-    const [paymentText,] = useState(popupData?.paymentText || "Gói tập đã được thanh toán thành công!");
+    const [transactionId, setTransactionId] = useState(popupData.transactionId);
+    const [paymentCode, setPaymentCode] = useState(popupData.paymentCode);
+    const [paymentText, setPaymentText] = useState(popupData?.paymentText || "Gói tập đã được thanh toán thành công!");
     const authAPI = useAuthAPI();
     const location = useLocation();
     const navigate = useNavigate();
@@ -40,6 +40,12 @@ const PaymentResultPopup = () => {
             navigate(location.pathname, { replace: true });
         }
     }, [popupVisible, location.pathname, navigate]);
+
+    useEffect(() => {
+        setTransactionId(popupData.transactionId);
+        setPaymentCode(popupData.paymentCode);
+        setPaymentText(popupData?.paymentText || "Gói tập đã được thanh toán thành công!");
+    }, [popupData]);
 
     if (!popupVisible) return <></>
 

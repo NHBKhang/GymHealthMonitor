@@ -5,6 +5,7 @@ import com.healthmonitor.pojo.User;
 import com.healthmonitor.serializers.UserSerializer;
 import com.healthmonitor.services.UserService;
 import com.healthmonitor.utils.Pagination;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +45,13 @@ public class ApiUserController {
     }
 
     @GetMapping(path = "/current-user")
-    public ResponseEntity<Object> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader != null && authorizationHeader.startsWith("Bearer ")
-                ? authorizationHeader.substring(7)
-                : null;
+    public ResponseEntity<Object> getCurrentUser(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Thiếu token xác thực");
+        }
 
         if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ hoặc không tồn tại.");

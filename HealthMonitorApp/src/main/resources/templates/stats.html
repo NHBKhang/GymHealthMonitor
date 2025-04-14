@@ -31,32 +31,97 @@
     <div th:replace="base :: footer"></div>
 
     <script th:inline="javascript">
+        let chartInstance;
+
         async function loadRevenueChart() {
             const fromDate = document.getElementById("fromDate").value;
             const toDate = document.getElementById("toDate").value;
 
             const url = new URL([[@{/stats/revenue}]], window.location.origin);
-            if (fromDate)
-                url.searchParams.append("fromDate", fromDate);
-            if (toDate)
-                url.searchParams.append("toDate", toDate);
+            if (fromDate) url.searchParams.append("fromDate", fromDate);
+            if (toDate) url.searchParams.append("toDate", toDate);
 
-            const response = await fetch(url);
-            const data = await response.json();
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
 
-            const ctx = document.getElementById('chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: 'Tổng doanh thu',
-                        data: data.values,
-                        backgroundColor: 'red',
-                        fill: false
-                    }]
-                }
-            });
+                const ctx = document.getElementById('chart').getContext('2d');
+
+                // Destroy chart cũ nếu đã có
+                if (chartInstance) chartInstance.destroy();
+
+                // Tạo gradient màu nền
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, '#42a5f5'); // xanh nhạt
+                gradient.addColorStop(1, '#1e88e5'); // xanh đậm
+
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Tổng doanh thu (VNĐ)',
+                            data: data.values,
+                            backgroundColor: gradient,
+                            borderRadius: 5,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let value = context.parsed.y;
+                                        return ' ' + value.toLocaleString('vi-VN') + ' ₫';
+                                    }
+                                }
+                            },
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#333',
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Biểu đồ doanh thu theo ngày',
+                                font: {
+                                    size: 18
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function (value) {
+                                        return value.toLocaleString('vi-VN') + ' ₫';
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Doanh thu (VNĐ)'
+                                },
+                                beginAtZero: true
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Ngày'
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (err) {
+                console.error(err);
+                showMessage('danger', 'Không thể tải biểu đồ. Vui lòng thử lại sau.!');
+            }
         }
 
         window.onload = loadRevenueChart;

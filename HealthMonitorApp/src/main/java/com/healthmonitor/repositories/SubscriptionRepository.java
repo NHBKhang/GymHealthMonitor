@@ -14,7 +14,7 @@ public interface SubscriptionRepository {
 
     Subscription createOrUpdateSubscription(Subscription subscription);
 
-    Subscription createByPackageIdAndUsername(int packageId, String username);
+    Subscription createByPackageIdAndUsername(int packageId, String username, Boolean isTransfer);
 
     long countSubscriptions(Map<String, String> params);
     
